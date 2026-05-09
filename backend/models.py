@@ -1,0 +1,47 @@
+from sqlalchemy import Column, Integer, String, ForeignKey, Table
+from sqlalchemy.orm import declarative_base, relationship
+
+Base = declarative_base()
+
+# Tabella di collegamento tra squadra e atleti
+squadra_atleti = Table(
+    "squadra_atleti",
+    Base.metadata,
+    Column("squadra_id", Integer, ForeignKey("squadre.id")),
+    Column("atleta_id", Integer, ForeignKey("athletes.id"))
+)
+
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True)
+    password = Column(String)
+    budget = Column(Integer, default=150)
+    is_admin = Column(Integer, default=0)
+    squadra = relationship("Squadra", back_populates="utente", uselist=False)
+
+class Squadra(Base):
+    __tablename__ = "squadre"
+    id = Column(Integer, primary_key=True, index=True)
+    nome = Column(String)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    utente = relationship("User", back_populates="squadra")
+    atleti = relationship("Athlete", secondary=squadra_atleti)
+
+class Athlete(Base):
+    __tablename__ = "athletes"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String)
+    categoria = Column(String)
+    punti = Column(Integer)
+    prezzo = Column(Integer)
+    gare = Column(Integer)
+    malus = Column(Integer, default=0)
+
+
+class Impostazioni(Base):
+    __tablename__ = "impostazioni"
+    id = Column(Integer, primary_key=True)
+    mercato_aperto = Column(Integer, default=1)
+
+

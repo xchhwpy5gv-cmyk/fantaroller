@@ -219,7 +219,11 @@ def apri_mercato(utente=Depends(get_utente_corrente), db=Depends(get_db)):
     if not utente.is_admin:
         raise HTTPException(status_code=403, detail="Non sei admin")
     imp = db.query(Impostazioni).first()
-    imp.mercato_aperto = 1
+    if not imp:
+        imp = Impostazioni(id=1, mercato_aperto=1)
+        db.add(imp)
+    else:
+        imp.mercato_aperto = 1
     db.commit()
     return {"message": "Mercato aperto!"}
 
@@ -228,9 +232,14 @@ def chiudi_mercato(utente=Depends(get_utente_corrente), db=Depends(get_db)):
     if not utente.is_admin:
         raise HTTPException(status_code=403, detail="Non sei admin")
     imp = db.query(Impostazioni).first()
-    imp.mercato_aperto = 0
+    if not imp:
+        imp = Impostazioni(id=1, mercato_aperto=0)
+        db.add(imp)
+    else:
+        imp.mercato_aperto = 0
     db.commit()
     return {"message": "Mercato chiuso!"}
+
 
 @app.post("/admin/set-admin/{username}")
 def set_admin(username: str, db=Depends(get_db)):

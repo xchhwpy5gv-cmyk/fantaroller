@@ -492,7 +492,7 @@ function Admin({ token }) {
       </div>
     </div>
   );
-}
+
 
 function Regolamento() {
   return (

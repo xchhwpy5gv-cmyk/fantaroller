@@ -140,7 +140,7 @@ def crea_squadra(nome: str, utente=Depends(get_utente_corrente), db=Depends(get_
 @app.post("/squadra/acquista/{atleta_id}")
 def acquista_atleta(atleta_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
     squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
-    imp = db.query(Impostazioni).filter(Impostazioni.id == 1).first()
+    imp = db.query(Impostazioni).first()
     if not imp.mercato_aperto:
         raise HTTPException(status_code=400, detail="Il mercato è chiuso!")
 
@@ -211,14 +211,14 @@ def classifica(db=Depends(get_db)):
 
 @app.get("/admin/stato-mercato")
 def stato_mercato(db=Depends(get_db)):
-    imp = db.query(Impostazioni).filter(Impostazioni.id == 1).first()
+    imp = db.query(Impostazioni).first()
     return {"mercato_aperto": bool(imp.mercato_aperto)}
 
 @app.post("/admin/apri-mercato")
 def apri_mercato(utente=Depends(get_utente_corrente), db=Depends(get_db)):
     if not utente.is_admin:
         raise HTTPException(status_code=403, detail="Non sei admin")
-    imp = db.query(Impostazioni).filter(Impostazioni.id == 1).first()
+    imp = db.query(Impostazioni).first()
     imp.mercato_aperto = 1
     db.commit()
     return {"message": "Mercato aperto!"}
@@ -227,7 +227,7 @@ def apri_mercato(utente=Depends(get_utente_corrente), db=Depends(get_db)):
 def chiudi_mercato(utente=Depends(get_utente_corrente), db=Depends(get_db)):
     if not utente.is_admin:
         raise HTTPException(status_code=403, detail="Non sei admin")
-    imp = db.query(Impostazioni).filter(Impostazioni.id == 1).first()
+    imp = db.query(Impostazioni).first()
     imp.mercato_aperto = 0
     db.commit()
     return {"message": "Mercato chiuso!"}

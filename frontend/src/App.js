@@ -29,12 +29,14 @@ function App() {
         <button onClick={() => setPagina("squadra")}>La mia squadra</button>
         <button onClick={() => setPagina("mercato")} style={{ marginLeft: 10 }}>Mercato</button>
         <button onClick={() => setPagina("classifica")} style={{ marginLeft: 10 }}>Classifica</button>
+        <button onClick={() => setPagina("regolamento")} style={{ marginLeft: 10 }}>Regolamento</button>
         {isAdmin && <button onClick={() => setPagina("admin")} style={{ marginLeft: 10, background: "#dc3545", color: "white", border: "none", padding: "5px 10px" }}>Admin</button>}
         <button onClick={() => { setToken(null); setPagina("login"); }} style={{ marginLeft: 10 }}>Logout</button>
       </nav>
       {pagina === "squadra" && <Squadra token={token} />}
       {pagina === "mercato" && <Mercato token={token} />}
       {pagina === "classifica" && <Classifica />}
+      {pagina === "regolamento" && <Regolamento />}
       {pagina === "admin" && <Admin token={token} />}
     </div>
   );
@@ -366,5 +368,100 @@ function Admin({ token }) {
     </div>
   );
 }
+
+function Regolamento() {
+  return (
+    <div style={{ maxWidth: 700, margin: "0 auto" }}>
+      <h2>📋 Regolamento FantaRoller</h2>
+      
+      <h3>🏗️ Formazione</h3>
+      <p>Ogni squadra è composta da <strong>16 atleti</strong>:</p>
+      <ul>
+        <li>2 Ragazzi Maschi</li>
+        <li>2 Ragazze Femminile</li>
+        <li>2 Allievi Maschi</li>
+        <li>2 Allieve Femminile</li>
+        <li>2 Junior Maschi</li>
+        <li>2 Junior Femminile</li>
+        <li>2 Senior Maschi</li>
+        <li>2 Senior Femminile</li>
+      </ul>
+
+      <h3>💰 Budget</h3>
+      <p>Ogni utente ha a disposizione <strong>150 crediti</strong> per acquistare gli atleti.</p>
+
+      <h3>🏆 Punteggi</h3>
+      <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 20 }}>
+        <thead>
+          <tr style={{ background: "#f0f0f0" }}>
+            <th style={{ padding: 8, textAlign: "left" }}>Posizione</th>
+            <th style={{ padding: 8 }}>Punti base</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[
+            ["1°", 100], ["2°", 85], ["3°", 75], ["4°", 65], ["5°", 55],
+            ["6°", 50], ["7°", 45], ["8°", 40], ["9°", 35], ["10°", 30],
+            ["11° - 20°", 20], ["21° e oltre", 5]
+          ].map(([pos, pts]) => (
+            <tr key={pos} style={{ borderBottom: "1px solid #ddd" }}>
+              <td style={{ padding: 8 }}>{pos}</td>
+              <td style={{ padding: 8, textAlign: "center" }}>{pts}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <h3>✖️ Moltiplicatori</h3>
+      <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 20 }}>
+        <thead>
+          <tr style={{ background: "#f0f0f0" }}>
+            <th style={{ padding: 8, textAlign: "left" }}>Tipo gara</th>
+            <th style={{ padding: 8 }}>Moltiplicatore</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style={{ borderBottom: "1px solid #ddd" }}>
+            <td style={{ padding: 8 }}>Gara veloce</td>
+            <td style={{ padding: 8, textAlign: "center" }}>×1.2</td>
+          </tr>
+          <tr style={{ borderBottom: "1px solid #ddd" }}>
+            <td style={{ padding: 8 }}>Gara media</td>
+            <td style={{ padding: 8, textAlign: "center" }}>×1.5</td>
+          </tr>
+          <tr style={{ borderBottom: "1px solid #ddd" }}>
+            <td style={{ padding: 8 }}>Gara lunga</td>
+            <td style={{ padding: 8, textAlign: "center" }}>×1.2</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>⚠️ Malus</h3>
+      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <thead>
+          <tr style={{ background: "#f0f0f0" }}>
+            <th style={{ padding: 8, textAlign: "left" }}>Sanzione</th>
+            <th style={{ padding: 8 }}>Punti</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style={{ borderBottom: "1px solid #ddd" }}>
+            <td style={{ padding: 8 }}>Ammonizione</td>
+            <td style={{ padding: 8, textAlign: "center", color: "orange" }}>-10</td>
+          </tr>
+          <tr style={{ borderBottom: "1px solid #ddd" }}>
+            <td style={{ padding: 8 }}>Diffida</td>
+            <td style={{ padding: 8, textAlign: "center", color: "orange" }}>-20</td>
+          </tr>
+          <tr style={{ borderBottom: "1px solid #ddd" }}>
+            <td style={{ padding: 8 }}>Espulsione</td>
+            <td style={{ padding: 8, textAlign: "center", color: "red" }}>-50</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 
 export default App;

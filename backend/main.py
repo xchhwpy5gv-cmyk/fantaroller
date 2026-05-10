@@ -13,7 +13,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://fantaroller.vercel.app"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -151,9 +151,12 @@ def acquista_atleta(atleta_id: int, utente=Depends(get_utente_corrente), db=Depe
         raise HTTPException(status_code=404, detail="Atleta non trovato")
     if atleta in squadra.atleti:
         raise HTTPException(status_code=400, detail="Atleta già in squadra")
-        atleti_stessa_categoria = [a for a in squadra.atleti if a.categoria == atleta.categoria]
-        if len(atleti_stessa_categoria) >= 2:
-            raise HTTPException(status_code=400, detail=f"Hai già 2 atleti in {atleta.categoria}")
+    if len(squadra.atleti) >= 16:
+        raise HTTPException(status_code=400, detail="Squadra completa! Massimo 16 atleti")
+
+    atleti_stessa_categoria = [a for a in squadra.atleti if a.categoria == atleta.categoria]
+    if len(atleti_stessa_categoria) >= 2:
+        raise HTTPException(status_code=400, detail=f"Hai già 2 atleti in {atleta.categoria}")
 
     if utente.budget < atleta.prezzo:
         raise HTTPException(status_code=400, detail="Budget insufficiente")

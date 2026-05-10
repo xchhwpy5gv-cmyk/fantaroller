@@ -127,11 +127,12 @@ function Squadra({ token }) {
   useState(() => { caricaSquadra(); }, []);
 
   const categorie = [
-    "Ragazzi Maschi", "Ragazzi Femmine",
-    "Allievi Maschi", "Allievi Femmine",
-    "Junior Maschi", "Junior Femmine",
-    "Senior Maschi", "Senior Femmine"
-  ];
+  "Ragazzi Maschi", "Ragazze Femminile",
+  "Allievi Maschi", "Allieve Femminile",
+  "Junior Maschi", "Junior Femminile",
+  "Senior Maschi", "Senior Femminile"
+];
+
 
   const atletiPerCategoria = (cat) => squadra ? squadra.atleti.filter(a => a.categoria === cat).length : 0;
   const squadraCompleta = squadra ? squadra.atleti.length === 16 : false;

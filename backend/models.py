@@ -45,3 +45,14 @@ class Impostazioni(Base):
     mercato_aperto = Column(Integer, default=1)
 
 
+class Gara(Base):
+    __tablename__ = "gare"
+    id = Column(Integer, primary_key=True, index=True)
+    url = Column(String)
+    categoria = Column(String)
+    moltiplicatore = Column(String)
+    evento = Column(String)
+    completata = Column(Integer, default=0)
+
+
+

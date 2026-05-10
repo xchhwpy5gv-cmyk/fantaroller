@@ -3,7 +3,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
 from database import engine, SessionLocal
-from models import Base, User, Athlete, Squadra, Impostazioni
+from models import Base, User, Athlete, Squadra, Impostazioni, Gara
 from schemas import UserCreate, UserLogin, Token
 from passlib.context import CryptContext
 from jose import JWTError, jwt
@@ -262,3 +262,82 @@ def classifica(db=Depends(get_db)):
             })
     risultati.sort(key=lambda x: x["punti"], reverse=True)
     return risultati
+
+    
+@app.post("/admin/aggiungi-gara")
+def aggiungi_gara(url: str, categoria: str, moltiplicatore: float, evento: str, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.is_admin:
+        raise HTTPException(status_code=403, detail="Non sei admin")
+    nuova_gara = Gara(url=url, categoria=categoria, moltiplicatore=str(moltiplicatore), evento=evento)
+    db.add(nuova_gara)
+    db.commit()
+    return {"message": "Gara aggiunta!"}
+
+@app.get("/admin/gare")
+def lista_gare(utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.is_admin:
+        raise HTTPException(status_code=403, detail="Non sei admin")
+    gare = db.query(Gara).all()
+    return gare
+
+@app.delete("/admin/gara/{gara_id}")
+def elimina_gara(gara_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.is_admin:
+        raise HTTPException(status_code=403, detail="Non sei admin")
+    gara = db.query(Gara).filter(Gara.id == gara_id).first()
+    if not gara:
+        raise HTTPException(status_code=404, detail="Gara non trovata")
+    db.delete(gara)
+    db.commit()
+    return {"message": "Gara eliminata"}
+
+@app.post("/admin/calcola-punti")
+def calcola_punti(utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.is_admin:
+        raise HTTPException(status_code=403, detail="Non sei admin")
+    import requests
+    from bs4 import BeautifulSoup
+
+    def punti_base(pos):
+        pos = int(pos)
+        if pos == 1: return 100
+        elif pos == 2: return 85
+        elif pos == 3: return 75
+        elif pos == 4: return 65
+        elif pos == 5: return 55
+        elif pos <= 10: return 50 - (pos-6)*5
+        elif pos <= 20: return 20
+        else: return 5
+
+    gare = db.query(Gara).all()
+    
+    # Reset punti atleti
+    db.query(Athlete).update({"punti": 0, "gare": 0})
+    db.commit()
+
+    for gara in gare:
+        try:
+            response = requests.get(gara.url)
+            soup = BeautifulSoup(response.text, "html.parser")
+            rows = soup.find_all("tr")
+            
+            for row in rows:
+                cols = row.find_all("td")
+                if len(cols) > 3:
+                    posizione = cols[0].text.strip()
+                    nome = cols[2].text.strip()
+                    if posizione and posizione.isdigit():
+                        punti = round(punti_base(posizione) * float(gara.moltiplicatore))
+                        atleta = db.query(Athlete).filter(
+                            Athlete.name == nome,
+                            Athlete.categoria == gara.categoria
+                        ).first()
+                        if atleta:
+                            atleta.punti += punti
+                            atleta.gare += 1
+            db.commit()
+        except Exception as e:
+            print(f"Errore gara {gara.url}: {e}")
+    
+    return {"message": "Punti aggiornati!"}
+

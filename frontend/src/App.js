@@ -477,23 +477,6 @@ function Admin({ token }) {
 }
 
 
-  return (
-    <div>
-      <h2>🔧 Pannello Admin</h2>
-      {messaggio && <p style={{ color: "green" }}>{messaggio}</p>}
-      <div style={{ marginBottom: 20 }}>
-        <h3>Stato Mercato: {mercatoAperto ? "🟢 Aperto" : "🔴 Chiuso"}</h3>
-        <button onClick={apriMercato} style={{ background: "#28a745", color: "white", border: "none", padding: "8px 16px", cursor: "pointer", marginRight: 10 }}>
-          Apri Mercato
-        </button>
-        <button onClick={chiudiMercato} style={{ background: "#dc3545", color: "white", border: "none", padding: "8px 16px", cursor: "pointer" }}>
-          Chiudi Mercato
-        </button>
-      </div>
-    </div>
-  );
-
-
 function Regolamento() {
   return (
     <div style={{ maxWidth: 700, margin: "0 auto" }}>

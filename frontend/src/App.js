@@ -325,11 +325,31 @@ function Classifica() {
 function Admin({ token }) {
   const [messaggio, setMessaggio] = useState("");
   const [mercatoAperto, setMercatoAperto] = useState(null);
+  const [gare, setGare] = useState([]);
+  const [nuovaUrl, setNuovaUrl] = useState("");
+  const [nuovaCategoria, setNuovaCategoria] = useState("Junior Maschi");
+  const [nuovoMoltiplicatore, setNuovoMoltiplicatore] = useState("1.2");
+  const [nuovoEvento, setNuovoEvento] = useState("");
+
+  const categorie = [
+    "Ragazzi Maschi", "Ragazze Femminile",
+    "Allievi Maschi", "Allieve Femminile",
+    "Junior Maschi", "Junior Femminile",
+    "Senior Maschi", "Senior Femminile"
+  ];
+
+  const caricaGare = async () => {
+    const res = await fetch(`${API}/admin/gare`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (res.ok) setGare(await res.json());
+  };
 
   useState(() => {
     fetch(`${API}/admin/stato-mercato`)
       .then(r => r.json())
       .then(data => setMercatoAperto(data.mercato_aperto));
+    caricaGare();
   }, []);
 
   const apriMercato = async () => {
@@ -351,6 +371,111 @@ function Admin({ token }) {
     setMessaggio(data.message);
     setMercatoAperto(false);
   };
+
+  const aggiungiGara = async () => {
+    const res = await fetch(`${API}/admin/aggiungi-gara?url=${encodeURIComponent(nuovaUrl)}&categoria=${encodeURIComponent(nuovaCategoria)}&moltiplicatore=${nuovoMoltiplicatore}&evento=${encodeURIComponent(nuovoEvento)}`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    setMessaggio(data.message);
+    setNuovaUrl("");
+    setNuovoEvento("");
+    caricaGare();
+  };
+
+  const eliminaGara = async (id) => {
+    const res = await fetch(`${API}/admin/gara/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    setMessaggio(data.message);
+    caricaGare();
+  };
+
+  const calcolaPunti = async () => {
+    setMessaggio("⏳ Calcolo punti in corso...");
+    const res = await fetch(`${API}/admin/calcola-punti`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    setMessaggio(data.message);
+  };
+
+  return (
+    <div>
+      <h2>🔧 Pannello Admin</h2>
+      {messaggio && <p style={{ color: "green" }}>{messaggio}</p>}
+      
+      <div style={{ marginBottom: 20 }}>
+        <h3>Stato Mercato: {mercatoAperto ? "🟢 Aperto" : "🔴 Chiuso"}</h3>
+        <button onClick={apriMercato} style={{ background: "#28a745", color: "white", border: "none", padding: "8px 16px", cursor: "pointer", marginRight: 10 }}>
+          Apri Mercato
+        </button>
+        <button onClick={chiudiMercato} style={{ background: "#dc3545", color: "white", border: "none", padding: "8px 16px", cursor: "pointer" }}>
+          Chiudi Mercato
+        </button>
+      </div>
+
+      <div style={{ marginBottom: 20 }}>
+        <h3>➕ Aggiungi Gara</h3>
+        <input placeholder="Nome evento (es. Campionati Italiani 2026)" value={nuovoEvento} onChange={e => setNuovoEvento(e.target.value)} style={{ display: "block", width: "100%", padding: 8, marginBottom: 8 }} />
+        <input placeholder="URL classifica FISR" value={nuovaUrl} onChange={e => setNuovaUrl(e.target.value)} style={{ display: "block", width: "100%", padding: 8, marginBottom: 8 }} />
+        <select value={nuovaCategoria} onChange={e => setNuovaCategoria(e.target.value)} style={{ padding: 8, marginRight: 10 }}>
+          {categorie.map(c => <option key={c} value={c}>{c}</option>)}
+        </select>
+        <select value={nuovoMoltiplicatore} onChange={e => setNuovoMoltiplicatore(e.target.value)} style={{ padding: 8, marginRight: 10 }}>
+          <option value="1.2">×1.2 (veloce/lunga)</option>
+          <option value="1.5">×1.5 (media)</option>
+        </select>
+        <button onClick={aggiungiGara} style={{ background: "#007bff", color: "white", border: "none", padding: "8px 16px", cursor: "pointer" }}>
+          Aggiungi
+        </button>
+      </div>
+
+      <div style={{ marginBottom: 20 }}>
+        <h3>📋 Gare inserite</h3>
+        {gare.length === 0 ? <p>Nessuna gara inserita</p> : (
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ background: "#f0f0f0" }}>
+                <th style={{ padding: 8, textAlign: "left" }}>Evento</th>
+                <th>Categoria</th>
+                <th>Molt.</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {gare.map(g => (
+                <tr key={g.id} style={{ borderBottom: "1px solid #ddd" }}>
+                  <td style={{ padding: 8 }}>{g.evento}</td>
+                  <td style={{ textAlign: "center" }}>{g.categoria}</td>
+                  <td style={{ textAlign: "center" }}>×{g.moltiplicatore}</td>
+                  <td style={{ textAlign: "center" }}>
+                    <button onClick={() => eliminaGara(g.id)} style={{ background: "#dc3545", color: "white", border: "none", padding: "4px 8px", cursor: "pointer" }}>
+                      Elimina
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      <div>
+        <h3>🔄 Aggiorna Punti</h3>
+        <p>Clicca per ricalcolare i punti di tutti gli atleti in base alle gare inserite.</p>
+        <button onClick={calcolaPunti} style={{ background: "#fd7e14", color: "white", border: "none", padding: "10px 20px", cursor: "pointer", fontSize: 16 }}>
+          🔄 Calcola Punti
+        </button>
+      </div>
+    </div>
+  );
+}
+
 
   return (
     <div>

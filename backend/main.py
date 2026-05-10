@@ -191,24 +191,6 @@ def vendi_atleta(atleta_id: int, utente=Depends(get_utente_corrente), db=Depends
     db.commit()
     return {"message": f"{atleta.name} venduto!", "budget_rimasto": utente.budget}
 
-@app.get("/classifica/")
-def classifica(db=Depends(get_db)):
-    utenti = db.query(User).all()
-    risultati = []
-    for utente in utenti:
-        squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
-        if squadra:
-            punti_totali = sum(a.punti for a in squadra.atleti)
-            risultati.append({
-                "username": utente.username,
-                "squadra": squadra.nome,
-                "punti": punti_totali,
-                "n_atleti": len(squadra.atleti)
-            })
-    risultati.sort(key=lambda x: x["punti"], reverse=True)
-    return risultati
-
-
 @app.get("/admin/stato-mercato")
 def stato_mercato(db=Depends(get_db)):
     imp = db.query(Impostazioni).first()

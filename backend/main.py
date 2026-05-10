@@ -263,3 +263,20 @@ def init_db(db=Depends(get_db)):
 def debug_impostazioni(db=Depends(get_db)):
     imp = db.query(Impostazioni).all()
     return [{"id": i.id, "mercato_aperto": i.mercato_aperto} for i in imp]
+
+@app.get("/classifica/")
+def classifica(db=Depends(get_db)):
+    utenti = db.query(User).all()
+    risultati = []
+    for utente in utenti:
+        squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
+        if squadra and len(squadra.atleti) == 16:
+            punti_totali = sum(a.punti for a in squadra.atleti)
+            risultati.append({
+                "username": utente.username,
+                "squadra": squadra.nome,
+                "punti": punti_totali,
+                "n_atleti": len(squadra.atleti)
+            })
+    risultati.sort(key=lambda x: x["punti"], reverse=True)
+    return risultati

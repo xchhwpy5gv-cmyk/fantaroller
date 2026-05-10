@@ -45,6 +45,7 @@ function Login({ setToken, setPagina }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errore, setErrore] = useState("");
+  const [successo, setSuccesso] = useState("");
   const [registrati, setRegistrati] = useState(false);
 
   const handleSubmit = async () => {
@@ -57,7 +58,8 @@ function Login({ setToken, setPagina }) {
     });
     const data = await res.json();
     if (registrati) {
-      setErrore("Registrato! Ora fai login.");
+      setSuccesso("Registrato! Ora fai login.");
+      setErrore("");
       setRegistrati(false);
     } else if (data.access_token) {
       setToken(data.access_token);
@@ -80,6 +82,7 @@ function Login({ setToken, setPagina }) {
         {registrati ? "Hai già un account? Login" : "Non hai un account? Registrati"}
       </p>
       {errore && <p style={{ color: "red" }}>{errore}</p>}
+      {successo && <p style={{ color: "green" }}>{successo}</p>}
     </div>
   );
 }

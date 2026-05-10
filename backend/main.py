@@ -240,3 +240,17 @@ def set_admin(username: str, db=Depends(get_db)):
     utente.is_admin = 1
     db.commit()
     return {"message": f"{username} è ora admin"}
+   
+@app.post("/admin/init")
+def init_db(db=Depends(get_db)):
+    imp = db.query(Impostazioni).first()
+    if not imp:
+        db.add(Impostazioni(id=1, mercato_aperto=1))
+        db.commit()
+        return {"message": "Database inizializzato"}
+    return {"message": "Già inizializzato"}
+
+@app.get("/admin/debug-impostazioni")
+def debug_impostazioni(db=Depends(get_db)):
+    imp = db.query(Impostazioni).all()
+    return [{"id": i.id, "mercato_aperto": i.mercato_aperto} for i in imp]

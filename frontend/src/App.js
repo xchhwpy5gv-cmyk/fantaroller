@@ -126,6 +126,16 @@ function Squadra({ token }) {
 
   useState(() => { caricaSquadra(); }, []);
 
+  const categorie = [
+    "Ragazzi Maschi", "Ragazzi Femmine",
+    "Allievi Maschi", "Allievi Femmine",
+    "Junior Maschi", "Junior Femmine",
+    "Senior Maschi", "Senior Femmine"
+  ];
+
+  const atletiPerCategoria = (cat) => squadra ? squadra.atleti.filter(a => a.categoria === cat).length : 0;
+  const squadraCompleta = squadra ? squadra.atleti.length === 16 : false;
+
   if (errore) return (
     <div>
       <h2>Crea la tua squadra</h2>
@@ -141,6 +151,20 @@ function Squadra({ token }) {
       <h2>🏆 {squadra.nome}</h2>
       <p>💰 Budget: <strong>{squadra.budget} crediti</strong></p>
       {messaggio && <p style={{ color: "green" }}>{messaggio}</p>}
+      
+      {!squadraCompleta && (
+        <div style={{ background: "#fff3cd", padding: 10, marginBottom: 10, borderRadius: 4 }}>
+          <strong>⚠️ Squadra incompleta! Mancano:</strong>
+          {categorie.map(cat => {
+            const mancanti = 2 - atletiPerCategoria(cat);
+            return mancanti > 0 ? (
+              <p key={cat} style={{ margin: 2 }}>• {mancanti} atleti in {cat}</p>
+            ) : null;
+          })}
+        </div>
+      )}
+      {squadraCompleta && <p style={{ color: "green" }}>✅ Squadra completa!</p>}
+
       <h3>Atleti:</h3>
       {squadra.atleti.length === 0 ? <p>Nessun atleta — vai al mercato!</p> : (
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
@@ -171,6 +195,7 @@ function Squadra({ token }) {
     </div>
   );
 }
+
 
 function Mercato({ token }) {
   const [atleti, setAtleti] = useState([]);

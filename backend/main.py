@@ -228,3 +228,12 @@ def chiudi_mercato(utente=Depends(get_utente_corrente), db=Depends(get_db)):
     imp.mercato_aperto = 0
     db.commit()
     return {"message": "Mercato chiuso!"}
+
+@app.post("/admin/set-admin/{username}")
+def set_admin(username: str, db=Depends(get_db)):
+    utente = db.query(User).filter(User.username == username).first()
+    if not utente:
+        raise HTTPException(status_code=404, detail="Utente non trovato")
+    utente.is_admin = 1
+    db.commit()
+    return {"message": f"{username} è ora admin"}

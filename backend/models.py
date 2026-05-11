@@ -54,5 +54,12 @@ class Gara(Base):
     evento = Column(String)
     completata = Column(Integer, default=0)
 
+class PuntiEvento(Base):
+    __tablename__ = "punti_evento"
+    id = Column(Integer, primary_key=True, index=True)
+    atleta_id = Column(Integer, ForeignKey("athletes.id"))
+    evento = Column(String)
+    punti = Column(Integer, default=0)
+    atleta = relationship("Athlete")
 
 

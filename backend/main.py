@@ -263,6 +263,50 @@ def classifica(db=Depends(get_db)):
     risultati.sort(key=lambda x: x["punti"], reverse=True)
     return risultati
 
+@app.get("/classifica-evento/{evento}")
+def classifica_evento(evento: str, db=Depends(get_db)):
+
+    utenti = db.query(User).all()
+
+    risultati = []
+
+    for utente in utenti:
+
+        squadra = db.query(Squadra).filter(
+            Squadra.user_id == utente.id
+        ).first()
+
+        if squadra:
+
+            punti_totali = 0
+
+            for atleta in squadra.atleti:
+
+                punti_evento = db.query(PuntiEvento).filter(
+                    PuntiEvento.atleta_id == atleta.id,
+                    PuntiEvento.evento == evento
+                ).all()
+
+                punti_totali += sum(p.punti for p in punti_evento)
+
+            risultati.append({
+                "username": utente.username,
+                "squadra": squadra.nome,
+                "punti": punti_totali,
+                "n_atleti": len(squadra.atleti)
+            })
+
+    risultati.sort(key=lambda x: x["punti"], reverse=True)
+
+    return risultati
+
+@app.get("/eventi")
+def lista_eventi(db=Depends(get_db)):
+
+    eventi = db.query(Gara.evento).distinct().all()
+
+    return [e[0] for e in eventi]
+
     
 @app.post("/admin/aggiungi-gara")
 def aggiungi_gara(url: str, categoria: str, moltiplicatore: float, evento: str, utente=Depends(get_utente_corrente), db=Depends(get_db)):

@@ -350,6 +350,7 @@ function Admin({ token }) {
   const [nuovaCategoria, setNuovaCategoria] = useState("Junior Maschi");
   const [nuovoMoltiplicatore, setNuovoMoltiplicatore] = useState("1.2");
   const [nuovoEvento, setNuovoEvento] = useState("");
+  const [gareSelezionate, setGareSelezionate] = useState([]);
 
   const categorie = [
     "Ragazzi Maschi", "Ragazze Femminile",
@@ -485,32 +486,55 @@ function Admin({ token }) {
       <div style={{ marginBottom: 20 }}>
         <h3>📋 Gare inserite</h3>
         {gare.length === 0 ? <p>Nessuna gara inserita</p> : (
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr style={{ background: "#f0f0f0" }}>
-                <th style={{ padding: 8, textAlign: "left" }}>Evento</th>
-                <th>Categoria</th>
-                <th>Molt.</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {gare.map(g => (
-                <tr key={g.id} style={{ borderBottom: "1px solid #ddd" }}>
-                  <td style={{ padding: 8 }}>{g.evento}</td>
-                  <td style={{ textAlign: "center" }}>{g.categoria}</td>
-                  <td style={{ textAlign: "center" }}>×{g.moltiplicatore}</td>
-                  <td style={{ textAlign: "center" }}>
-                    <button onClick={() => eliminaGara(g.id)} style={{ background: "#dc3545", color: "white", border: "none", padding: "4px 8px", cursor: "pointer" }}>
-                      Elimina
-                    </button>
-                  </td>
+          <>
+            <button onClick={async () => {
+              for (const id of gareSelezionate) {
+                await fetch(`${API}/admin/gara/${id}`, {
+                  method: "DELETE",
+                  headers: { Authorization: `Bearer ${token}` },
+                });
+              }
+              setMessaggio(`${gareSelezionate.length} gare eliminate`);
+              setGareSelezionate([]);
+              caricaGare();
+            }} style={{ background: "#dc3545", color: "white", border: "none", padding: "6px 12px", cursor: "pointer", marginBottom: 8 }}>
+              🗑️ Elimina selezionate ({gareSelezionate.length})
+            </button>
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <thead>
+                <tr style={{ background: "#f0f0f0" }}>
+                  <th style={{ padding: 8 }}>✓</th>
+                  <th style={{ padding: 8, textAlign: "left" }}>Evento</th>
+                  <th>Categoria</th>
+                  <th>Molt.</th>
+                  <th></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {gare.map(g => (
+                  <tr key={g.id} style={{ borderBottom: "1px solid #ddd", background: gareSelezionate.includes(g.id) ? "#fff3cd" : "white" }}>
+                    <td style={{ textAlign: "center", padding: 8 }}>
+                      <input type="checkbox" checked={gareSelezionate.includes(g.id)} onChange={e => {
+                        if (e.target.checked) setGareSelezionate([...gareSelezionate, g.id]);
+                        else setGareSelezionate(gareSelezionate.filter(id => id !== g.id));
+                      }} />
+                    </td>
+                    <td style={{ padding: 8 }}>{g.evento}</td>
+                    <td style={{ textAlign: "center" }}>{g.categoria}</td>
+                    <td style={{ textAlign: "center" }}>×{g.moltiplicatore}</td>
+                    <td style={{ textAlign: "center" }}>
+                      <button onClick={() => eliminaGara(g.id)} style={{ background: "#dc3545", color: "white", border: "none", padding: "4px 8px", cursor: "pointer" }}>
+                        Elimina
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
         )}
       </div>
+
 
       <div>
         <h3>🔄 Aggiorna Punti</h3>

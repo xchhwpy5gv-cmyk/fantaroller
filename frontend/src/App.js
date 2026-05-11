@@ -441,6 +441,33 @@ function Admin({ token }) {
 
       <div style={{ marginBottom: 20 }}>
         <h3>➕ Aggiungi Gara</h3>
+        <div style={{ marginBottom: 20 }}>
+          <h3>🔗 Importa evento da URL index</h3>
+          <input 
+            placeholder="URL index evento (es. .../index.htm)" 
+            id="urlIndex"
+            style={{ display: "block", width: "100%", padding: 8, marginBottom: 8 }} 
+          />
+          <input 
+            placeholder="Nome evento (es. Campionati Italiani 2026)" 
+            id="nomeEvento"
+            style={{ display: "block", width: "100%", padding: 8, marginBottom: 8 }} 
+          />
+          <button onClick={async () => {
+            const url = document.getElementById("urlIndex").value;
+            const nome = document.getElementById("nomeEvento").value;
+            const res = await fetch(`${API}/admin/importa-evento?url_index=${encodeURIComponent(url)}&evento=${encodeURIComponent(nome)}`, {
+              method: "POST",
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            const data = await res.json();
+            setMessaggio(data.message);
+            caricaGare();
+          }} style={{ background: "#6f42c1", color: "white", border: "none", padding: "8px 16px", cursor: "pointer" }}>
+            Importa tutte le gare
+          </button>
+        </div>
+
         <input placeholder="Nome evento (es. Campionati Italiani 2026)" value={nuovoEvento} onChange={e => setNuovoEvento(e.target.value)} style={{ display: "block", width: "100%", padding: 8, marginBottom: 8 }} />
         <input placeholder="URL classifica FISR" value={nuovaUrl} onChange={e => setNuovaUrl(e.target.value)} style={{ display: "block", width: "100%", padding: 8, marginBottom: 8 }} />
         <select value={nuovaCategoria} onChange={e => setNuovaCategoria(e.target.value)} style={{ padding: 8, marginRight: 10 }}>

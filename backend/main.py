@@ -427,4 +427,58 @@ def migrate_db(db=Depends(get_db)):
     except Exception as e:
         return {"message": f"Errore: {str(e)}"}
 
+@app.post("/admin/importa-evento")
+def importa_evento(url_index: str, evento: str, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.is_admin:
+        raise HTTPException(status_code=403, detail="Non sei admin")
+    import requests
+    from bs4 import BeautifulSoup
+    
+    try:
+        response = requests.get(url_index)
+        soup = BeautifulSoup(response.text, "html.parser")
+        
+        # Trova tutti i link alle classifiche
+        base_url = url_index.rsplit("/", 1)[0]
+        links = soup.find_all("a", href=True)
+        
+        gare_aggiunte = 0
+        for link in links:
+            href = link["href"]
+            testo = link.text.strip()
+            
+            # Prende solo i link .htm che sembrano classifiche
+            if href.endswith(".htm") and href != "index.htm":
+                url_gara = f"{base_url}/{href}"
+                
+                # Determina categoria dal nome del link
+                categoria = None
+                if "JUM" in href or "Junior Maschi" in testo: categoria = "Junior Maschi"
+                elif "JUF" in href or "Junior Femmin" in testo: categoria = "Junior Femminile"
+                elif "SEM" in href or "Senior Maschi" in testo: categoria = "Senior Maschi"
+                elif "SEF" in href or "Senior Femmin" in testo: categoria = "Senior Femminile"
+                elif "ALM" in href or "Allievi Maschi" in testo: categoria = "Allievi Maschi"
+                elif "ALF" in href or "Alliev" in testo: categoria = "Allieve Femminile"
+                elif "RAM" in href or "Ragazzi Maschi" in testo: categoria = "Ragazzi Maschi"
+                elif "RAF" in href or "Ragazz" in testo: categoria = "Ragazze Femminile"
+                
+                # Determina moltiplicatore
+                moltiplicatore = "1.5"
+                if any(x in href for x in ["_6", "_7", "_8", "_9", "_10", "_11", "_12", "_13", "_14", "_15", "_16", "_17", "_18", "_19", "_20", "_21"]): 
+                    moltiplicatore = "1.2"
+                
+                if categoria:
+                    nuova_gara = Gara(
+                        url=url_gara,
+                        categoria=categoria,
+                        moltiplicatore=moltiplicatore,
+                        evento=evento
+                    )
+                    db.add(nuova_gara)
+                    gare_aggiunte += 1
+        
+        db.commit()
+        return {"message": f"Aggiunte {gare_aggiunte} gare per l'evento '{evento}'"}
+    except Exception as e:
+        return {"message": f"Errore: {str(e)}"}
 

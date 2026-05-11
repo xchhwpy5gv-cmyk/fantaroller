@@ -483,6 +483,11 @@ function Login({ setToken }) {
           <div className="login-logo">⚡ Fanta<span style={{ color: theme.accent }}>Roller</span></div>
           <div className="login-sub">Fantasy Pattinaggio Corsa</div>
           {successo && <div className="success-box">{successo}</div>}
+          {loading && (
+            <div className="success-box">
+              ⏳ Caricamento...
+            </div>
+          )}
           {errore && <div style={{ background: "#ef444415", border: "1px solid #ef444430", borderRadius: 8, padding: "10px 14px", color: theme.red, fontSize: 13, marginBottom: 12 }}>{errore}</div>}
           <input className="input" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSubmit()} />
           <input className="input" placeholder="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSubmit()} />

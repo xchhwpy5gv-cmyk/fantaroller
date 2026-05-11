@@ -2,7 +2,7 @@ import json
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
-from database import engine, SessionLocal
+from sqlalchemy import create_engine, text
 from models import Base, User, Athlete, Squadra, Impostazioni, Gara, PuntiEvento
 from schemas import UserCreate, UserLogin, Token
 from passlib.context import CryptContext
@@ -400,4 +400,14 @@ def calcola_punti(utente=Depends(get_utente_corrente), db=Depends(get_db)):
             print(f"Errore gara {gara.url}: {e}")
     
     return {"message": "Punti aggiornati!"}
+
+@app.post("/admin/migrate-db")
+def migrate_db(db=Depends(get_db)):
+    try:
+        db.execute(text("ALTER TABLE punti_evento ADD COLUMN IF NOT EXISTS categoria VARCHAR"))
+        db.commit()
+        return {"message": "Migrazione completata"}
+    except Exception as e:
+        return {"message": f"Errore: {str(e)}"}
+
 

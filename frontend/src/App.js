@@ -451,6 +451,7 @@ function Login({ setToken }) {
   const handleSubmit = async () => {
     setLoading(true);
     setErrore("⏳ Caricamento...");
+    setErrore("");
     const url = registrati ? `${API}/register/` : `${API}/login/`;
     try {
       const res = await fetch(url, {
@@ -602,6 +603,7 @@ function Mercato({ token }) {
   const [messaggio, setMessaggio] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [ricerca, setRicerca] = useState("");
+  const [ordinePrezzo, setOrdinePrezzo] = useState("");
   const [squadra, setSquadra] = useState([]);
 
   useState(() => {
@@ -620,8 +622,12 @@ function Mercato({ token }) {
   const categorie = [...new Set(atleti.map(a => a.categoria))].sort();
   const atletiFiltrati = atleti
     .filter(a => filtro ? a.categoria === filtro : true)
-    .filter(a => ricerca ? a.name.toLowerCase().includes(ricerca.toLowerCase()) : true);
-
+    .filter(a => ricerca ? a.name.toLowerCase().includes(ricerca.toLowerCase()) : true)
+    .sort((a, b) => {
+      if (ordinePrezzo === "alto") return b.prezzo - a.prezzo;
+      if (ordinePrezzo === "basso") return a.prezzo - b.prezzo;
+      return 0;
+    });
   return (
     <div>
       {messaggio && <div className="msg-box">{messaggio}</div>}
@@ -630,6 +636,15 @@ function Mercato({ token }) {
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
           <input className="input" style={{ marginBottom: 0, flex: 1, minWidth: 200 }} placeholder="🔍 Cerca atleta..." value={ricerca} onChange={e => setRicerca(e.target.value)} />
           <select className="select" value={filtro} onChange={e => setFiltro(e.target.value)}>
+            <select
+              className="select"
+              value={ordinePrezzo}
+              onChange={e => setOrdinePrezzo(e.target.value)}
+            >
+              <option value="">Prezzo</option>
+              <option value="alto">💰 Più costosi</option>
+              <option value="basso">💸 Meno costosi</option>
+            </select>
             <option value="">Tutte le categorie</option>
             {categorie.map(c => <option key={c} value={c}>{c}</option>)}
           </select>

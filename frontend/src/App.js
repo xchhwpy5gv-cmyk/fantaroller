@@ -336,6 +336,66 @@ const styles = `
     accent-color: ${theme.accent};
     cursor: pointer;
   }
+    @media (max-width: 768px) {
+
+  .app-wrapper {
+    padding: 0 10px 30px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .nav {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .nav-btn {
+    white-space: nowrap;
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+
+  .card {
+    padding: 14px;
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+  }
+
+  .table {
+    font-size: 12px;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .table th,
+  .table td {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .login-card {
+    margin: 16px;
+    padding: 24px;
+  }
+
+  .stat-box {
+    width: 100%;
+  }
+
+  .btn {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+}
 `;
 
 function App() {

@@ -286,16 +286,46 @@ function Mercato({ token }) {
 
 function Classifica() {
   const [classifica, setClassifica] = useState([]);
+  const [eventi, setEventi] = useState([]);
+  const [eventoSelezionato, setEventoSelezionato] = useState("Generale");
 
   useState(() => {
-    fetch(`${API}/classifica/`)
-      .then(r => r.json())
-      .then(setClassifica);
-  }, []);
+
+  fetch(`${API}/eventi`)
+    .then(r => r.json())
+    .then(setEventi);
+
+}, []);
+
+useState(() => {
+
+  const url =
+    eventoSelezionato === "Generale"
+      ? `${API}/classifica/`
+      : `${API}/classifica-evento/${encodeURIComponent(eventoSelezionato)}`;
+
+  fetch(url)
+    .then(r => r.json())
+    .then(setClassifica);
+
+}, [eventoSelezionato]);
 
   return (
     <div>
       <h2>🏅 Classifica</h2>
+      <select
+        value={eventoSelezionato}
+        onChange={(e) => setEventoSelezionato(e.target.value)}
+        style={{ padding: 8, marginBottom: 15 }}
+      >
+        <option value="Generale">Generale</option>
+
+        {eventi.map(evento => (
+          <option key={evento} value={evento}>
+            {evento}
+          </option>
+        ))}
+      </select>
       <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead>
           <tr style={{ background: "#f0f0f0" }}>

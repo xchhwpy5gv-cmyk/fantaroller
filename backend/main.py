@@ -248,13 +248,23 @@ def debug_impostazioni(db=Depends(get_db)):
     return [{"id": i.id, "mercato_aperto": i.mercato_aperto} for i in imp]
 
 @app.get("/classifica/")
-def classifica(db=Depends(get_db)):
+def classifica(evento: str = None, db=Depends(get_db)):
     utenti = db.query(User).all()
     risultati = []
     for utente in utenti:
         squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
         if squadra and len(squadra.atleti) == 16:
-            punti_totali = sum(a.punti for a in squadra.atleti)
+            if evento:
+                punti_totali = 0
+                for atleta in squadra.atleti:
+                    pe = db.query(PuntiEvento).filter(
+                        PuntiEvento.atleta_id == atleta.id,
+                        PuntiEvento.evento == evento
+                    ).first()
+                    if pe:
+                        punti_totali += pe.punti
+            else:
+                punti_totali = sum(a.punti for a in squadra.atleti)
             risultati.append({
                 "username": utente.username,
                 "squadra": squadra.nome,
@@ -263,6 +273,12 @@ def classifica(db=Depends(get_db)):
             })
     risultati.sort(key=lambda x: x["punti"], reverse=True)
     return risultati
+
+@app.get("/classifica/eventi")
+def lista_eventi(db=Depends(get_db)):
+    eventi = db.query(PuntiEvento.evento).distinct().all()
+    return [e[0] for e in eventi]
+
 
 @app.get("/classifica-evento/{evento}")
 def classifica_evento(evento: str, db=Depends(get_db)):

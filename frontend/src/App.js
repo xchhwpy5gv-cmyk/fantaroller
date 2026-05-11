@@ -287,44 +287,35 @@ function Mercato({ token }) {
 function Classifica() {
   const [classifica, setClassifica] = useState([]);
   const [eventi, setEventi] = useState([]);
-  const [eventoSelezionato, setEventoSelezionato] = useState("Generale");
+  const [eventoSelezionato, setEventoSelezionato] = useState("");
+
+  const caricaEventi = async () => {
+    const res = await fetch(`${API}/classifica/eventi`);
+    if (res.ok) setEventi(await res.json());
+  };
+
+  const caricaClassifica = async (evento) => {
+    const url = evento ? `${API}/classifica/?evento=${encodeURIComponent(evento)}` : `${API}/classifica/`;
+    const res = await fetch(url);
+    if (res.ok) setClassifica(await res.json());
+  };
 
   useState(() => {
+    caricaEventi();
+    caricaClassifica("");
+  }, []);
 
-  fetch(`${API}/eventi`)
-    .then(r => r.json())
-    .then(setEventi);
-
-}, []);
-
-useState(() => {
-
-  const url =
-    eventoSelezionato === "Generale"
-      ? `${API}/classifica/`
-      : `${API}/classifica-evento/${encodeURIComponent(eventoSelezionato)}`;
-
-  fetch(url)
-    .then(r => r.json())
-    .then(setClassifica);
-
-}, [eventoSelezionato]);
+  const handleEvento = (e) => {
+    setEventoSelezionato(e.target.value);
+    caricaClassifica(e.target.value);
+  };
 
   return (
     <div>
       <h2>🏅 Classifica</h2>
-      <select
-        value={eventoSelezionato}
-        onChange={(e) => setEventoSelezionato(e.target.value)}
-        style={{ padding: 8, marginBottom: 15 }}
-      >
-        <option value="Generale">Generale</option>
-
-        {eventi.map(evento => (
-          <option key={evento} value={evento}>
-            {evento}
-          </option>
-        ))}
+      <select onChange={handleEvento} value={eventoSelezionato} style={{ padding: 8, marginBottom: 16 }}>
+        <option value="">🌍 Classifica Generale</option>
+        {eventi.map(e => <option key={e} value={e}>{e}</option>)}
       </select>
       <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead>
@@ -333,7 +324,6 @@ useState(() => {
             <th style={{ textAlign: "left", padding: 8 }}>Utente</th>
             <th style={{ textAlign: "left" }}>Squadra</th>
             <th>Punti</th>
-            <th>Atleti</th>
           </tr>
         </thead>
         <tbody>
@@ -343,7 +333,6 @@ useState(() => {
               <td style={{ padding: 8 }}>{u.username}</td>
               <td>{u.squadra}</td>
               <td style={{ textAlign: "center" }}>{u.punti}</td>
-              <td style={{ textAlign: "center" }}>{u.n_atleti}</td>
             </tr>
           ))}
         </tbody>
@@ -351,6 +340,7 @@ useState(() => {
     </div>
   );
 }
+
 
 function Admin({ token }) {
   const [messaggio, setMessaggio] = useState("");

@@ -59,7 +59,9 @@ class PuntiEvento(Base):
     id = Column(Integer, primary_key=True, index=True)
     atleta_id = Column(Integer, ForeignKey("athletes.id"))
     evento = Column(String)
+    categoria = Column(String)
     punti = Column(Integer, default=0)
     atleta = relationship("Athlete")
+
 
 

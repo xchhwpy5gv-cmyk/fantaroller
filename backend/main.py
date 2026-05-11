@@ -468,7 +468,18 @@ def importa_evento(url_index: str, evento: str, utente=Depends(get_utente_corren
                     moltiplicatore = "1.2"
                 
                 if categoria:
+                    # Controlla se è una staffetta
+                    try:
+                        res_gara = requests.get(url_gara)
+                        soup_gara = BeautifulSoup(res_gara.text, "html.parser")
+                        titolo = soup_gara.get_text()
+                        if "Staffetta" in titolo or "staffetta" in titolo:
+                            continue
+                    except:
+                        pass
+                    
                     nuova_gara = Gara(
+
                         url=url_gara,
                         categoria=categoria,
                         moltiplicatore=moltiplicatore,

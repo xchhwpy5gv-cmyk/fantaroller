@@ -313,6 +313,7 @@ def calcola_punti(utente=Depends(get_utente_corrente), db=Depends(get_db)):
     
     # Reset punti atleti
     db.query(Athlete).update({"punti": 0, "gare": 0})
+    db.query(PuntiEvento).delete()
     db.commit()
 
     for gara in gare:
@@ -335,6 +336,21 @@ def calcola_punti(utente=Depends(get_utente_corrente), db=Depends(get_db)):
                         if atleta:
                             atleta.punti += punti
                             atleta.gare += 1
+                            evento_esistente = db.query(PuntiEvento).filter(
+                                PuntiEvento.atleta_id == atleta.id,
+                                PuntiEvento.evento == gara.evento
+                            ).first()
+
+                            if evento_esistente:
+                                    evento_esistente.punti += punti
+                            else:
+                                nuovo_evento = PuntiEvento(
+                                    atleta_id=atleta.id,
+                                    evento=gara.evento,
+                                    categoria=gara.categoria,
+                                    punti=punti
+                                )
+                                db.add(nuovo_evento)
             db.commit()
         except Exception as e:
             print(f"Errore gara {gara.url}: {e}")

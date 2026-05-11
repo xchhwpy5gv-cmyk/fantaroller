@@ -603,9 +603,9 @@ function Mercato({ token }) {
   const [messaggio, setMessaggio] = useState([]);
   const [filtro, setFiltro] = useState("");
   const [ricerca, setRicerca] = useState("");
-  const [ordinePrezzo, setOrdinePrezzo] = useState("");
   const [squadra, setSquadra] = useState([]);
-
+  const [ordinePrezzo, setOrdinePrezzo] = useState("");
+  
   useState(() => {
     fetch(`${API}/athletes/`).then(r => r.json()).then(setAtleti);
     fetch(`${API}/squadra/`, { headers: { Authorization: `Bearer ${token}` } })
@@ -629,27 +629,45 @@ function Mercato({ token }) {
       return 0;
     });
   return (
-    <div>
-      {messaggio && <div className="msg-box">{messaggio}</div>}
-      <div className="card">
-        <div className="card-title">🛒 Mercato Atleti</div>
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-          <input className="input" style={{ marginBottom: 0, flex: 1, minWidth: 200 }} placeholder="🔍 Cerca atleta..." value={ricerca} onChange={e => setRicerca(e.target.value)} />
-          <select className="select" value={filtro} onChange={e => setFiltro(e.target.value)}>
-            <select
-              className="select"
-              value={ordinePrezzo}
-              onChange={e => setOrdinePrezzo(e.target.value)}
-            >
-              <option value="">Prezzo</option>
-              <option value="alto">💰 Più costosi</option>
-              <option value="basso">💸 Meno costosi</option>
-            </select>
-            <option value="">Tutte le categorie</option>
-            {categorie.map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
-        </div>
+   <div>
+    {messaggio && <div className="msg-box">{messaggio}</div>}
+    
+    <div className="card">
+      <div className="card-title">🛒 Mercato Atleti</div>
+
+      <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+
+        <input
+          className="input"
+          style={{ marginBottom: 0, flex: 1, minWidth: 200 }}
+          placeholder="🔍 Cerca atleta..."
+          value={ricerca}
+          onChange={e => setRicerca(e.target.value)}
+        />
+
+        <select
+          className="select"
+          value={filtro}
+          onChange={e => setFiltro(e.target.value)}
+        >
+          <option value="">Tutte le categorie</option>
+          {categorie.map(c => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+
+        <select
+          className="select"
+          value={ordinePrezzo}
+          onChange={e => setOrdinePrezzo(e.target.value)}
+        >
+          <option value="">Prezzo</option>
+          <option value="alto">💰 Più costosi</option>
+          <option value="basso">💸 Meno costosi</option>
+        </select>
+
       </div>
+    </div>
 
       <div className="card" style={{ padding: 0, overflow: "hidden" }}>
         <table className="table">

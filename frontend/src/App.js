@@ -940,6 +940,19 @@ function Admin({ token }) {
           </div>
           <button className="btn btn-success" onClick={apriMercato}>Apri Mercato</button>
           <button className="btn btn-danger" onClick={chiudiMercato}>Chiudi Mercato</button>
+          <button
+            className="btn btn-blue"
+            onClick={async () => {
+              const res = await fetch(`${API}/admin/reset-budget`, {
+                method: "POST",
+                headers: { Authorization: `Bearer ${token}` }
+              });
+              const data = await res.json();
+              setMessaggio(data.message);
+            }}
+          >
+            Reset Budget
+          </button>
         </div>
       </div>
 

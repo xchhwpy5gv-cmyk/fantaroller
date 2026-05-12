@@ -19,7 +19,6 @@ class User(Base):
     budget = Column(Integer, default=150)
     is_admin = Column(Integer, default=0)
     squadra = relationship("Squadra", back_populates="utente", uselist=False)
-    league_id = Column(Integer, ForeignKey("leagues.id"), nullable=True)
 
 class Squadra(Base):
     __tablename__ = "squadre"

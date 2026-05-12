@@ -396,10 +396,28 @@ def calcola_punti(utente=Depends(get_utente_corrente), db=Depends(get_db)):
                     )
                     if posizione and posizione.isdigit():
                         punti = round(punti_base(posizione) * float(gara.moltiplicatore))
-                        atleta = db.query(Athlete).filter(
-                            Athlete.name == nome,
-                            Athlete.categoria == gara.categoria
-                        ).first()
+                        def normalizza_nome(nome):
+                            return (
+                                nome.lower()
+                                .replace("ò", "o")
+                                .replace("ó", "o")
+                                .replace("'", "")
+                                .replace("?", "")
+                                .strip()
+                            )
+
+                        nome_norm = normalizza_nome(nome)
+                        athletes = db.query(Athlete).filter(
+                            Athlete.categoria == categoria
+                        ).all()
+
+                        athlete = next(
+                            (
+                                a for a in athletes
+                                if normalizza_nome(a.name) == nome_norm
+                            ),
+                            None
+                        )
                         if atleta:
                             atleta.punti += punti
                             atleta.gare += 1

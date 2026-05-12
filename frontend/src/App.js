@@ -339,6 +339,21 @@ const styles = `
 
   @media (max-width: 768px) {
 
+    .table th:nth-child(2),
+    .table td:nth-child(2) {
+      display: none;
+    }
+
+    .table {
+      white-space: normal;
+    }
+
+    .table th,
+    .table td {
+      font-size: 11px;
+      padding: 6px;
+    }
+
     .app-wrapper {
       padding: 0 10px 30px;
     }
@@ -367,12 +382,6 @@ const styles = `
 
     .card-title {
       font-size: 1.1rem;
-    }
-
-    .table {
-      display: block;
-      overflow-x: auto;
-      white-space: nowrap;
     }
 
     .table th,

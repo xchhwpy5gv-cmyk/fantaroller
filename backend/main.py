@@ -555,3 +555,12 @@ def reset_completo(db=Depends(get_db)):
     #return {"message": "Entrato nella lega"}
 
 
+@app.post("/admin/reset-budget")
+def reset_budget(utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.is_admin:
+        raise HTTPException(status_code=403, detail="Non sei admin")
+    db.query(User).update({"budget": 150})
+    db.commit()
+    return {"message": "Budget resettato a 150 per tutti"}
+
+

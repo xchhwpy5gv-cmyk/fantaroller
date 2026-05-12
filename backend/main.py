@@ -1,5 +1,4 @@
 import json
-import secrets
 from database import engine, SessionLocal
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware

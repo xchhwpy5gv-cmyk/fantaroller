@@ -371,9 +371,10 @@ def calcola_punti(utente=Depends(get_utente_corrente), db=Depends(get_db)):
         elif pos <= 20: return 20
         else: return 5
 
+    def normalizza_nome(nome):
+        return nome.lower().replace("ò", "o").replace("ó", "o").replace("'", "").replace("?", "").strip()
+
     gare = db.query(Gara).all()
-    
-    # Reset punti atleti
     db.query(Athlete).update({"punti": 0, "gare": 0})
     db.query(PuntiEvento).delete()
     db.commit()
@@ -383,39 +384,20 @@ def calcola_punti(utente=Depends(get_utente_corrente), db=Depends(get_db)):
             response = requests.get(gara.url)
             soup = BeautifulSoup(response.text, "html.parser")
             rows = soup.find_all("tr")
-            
+
             for row in rows:
                 cols = row.find_all("td")
                 if len(cols) > 3:
                     posizione = cols[0].text.strip()
                     nome = cols[2].text.strip()
-                    nome = (
-                        nome.replace("?", "ò")
-                            .replace("'", "ò")
-                            .strip()
-                    )
                     if posizione and posizione.isdigit():
                         punti = round(punti_base(posizione) * float(gara.moltiplicatore))
-                        def normalizza_nome(nome):
-                            return (
-                                nome.lower()
-                                .replace("ò", "o")
-                                .replace("ó", "o")
-                                .replace("'", "")
-                                .replace("?", "")
-                                .strip()
-                            )
-
                         nome_norm = normalizza_nome(nome)
                         athletes = db.query(Athlete).filter(
-                            Athlete.categoria == categoria
+                            Athlete.categoria == gara.categoria
                         ).all()
-
-                        athlete = next(
-                            (
-                                a for a in athletes
-                                if normalizza_nome(a.name) == nome_norm
-                            ),
+                        atleta = next(
+                            (a for a in athletes if normalizza_nome(a.name) == nome_norm),
                             None
                         )
                         if atleta:
@@ -425,22 +407,21 @@ def calcola_punti(utente=Depends(get_utente_corrente), db=Depends(get_db)):
                                 PuntiEvento.atleta_id == atleta.id,
                                 PuntiEvento.evento == gara.evento
                             ).first()
-
                             if evento_esistente:
-                                    evento_esistente.punti += punti
+                                evento_esistente.punti += punti
                             else:
-                                nuovo_evento = PuntiEvento(
+                                db.add(PuntiEvento(
                                     atleta_id=atleta.id,
                                     evento=gara.evento,
                                     categoria=gara.categoria,
                                     punti=punti
-                                )
-                                db.add(nuovo_evento)
+                                ))
             db.commit()
         except Exception as e:
             print(f"Errore gara {gara.url}: {e}")
-    
+
     return {"message": "Punti aggiornati!"}
+
 
 @app.post("/admin/migrate-db")
 def migrate_db(db=Depends(get_db)):

@@ -442,7 +442,7 @@ function App() {
             <button className={`nav-btn ${pagina === "mercato" ? "active" : ""}`} onClick={() => setPagina("mercato")}>Mercato</button>
             <button className={`nav-btn ${pagina === "classifica" ? "active" : ""}`} onClick={() => setPagina("classifica")}>Classifica</button>
             <button className={`nav-btn ${pagina === "regolamento" ? "active" : ""}`} onClick={() => setPagina("regolamento")}>Regolamento</button>
-            <button className={`nav-btn ${pagina === "leghe" ? "active" : ""}`} onClick={() => setPagina("leghe")}>Leghe</button>
+            <button className={`nav-btn ${pagina === "lega" ? "active" : ""}`} onClick={() => setPagina("lega")}>Lega</button>
             {isAdmin && <button className="nav-btn admin-btn" onClick={() => setPagina("admin")}>Admin</button>}
             <button className="nav-btn logout" onClick={() => { setToken(null); setPagina("squadra"); }}>Esci</button>
           </nav>
@@ -451,7 +451,7 @@ function App() {
         {pagina === "mercato" && <Mercato token={token} />}
         {pagina === "classifica" && <Classifica />}
         {pagina === "regolamento" && <Regolamento />}
-        {pagina === "leghe" && <Leghe token={token} />}
+        {pagina === "lega" && <Lega token={token} />}
         {pagina === "admin" && <Admin token={token} />}
       </div>
     </>
@@ -1009,72 +1009,121 @@ function Admin({ token }) {
   );
 }
 
-function Leghe({ token }) {
-  const [nome, setNome] = useState("");
-  const [codice, setCodice] = useState("");
+function Lega({ token }) {
+  const [vista, setVista] = useState("menu");
+  const [nomeLega, setNomeLega] = useState("");
+  const [password, setPassword] = useState("");
   const [messaggio, setMessaggio] = useState("");
+  const [classifica, setClassifica] = useState([]);
+  const [miaLega, setMiaLega] = useState(null);
+
+  const caricaMiaLega = async () => {
+    const res = await fetch(`${API}/league/mia`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setMiaLega(data);
+      setVista("classifica");
+      caricaClassifica();
+    }
+  };
+
+  const caricaClassifica = async () => {
+    const res = await fetch(`${API}/league/classifica`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (res.ok) setClassifica(await res.json());
+  };
+
+  useState(() => { caricaMiaLega(); }, []);
 
   const creaLega = async () => {
-    const res = await fetch(`${API}/league/create?nome=${encodeURIComponent(nome)}`, {
+    const res = await fetch(`${API}/league/create?nome=${encodeURIComponent(nomeLega)}&password=${encodeURIComponent(password)}`, {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      headers: { Authorization: `Bearer ${token}` },
     });
-
     const data = await res.json();
-    setMessaggio(`Codice lega: ${data.codice}`);
+    setMessaggio(data.message || data.detail);
+    if (res.ok) caricaMiaLega();
   };
 
   const entraLega = async () => {
-    const res = await fetch(`${API}/league/join?codice=${codice}`, {
+    const res = await fetch(`${API}/league/join?nome=${encodeURIComponent(nomeLega)}&password=${encodeURIComponent(password)}`, {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      headers: { Authorization: `Bearer ${token}` },
     });
-
     const data = await res.json();
-    setMessaggio(data.message);
+    setMessaggio(data.message || data.detail);
+    if (res.ok) caricaMiaLega();
   };
+
+  if (vista === "classifica" && miaLega) return (
+    <div>
+      <div className="card">
+        <div className="card-title">🏆 {miaLega.nome}</div>
+        {messaggio && <div className="msg-box">{messaggio}</div>}
+      </div>
+      <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+        <table className="table">
+          <thead>
+            <tr>
+              <th style={{ paddingLeft: 20, width: 60 }}>#</th>
+              <th>Utente</th>
+              <th>Squadra</th>
+              <th>Punti</th>
+            </tr>
+          </thead>
+          <tbody>
+            {classifica.length === 0
+              ? <tr><td colSpan={4} style={{ textAlign: "center", color: theme.textMuted, padding: 24 }}>Nessuna squadra completa</td></tr>
+              : classifica.map((u, i) => (
+                <tr key={u.username}>
+                  <td style={{ paddingLeft: 20 }}><span className="rank-number">{i + 1}</span></td>
+                  <td style={{ fontWeight: 600 }}>{u.username}</td>
+                  <td style={{ color: theme.textSub }}>{u.squadra}</td>
+                  <td style={{ color: theme.accent, fontWeight: 700, fontFamily: "'Bebas Neue', cursive", fontSize: "1.1rem" }}>{u.punti}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 
   return (
     <div>
-      <div className="card">
-        <div className="card-title">🏆 Crea Lega</div>
+      {messaggio && <div className="msg-box">{messaggio}</div>}
+      {vista === "menu" && (
+        <div className="card">
+          <div className="card-title">🏅 Leghe Private</div>
+          <p style={{ color: theme.textSub, fontSize: 14, marginBottom: 20 }}>
+            Crea una lega privata con i tuoi amici o entra in una esistente!
+          </p>
+          <div style={{ display: "flex", gap: 12 }}>
+            <button className="btn btn-primary" onClick={() => setVista("crea")}>Crea Lega</button>
+            <button className="btn btn-blue" onClick={() => setVista("entra")}>Entra in una Lega</button>
+          </div>
+        </div>
+      )}
 
-        <input
-          className="input"
-          placeholder="Nome lega"
-          value={nome}
-          onChange={e => setNome(e.target.value)}
-        />
-
-        <button className="btn btn-primary" onClick={creaLega}>
-          Crea Lega
-        </button>
-      </div>
-
-      <div className="card">
-        <div className="card-title">🔗 Unisciti a una Lega</div>
-
-        <input
-          className="input"
-          placeholder="Codice lega"
-          value={codice}
-          onChange={e => setCodice(e.target.value)}
-        />
-
-        <button className="btn btn-success" onClick={entraLega}>
-          Entra
-        </button>
-      </div>
-
-      {messaggio && (
-        <div className="msg-box">{messaggio}</div>
+      {(vista === "crea" || vista === "entra") && (
+        <div className="card">
+          <div className="card-title">{vista === "crea" ? "➕ Crea Lega" : "🔑 Entra in Lega"}</div>
+          <input className="input" placeholder="Nome lega" value={nomeLega} onChange={e => setNomeLega(e.target.value)} />
+          <input className="input" placeholder="Password lega" type="password" value={password} onChange={e => setPassword(e.target.value)} />
+          <div style={{ display: "flex", gap: 10 }}>
+            <button className="btn btn-primary" onClick={vista === "crea" ? creaLega : entraLega}>
+              {vista === "crea" ? "Crea" : "Entra"}
+            </button>
+            <button className="btn btn-danger" onClick={() => setVista("menu")}>Annulla</button>
+          </div>
+        </div>
       )}
     </div>
   );
 }
+
 
 export default App;

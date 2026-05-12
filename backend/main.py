@@ -1,10 +1,11 @@
 import json
+import secrets
 from database import engine, SessionLocal
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy import create_engine, text
-from models import Base, User, Athlete, Squadra, Impostazioni, Gara, PuntiEvento
+from models import Base, User, Athlete, Squadra, Impostazioni, Gara, PuntiEvento, League
 from schemas import UserCreate, UserLogin, Token
 from passlib.context import CryptContext
 from jose import JWTError, jwt

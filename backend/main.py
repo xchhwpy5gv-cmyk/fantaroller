@@ -530,48 +530,48 @@ def reset_completo(db=Depends(get_db)):
     db.commit()
     return {"message": "Reset completato"}
 
-@app.post("/league/create")
-def create_league(
-    nome: str,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    codice = secrets.token_hex(3).upper()
+#@app.post("/league/create")
+#def create_league(
+    #nome: str,
+    #db: Session = Depends(get_db),
+    #current_user: User = Depends(get_current_user)
+#):
+    #codice = secrets.token_hex(3).upper()
 
-    lega = League(
-        nome=nome,
-        codice=codice,
-        owner_id=current_user.id
-    )
+    #lega = League(
+        #nome=nome,
+        #codice=codice,
+        #owner_id=current_user.id
+    #)
 
-    db.add(lega)
-    db.commit()
-    db.refresh(lega)
+    #db.add(lega)
+    #db.commit()
+    #db.refresh(lega)
 
-    current_user.league_id = lega.id
-    db.commit()
+    #current_user.league_id = lega.id
+    #db.commit()
 
-    return {
-        "message": "Lega creata",
-        "codice": codice
-    }
+    #return {
+        #"message": "Lega creata",
+        #"codice": codice
+    #}
 
-@app.post("/league/join")
-def join_league(
-    codice: str,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
-):
-    lega = db.query(League).filter(
-        League.codice == codice
-    ).first()
+#@app.post("/league/join")
+#def join_league(
+    #codice: str,
+    #db: Session = Depends(get_db),
+    #current_user: User = Depends(get_current_user)
+#):
+    #lega = db.query(League).filter(
+        #League.codice == codice
+    #).first()
 
-    if not lega:
-        raise HTTPException(404, "Lega non trovata")
+    #if not lega:
+        #raise HTTPException(404, "Lega non trovata")
 
-    current_user.league_id = lega.id
-    db.commit()
+    #current_user.league_id = lega.id
+    #db.commit()
 
-    return {"message": "Entrato nella lega"}
+    #return {"message": "Entrato nella lega"}
 
 

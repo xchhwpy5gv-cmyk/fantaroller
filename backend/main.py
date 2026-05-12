@@ -522,6 +522,10 @@ def reset_completo(db=Depends(get_db)):
     db.query(PuntiEvento).delete()
     db.execute(text("DELETE FROM squadra_atleti"))
     db.query(Athlete).delete()
+    squadre = db.query(Squadra).all()
+
+    for squadra in squadre:
+        squadra.budget = 150
     db.commit()
     return {"message": "Reset completato"}
 

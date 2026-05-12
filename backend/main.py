@@ -1,4 +1,5 @@
 import json
+import secrets
 from database import engine, SessionLocal
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -510,49 +511,49 @@ def reset_completo(db=Depends(get_db)):
     db.commit()
     return {"message": "Reset completato"}
 
-#@app.post("/league/create")
-#def create_league(
-    #nome: str,
-    #db: Session = Depends(get_db),
-    #current_user: User = Depends(get_current_user)
-#):
-    #codice = secrets.token_hex(3).upper()
+@app.post("/league/create")
+def create_league(
+    nome: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_utente_corrente)
+):
+    codice = secrets.token_hex(3).upper()
 
-    #lega = League(
-        #nome=nome,
-        #codice=codice,
-        #owner_id=current_user.id
-    #)
+    lega = League(
+        nome=nome,
+        codice=codice,
+        owner_id=current_user.id
+    )
 
-    #db.add(lega)
-    #db.commit()
-    #db.refresh(lega)
+    db.add(lega)
+    db.commit()
+    db.refresh(lega)
 
-    #current_user.league_id = lega.id
-    #db.commit()
+    current_user.league_id = lega.id
+    db.commit()
 
-    #return {
-        #"message": "Lega creata",
-        #"codice": codice
-    #}
+    return {
+        "message": "Lega creata",
+        "codice": codice
+    }
 
-#@app.post("/league/join")
-#def join_league(
-    #codice: str,
-    #db: Session = Depends(get_db),
-    #current_user: User = Depends(get_current_user)
-#):
-    #lega = db.query(League).filter(
-        #League.codice == codice
-    #).first()
+@app.post("/league/join")
+def join_league(
+    codice: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_utente_corrente)
+):
+    lega = db.query(League).filter(
+        League.codice == codice
+    ).first()
 
-    #if not lega:
-        #raise HTTPException(404, "Lega non trovata")
+    if not lega:
+        raise HTTPException(404, "Lega non trovata")
 
-    #current_user.league_id = lega.id
-    #db.commit()
+    current_user.league_id = lega.id
+    db.commit()
 
-    #return {"message": "Entrato nella lega"}
+    return {"message": "Entrato nella lega"}
 
 
 @app.post("/admin/reset-budget")
@@ -563,4 +564,14 @@ def reset_budget(utente=Depends(get_utente_corrente), db=Depends(get_db)):
     db.commit()
     return {"message": "Budget resettato a 150 per tutti"}
 
+@app.post("/admin/migrate-leagues")
+def migrate_leagues(db=Depends(get_db)):
+    try:
+        db.execute(text("CREATE TABLE IF NOT EXISTS leagues (id SERIAL PRIMARY KEY, nome VARCHAR UNIQUE, codice VARCHAR UNIQUE, owner_id INTEGER REFERENCES users(id))"))
+        db.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS league_id INTEGER REFERENCES leagues(id)"))
+        db.commit()
+        return {"message": "Migrazione completata"}
+    except Exception as e:
+        db.rollback()
+        return {"message": f"Errore: {str(e)}"}
 

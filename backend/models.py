@@ -3,7 +3,6 @@ from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
-# Tabella di collegamento tra squadra e atleti
 squadra_atleti = Table(
     "squadra_atleti",
     Base.metadata,
@@ -11,13 +10,6 @@ squadra_atleti = Table(
     Column("atleta_id", Integer, ForeignKey("athletes.id"))
 )
 
-class League(Base):
-    __tablename__ = "leagues"
-
-    id = Column(Integer, primary_key=True, index=True)
-    nome = Column(String, unique=True)
-    codice = Column(String, unique=True)
-    owner_id = Column(Integer, ForeignKey("users.id"))
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
@@ -25,8 +17,15 @@ class User(Base):
     password = Column(String)
     budget = Column(Integer, default=150)
     is_admin = Column(Integer, default=0)
-    league_id = Column(Integer, ForeignKey("leagues.id"), nullable=True)
+    league_id = Column(Integer, nullable=True)
+    squadra = relationship("Squadra", back_populates="utente", uselist=False)
 
+class League(Base):
+    __tablename__ = "leagues"
+    id = Column(Integer, primary_key=True, index=True)
+    nome = Column(String, unique=True)
+    codice = Column(String, unique=True)
+    owner_id = Column(Integer)
 
 class Squadra(Base):
     __tablename__ = "squadre"
@@ -46,12 +45,10 @@ class Athlete(Base):
     gare = Column(Integer)
     malus = Column(Integer, default=0)
 
-
 class Impostazioni(Base):
     __tablename__ = "impostazioni"
     id = Column(Integer, primary_key=True)
     mercato_aperto = Column(Integer, default=1)
-
 
 class Gara(Base):
     __tablename__ = "gare"
@@ -70,6 +67,3 @@ class PuntiEvento(Base):
     categoria = Column(String)
     punti = Column(Integer, default=0)
     atleta = relationship("Athlete")
-
-
-

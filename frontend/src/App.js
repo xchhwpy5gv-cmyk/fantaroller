@@ -605,7 +605,10 @@ function Squadra({ token }) {
               <tbody>
                 {squadra.atleti.map(a => (
                   <tr key={a.id}>
-                    <td style={{ fontWeight: 600 }}>{a.name}</td>
+                    <td>
+                      <div style={{ fontWeight: 600 }}>{a.name}</div>
+                      <div className="mobile-category">{a.categoria}</div>
+                    </td>
                     <td><span className="badge badge-blue">{a.categoria}</span></td>
                     <td style={{ color: theme.accent, fontWeight: 700 }}>{a.prezzo}cr</td>
                     <td><button className="btn btn-danger" style={{ padding: "5px 10px", fontSize: 12 }} onClick={() => vendi(a.id)}>Vendi</button></td>
@@ -704,7 +707,10 @@ function Mercato({ token }) {
           <tbody>
             {atletiFiltrati.map(a => (
               <tr key={a.id}>
-                <td style={{ paddingLeft: 20, fontWeight: 600 }}>{a.name}</td>
+                <td style={{ paddingLeft: 20 }}>
+                  <div style={{ fontWeight: 600 }}>{a.name}</div>
+                  <div className="mobile-category">{a.categoria}</div>
+                </td>
                 <td><span className="badge badge-blue">{a.categoria}</span></td>
                 <td style={{ color: theme.blue, fontWeight: 700 }}>{a.punti}</td>
                 <td style={{ color: theme.accent, fontWeight: 700 }}>{a.prezzo}cr</td>

@@ -8,9 +8,9 @@
     },
     {
         "nome": "FRIGO' LORENZO \u2013 Junior Maschi",
-        "punti": 150,
-        "gare": 1,
-        "prezzo": 30,
+        "punti": 174,
+        "gare": 2,
+        "prezzo": 21,
         "malus": 0
     },
     {
@@ -399,7 +399,7 @@
         "malus": 0
     },
     {
-        "nome": "ZACCANTI NICCOL? \u2013 Junior Maschi",
+        "nome": "ZACCANTI NICCOL' \u2013 Junior Maschi",
         "punti": 14,
         "gare": 2,
         "prezzo": 5,
@@ -452,13 +452,6 @@
         "punti": 54,
         "gare": 1,
         "prezzo": 13,
-        "malus": 0
-    },
-    {
-        "nome": "FRIG? LORENZO \u2013 Junior Maschi",
-        "punti": 14,
-        "gare": 1,
-        "prezzo": 5,
         "malus": 0
     },
     {
@@ -903,7 +896,7 @@
         "malus": 0
     },
     {
-        "nome": "CANAZZA NICOL? \u2013 Senior Maschi",
+        "nome": "CANAZZA NICOL' \u2013 Senior Maschi",
         "punti": 32,
         "gare": 2,
         "prezzo": 7,
@@ -1589,7 +1582,7 @@
         "malus": 0
     },
     {
-        "nome": "BATT? LORENZO \u2013 Allievi Maschi",
+        "nome": "BATT' LORENZO \u2013 Allievi Maschi",
         "punti": 14,
         "gare": 2,
         "prezzo": 5,
@@ -1750,7 +1743,7 @@
         "malus": 0
     },
     {
-        "nome": "GRANN? MICHELLE \u2013 Senior Femminile",
+        "nome": "GRANN' MICHELLE \u2013 Senior Femminile",
         "punti": 32,
         "gare": 2,
         "prezzo": 7,
@@ -1946,7 +1939,7 @@
         "malus": 0
     },
     {
-        "nome": "TROV? EMMA \u2013 Senior Femminile",
+        "nome": "TROV' EMMA \u2013 Senior Femminile",
         "punti": 32,
         "gare": 2,
         "prezzo": 7,
@@ -4165,7 +4158,7 @@
         "malus": 0
     },
     {
-        "nome": "SERENA NICOL? \u2013 Ragazzi Maschi",
+        "nome": "SERENA NICOL' \u2013 Ragazzi Maschi",
         "punti": 14,
         "gare": 2,
         "prezzo": 5,
@@ -4333,7 +4326,7 @@
         "malus": 0
     },
     {
-        "nome": "CARNIELETTO NICOL? \u2013 Ragazzi Maschi",
+        "nome": "CARNIELETTO NICOL' \u2013 Ragazzi Maschi",
         "punti": 50,
         "gare": 2,
         "prezzo": 9,
@@ -5047,7 +5040,7 @@
         "malus": 0
     },
     {
-        "nome": "BATT? VERONICA \u2013 Ragazze Femminile",
+        "nome": "BATT' VERONICA \u2013 Ragazze Femminile",
         "punti": 6,
         "gare": 1,
         "prezzo": 3,

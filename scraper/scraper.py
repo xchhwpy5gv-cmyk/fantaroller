@@ -34,6 +34,8 @@ def parse_gara(url, moltiplicatore, categoria):
             posizione = cols[0].text.strip()
             nome = cols[2].text.strip()
             nome = nome.replace("?", "'")
+            nome = nome.replace("FRIG' ", "FRIGO' ")
+
 
             if posizione and posizione.isdigit():
                 punti = round(

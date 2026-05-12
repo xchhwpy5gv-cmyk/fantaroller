@@ -603,3 +603,59 @@ def migrate_leagues(db=Depends(get_db)):
         db.rollback()
         return {"message": f"Errore: {str(e)}"}
 
+@app.get("/league/dettagli")
+def dettagli_lega(utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.league_id:
+        raise HTTPException(status_code=404, detail="Non sei in nessuna lega")
+    lega = db.query(League).filter(League.id == utente.league_id).first()
+    membri = db.query(User).filter(User.league_id == utente.league_id).all()
+    
+    partecipanti = []
+    for m in membri:
+        squadra = db.query(Squadra).filter(Squadra.user_id == m.id).first()
+        partecipanti.append({
+            "username": m.username,
+            "squadra": squadra.nome if squadra else None,
+            "n_atleti": len(squadra.atleti) if squadra else 0,
+            "is_owner": m.id == lega.owner_id
+        })
+    
+    return {
+        "nome": lega.nome,
+        "codice": lega.codice if utente.id == lega.owner_id else None,
+        "owner": db.query(User).filter(User.id == lega.owner_id).first().username,
+        "partecipanti": partecipanti
+    }
+
+
+@app.get("/league/classifica")
+def classifica_lega(evento: str = None, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.league_id:
+        raise HTTPException(status_code=404, detail="Non sei in nessuna lega")
+    
+    utenti_lega = db.query(User).filter(User.league_id == utente.league_id).all()
+    risultati = []
+    for u in utenti_lega:
+        squadra = db.query(Squadra).filter(Squadra.user_id == u.id).first()
+        if squadra and len(squadra.atleti) == 16:
+            if evento:
+                punti_totali = 0
+                for atleta in squadra.atleti:
+                    pe = db.query(PuntiEvento).filter(
+                        PuntiEvento.atleta_id == atleta.id,
+                        PuntiEvento.evento == evento
+                    ).first()
+                    if pe:
+                        punti_totali += pe.punti
+            else:
+                punti_totali = sum(a.punti for a in squadra.atleti)
+            risultati.append({
+                "username": u.username,
+                "squadra": squadra.nome,
+                "punti": punti_totali,
+                "n_atleti": len(squadra.atleti)
+            })
+    risultati.sort(key=lambda x: x["punti"], reverse=True)
+    return risultati
+
+

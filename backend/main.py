@@ -514,46 +514,74 @@ def reset_completo(db=Depends(get_db)):
 @app.post("/league/create")
 def create_league(
     nome: str,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_utente_corrente)
+    password: str,
+    db=Depends(get_db),
+    utente=Depends(get_utente_corrente)
 ):
-    codice = secrets.token_hex(3).upper()
-
+    esistente = db.query(League).filter(League.nome == nome).first()
+    if esistente:
+        raise HTTPException(status_code=400, detail="Nome lega già in uso")
+    
     lega = League(
         nome=nome,
-        codice=codice,
-        owner_id=current_user.id
+        codice=password,
+        owner_id=utente.id
     )
-
     db.add(lega)
     db.commit()
     db.refresh(lega)
-
-    current_user.league_id = lega.id
+    
+    utente.league_id = lega.id
     db.commit()
-
-    return {
-        "message": "Lega creata",
-        "codice": codice
-    }
+    
+    return {"message": f"Lega '{nome}' creata!", "codice": password}
 
 @app.post("/league/join")
 def join_league(
-    codice: str,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_utente_corrente)
+    nome: str,
+    password: str,
+    db=Depends(get_db),
+    utente=Depends(get_utente_corrente)
 ):
     lega = db.query(League).filter(
-        League.codice == codice
+        League.nome == nome,
+        League.codice == password
     ).first()
-
+    
     if not lega:
-        raise HTTPException(404, "Lega non trovata")
-
-    current_user.league_id = lega.id
+        raise HTTPException(status_code=404, detail="Lega non trovata o password errata")
+    
+    utente.league_id = lega.id
     db.commit()
+    
+    return {"message": f"Sei entrato nella lega '{lega.nome}'!"}
 
-    return {"message": "Entrato nella lega"}
+@app.get("/league/mia")
+def mia_lega(utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.league_id:
+        raise HTTPException(status_code=404, detail="Non sei in nessuna lega")
+    lega = db.query(League).filter(League.id == utente.league_id).first()
+    return {"nome": lega.nome, "owner_id": lega.owner_id}
+
+@app.get("/league/classifica")
+def classifica_lega(utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.league_id:
+        raise HTTPException(status_code=404, detail="Non sei in nessuna lega")
+    
+    utenti_lega = db.query(User).filter(User.league_id == utente.league_id).all()
+    risultati = []
+    for u in utenti_lega:
+        squadra = db.query(Squadra).filter(Squadra.user_id == u.id).first()
+        if squadra and len(squadra.atleti) == 16:
+            punti_totali = sum(a.punti for a in squadra.atleti)
+            risultati.append({
+                "username": u.username,
+                "squadra": squadra.nome,
+                "punti": punti_totali
+            })
+    risultati.sort(key=lambda x: x["punti"], reverse=True)
+    return risultati
+
 
 
 @app.post("/admin/reset-budget")

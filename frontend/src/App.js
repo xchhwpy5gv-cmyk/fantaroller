@@ -442,6 +442,7 @@ function App() {
             <button className={`nav-btn ${pagina === "mercato" ? "active" : ""}`} onClick={() => setPagina("mercato")}>Mercato</button>
             <button className={`nav-btn ${pagina === "classifica" ? "active" : ""}`} onClick={() => setPagina("classifica")}>Classifica</button>
             <button className={`nav-btn ${pagina === "regolamento" ? "active" : ""}`} onClick={() => setPagina("regolamento")}>Regolamento</button>
+            <button className={`nav-btn ${pagina === "leghe" ? "active" : ""}`} onClick={() => setPagina("leghe")}>Leghe</button>
             {isAdmin && <button className="nav-btn admin-btn" onClick={() => setPagina("admin")}>Admin</button>}
             <button className="nav-btn logout" onClick={() => { setToken(null); setPagina("squadra"); }}>Esci</button>
           </nav>
@@ -450,6 +451,7 @@ function App() {
         {pagina === "mercato" && <Mercato token={token} />}
         {pagina === "classifica" && <Classifica />}
         {pagina === "regolamento" && <Regolamento />}
+        {pagina === "leghe" && <Leghe token={token} />}
         {pagina === "admin" && <Admin token={token} />}
       </div>
     </>
@@ -940,19 +942,6 @@ function Admin({ token }) {
           </div>
           <button className="btn btn-success" onClick={apriMercato}>Apri Mercato</button>
           <button className="btn btn-danger" onClick={chiudiMercato}>Chiudi Mercato</button>
-          <button
-            className="btn btn-blue"
-            onClick={async () => {
-              const res = await fetch(`${API}/admin/reset-budget`, {
-                method: "POST",
-                headers: { Authorization: `Bearer ${token}` }
-              });
-              const data = await res.json();
-              setMessaggio(data.message);
-            }}
-          >
-            Reset Budget
-          </button>
         </div>
       </div>
 
@@ -1016,6 +1005,74 @@ function Admin({ token }) {
           🔄 Calcola Punti
         </button>
       </div>
+    </div>
+  );
+}
+
+function Leghe({ token }) {
+  const [nome, setNome] = useState("");
+  const [codice, setCodice] = useState("");
+  const [messaggio, setMessaggio] = useState("");
+
+  const creaLega = async () => {
+    const res = await fetch(`${API}/league/create?nome=${encodeURIComponent(nome)}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const data = await res.json();
+    setMessaggio(`Codice lega: ${data.codice}`);
+  };
+
+  const entraLega = async () => {
+    const res = await fetch(`${API}/league/join?codice=${codice}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const data = await res.json();
+    setMessaggio(data.message);
+  };
+
+  return (
+    <div>
+      <div className="card">
+        <div className="card-title">🏆 Crea Lega</div>
+
+        <input
+          className="input"
+          placeholder="Nome lega"
+          value={nome}
+          onChange={e => setNome(e.target.value)}
+        />
+
+        <button className="btn btn-primary" onClick={creaLega}>
+          Crea Lega
+        </button>
+      </div>
+
+      <div className="card">
+        <div className="card-title">🔗 Unisciti a una Lega</div>
+
+        <input
+          className="input"
+          placeholder="Codice lega"
+          value={codice}
+          onChange={e => setCodice(e.target.value)}
+        />
+
+        <button className="btn btn-success" onClick={entraLega}>
+          Entra
+        </button>
+      </div>
+
+      {messaggio && (
+        <div className="msg-box">{messaggio}</div>
+      )}
     </div>
   );
 }

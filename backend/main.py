@@ -498,3 +498,12 @@ def importa_evento(url_index: str, evento: str, utente=Depends(get_utente_corren
     except Exception as e:
         return {"message": f"Errore: {str(e)}"}
 
+@app.delete("/admin/reset-completo")
+def reset_completo(db=Depends(get_db)):
+    db.query(PuntiEvento).delete()
+    db.execute(text("DELETE FROM squadra_atleti"))
+    db.query(Athlete).delete()
+    db.commit()
+    return {"message": "Reset completato"}
+
+

@@ -573,12 +573,4 @@ def join_league(
 
     return {"message": "Entrato nella lega"}
 
-import os  # Importa il modulo per accedere alle variabili di ambiente
-
-if __name__ == "__main__":
-    import uvicorn
-    # Prendi la porta specificata da Render (altrimenti usa 8000 di default)
-    port = int(os.getenv("PORT", 8000))  
-    uvicorn.run("main:app", host="0.0.0.0", port=port)
-
 

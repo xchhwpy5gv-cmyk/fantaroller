@@ -119,6 +119,7 @@ def import_athletes(db=Depends(get_db)):
 
 @app.delete("/reset-athletes")
 def reset_athletes(db=Depends(get_db)):
+    db.query(PuntiEvento).delete()
     db.query(Athlete).delete()
     db.commit()
     return {"message": "Atleti cancellati"}

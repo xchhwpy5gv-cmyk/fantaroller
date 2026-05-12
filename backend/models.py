@@ -11,6 +11,13 @@ squadra_atleti = Table(
     Column("atleta_id", Integer, ForeignKey("athletes.id"))
 )
 
+class League(Base):
+    __tablename__ = "leagues"
+
+    id = Column(Integer, primary_key=True, index=True)
+    nome = Column(String, unique=True)
+    codice = Column(String, unique=True)
+    owner_id = Column(Integer, ForeignKey("users.id"))
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
@@ -18,7 +25,8 @@ class User(Base):
     password = Column(String)
     budget = Column(Integer, default=150)
     is_admin = Column(Integer, default=0)
-    squadra = relationship("Squadra", back_populates="utente", uselist=False)
+    league_id = Column(Integer, ForeignKey("leagues.id"), nullable=True)
+
 
 class Squadra(Base):
     __tablename__ = "squadre"
@@ -63,11 +71,5 @@ class PuntiEvento(Base):
     punti = Column(Integer, default=0)
     atleta = relationship("Athlete")
 
-class League(Base):
-    __tablename__ = "leagues"
 
-    id = Column(Integer, primary_key=True, index=True)
-    nome = Column(String, unique=True)
-    codice = Column(String, unique=True)
-    owner_id = Column(Integer, ForeignKey("users.id"))
 

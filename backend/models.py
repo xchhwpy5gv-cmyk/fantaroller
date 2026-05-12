@@ -9,6 +9,13 @@ squadra_atleti = Table(
     Column("squadra_id", Integer, ForeignKey("squadre.id")),
     Column("atleta_id", Integer, ForeignKey("athletes.id"))
 )
+utente_leghe = Table(
+    "utente_leghe",
+    Base.metadata,
+    Column("user_id", Integer, ForeignKey("users.id")),
+    Column("league_id", Integer, ForeignKey("leagues.id"))
+)
+
 
 class User(Base):
     __tablename__ = "users"
@@ -19,6 +26,7 @@ class User(Base):
     is_admin = Column(Integer, default=0)
     league_id = Column(Integer, nullable=True)
     squadra = relationship("Squadra", back_populates="utente", uselist=False)
+    leghe = relationship("League", secondary=utente_leghe)
 
 class League(Base):
     __tablename__ = "leagues"
@@ -26,6 +34,7 @@ class League(Base):
     nome = Column(String, unique=True)
     codice = Column(String, unique=True)
     owner_id = Column(Integer)
+    membri = relationship("User", secondary=utente_leghe)
 
 class Squadra(Base):
     __tablename__ = "squadre"

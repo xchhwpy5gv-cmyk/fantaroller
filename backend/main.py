@@ -512,75 +512,65 @@ def reset_completo(db=Depends(get_db)):
     return {"message": "Reset completato"}
 
 @app.post("/league/create")
-def create_league(
-    nome: str,
-    password: str,
-    db=Depends(get_db),
-    utente=Depends(get_utente_corrente)
-):
+def create_league(nome: str, password: str, db=Depends(get_db), utente=Depends(get_utente_corrente)):
     esistente = db.query(League).filter(League.nome == nome).first()
     if esistente:
         raise HTTPException(status_code=400, detail="Nome lega già in uso")
-    
-    lega = League(
-        nome=nome,
-        codice=password,
-        owner_id=utente.id
-    )
+    lega = League(nome=nome, codice=password, owner_id=utente.id)
     db.add(lega)
     db.commit()
     db.refresh(lega)
-    
+    utente.leghe.append(lega)
     utente.league_id = lega.id
     db.commit()
-    
-    return {"message": f"Lega '{nome}' creata!", "codice": password}
+    return {"message": f"Lega '{nome}' creata!"}
 
 @app.post("/league/join")
-def join_league(
-    nome: str,
-    password: str,
-    db=Depends(get_db),
-    utente=Depends(get_utente_corrente)
-):
-    lega = db.query(League).filter(
-        League.nome == nome,
-        League.codice == password
-    ).first()
-    
+def join_league(nome: str, password: str, db=Depends(get_db), utente=Depends(get_utente_corrente)):
+    lega = db.query(League).filter(League.nome == nome, League.codice == password).first()
     if not lega:
         raise HTTPException(status_code=404, detail="Lega non trovata o password errata")
-    
+    if lega not in utente.leghe:
+        utente.leghe.append(lega)
     utente.league_id = lega.id
     db.commit()
-    
     return {"message": f"Sei entrato nella lega '{lega.nome}'!"}
 
-@app.get("/league/mia")
-def mia_lega(utente=Depends(get_utente_corrente), db=Depends(get_db)):
+@app.get("/league/mie-leghe")
+def mie_leghe(utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    return [{"id": l.id, "nome": l.nome} for l in utente.leghe]
+
+@app.post("/league/cambia/{league_id}")
+def cambia_lega(league_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    lega = db.query(League).filter(League.id == league_id).first()
+    if not lega or lega not in utente.leghe:
+        raise HTTPException(status_code=404, detail="Non sei in questa lega")
+    utente.league_id = league_id
+    db.commit()
+    return {"message": f"Sei passato alla lega '{lega.nome}'"}
+
+@app.get("/league/dettagli")
+def dettagli_lega(utente=Depends(get_utente_corrente), db=Depends(get_db)):
     if not utente.league_id:
         raise HTTPException(status_code=404, detail="Non sei in nessuna lega")
     lega = db.query(League).filter(League.id == utente.league_id).first()
-    return {"nome": lega.nome, "owner_id": lega.owner_id}
+    partecipanti = []
+    for m in lega.membri:
+        squadra = db.query(Squadra).filter(Squadra.user_id == m.id).first()
+        partecipanti.append({
+            "username": m.username,
+            "squadra": squadra.nome if squadra else None,
+            "n_atleti": len(squadra.atleti) if squadra else 0,
+            "is_owner": m.id == lega.owner_id
+        })
+    owner = db.query(User).filter(User.id == lega.owner_id).first()
+    return {
+        "nome": lega.nome,
+        "codice": lega.codice if utente.id == lega.owner_id else None,
+        "owner": owner.username,
+        "partecipanti": partecipanti
+    }
 
-@app.get("/league/classifica")
-def classifica_lega(utente=Depends(get_utente_corrente), db=Depends(get_db)):
-    if not utente.league_id:
-        raise HTTPException(status_code=404, detail="Non sei in nessuna lega")
-    
-    utenti_lega = db.query(User).filter(User.league_id == utente.league_id).all()
-    risultati = []
-    for u in utenti_lega:
-        squadra = db.query(Squadra).filter(Squadra.user_id == u.id).first()
-        if squadra and len(squadra.atleti) == 16:
-            punti_totali = sum(a.punti for a in squadra.atleti)
-            risultati.append({
-                "username": u.username,
-                "squadra": squadra.nome,
-                "punti": punti_totali
-            })
-    risultati.sort(key=lambda x: x["punti"], reverse=True)
-    return risultati
 
 
 
@@ -657,5 +647,15 @@ def classifica_lega(evento: str = None, utente=Depends(get_utente_corrente), db=
             })
     risultati.sort(key=lambda x: x["punti"], reverse=True)
     return risultati
+
+@app.post("/admin/migrate-utente-leghe")
+def migrate_utente_leghe(db=Depends(get_db)):
+    try:
+        db.execute(text("CREATE TABLE IF NOT EXISTS utente_leghe (user_id INTEGER REFERENCES users(id), league_id INTEGER REFERENCES leagues(id))"))
+        db.commit()
+        return {"message": "Migrazione completata"}
+    except Exception as e:
+        db.rollback()
+        return {"message": f"Errore: {str(e)}"}
 
 

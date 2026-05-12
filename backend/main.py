@@ -388,6 +388,11 @@ def calcola_punti(utente=Depends(get_utente_corrente), db=Depends(get_db)):
                 if len(cols) > 3:
                     posizione = cols[0].text.strip()
                     nome = cols[2].text.strip()
+                    nome = (
+                        nome.replace("?", "ò")
+                            .replace("'", "ò")
+                            .strip()
+                    )
                     if posizione and posizione.isdigit():
                         punti = round(punti_base(posizione) * float(gara.moltiplicatore))
                         atleta = db.query(Athlete).filter(

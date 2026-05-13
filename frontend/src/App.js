@@ -1186,6 +1186,21 @@ function Lega({ token }) {
           <input className="input" placeholder="Nome lega" value={nomeLega} onChange={e => setNomeLega(e.target.value)} />
           <input className="input" placeholder="Password lega" type="password" value={password} onChange={e => setPassword(e.target.value)} />
           <div style={{ display: "flex", gap: 10 }}>
+            <div style={{ display: "flex", gap: 10 }}>
+              <button
+                className="btn btn-blue"
+                onClick={() => setVista("crea")}
+              >
+                ➕ Crea lega
+              </button>
+
+              <button
+                className="btn btn-primary"
+                onClick={() => setVista("entra")}
+              >
+                ➕ Unisciti ad altra lega
+              </button>
+            </div>
             <button className="btn btn-primary" onClick={vista === "crea" ? creaLega : entraLega}>{vista === "crea" ? "Crea" : "Entra"}</button>
             <button className="btn btn-danger" onClick={() => { setVista("home"); setMessaggio(""); }}>Annulla</button>
           </div>

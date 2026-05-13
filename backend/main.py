@@ -468,38 +468,7 @@ def importa_evento(url_index: str, evento: str, utente=Depends(get_utente_corren
                 elif "RAM" in href or "Ragazzi Maschi" in testo: categoria = "Ragazzi Maschi"
                 elif "RAF" in href or "Ragazz" in testo: categoria = "Ragazze Femminile"
                 
-                nome_lower = nome.lower()
-
-                numeri = re.findall(r"\d+", nome_lower)
-
-                distanza = int(numeri[0]) if numeri else 0
-
-                if distanza == gara_media:
-                    moltiplicatore = "1.5"
-                else:
-                    moltiplicatore = "1.2"
-                
-                import re
-
-                distanze = []
-
-                for gara in gare:
-                    nome = gara["nome"].lower()
-
-                    numeri = re.findall(r"\d+", nome)
-
-                    if numeri:
-                        distanza = int(numeri[0])
-                        distanze.append(distanza)
-
-                distanze = sorted(set(distanze))
-
-                gara_media = distanze[len(distanze) // 2]
-
-                if distanza == gara_media:
-                    moltiplicatore = 1.5
-                else:
-                    moltiplicatore = 1.2
+                moltiplicatore = 1.2
                 
                 if categoria:
                     # Controlla se è una staffetta

@@ -1215,6 +1215,8 @@ function Gare({ token }) {
   const [eventoSelezionato, setEventoSelezionato] = useState("");
   const [risultati, setRisultati] = useState({});
   const [categoriaAperta, setCategoriaAperta] = useState(null);
+  const [loading, setLoading] = useState(false);
+
 
   useState(() => {
     fetch(`${API}/gare/eventi`)
@@ -1222,15 +1224,18 @@ function Gare({ token }) {
       .then(setEventi);
   }, []);
 
-  const caricaRisultati = async (evento) => {
-    setEventoSelezionato(evento);
-    setCategoriaAperta(null);
-    if (!evento) { setRisultati({}); return; }
-    const res = await fetch(`${API}/gare/risultati?evento=${encodeURIComponent(evento)}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (res.ok) setRisultati(await res.json());
-  };
+const caricaRisultati = async (evento) => {
+  setEventoSelezionato(evento);
+  setCategoriaAperta(null);
+  setLoading(true);
+  if (!evento) { setRisultati({}); setLoading(false); return; }
+  const res = await fetch(`${API}/gare/risultati?evento=${encodeURIComponent(evento)}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (res.ok) setRisultati(await res.json());
+  setLoading(false);
+};
+
 
   const ordineCategorie = [
     "Ragazzi Maschi", "Ragazze Femminile",
@@ -1251,11 +1256,12 @@ function Gare({ token }) {
         </select>
       </div>
 
-      {eventoSelezionato && categorieOrdinati.length === 0 && (
+      {eventoSelezionato && loading && (
         <div className="card">
-          <p style={{ color: theme.textMuted }}>Nessun risultato per questo evento.</p>
+          <p style={{ color: theme.textMuted }}>⏳ Caricamento...</p>
         </div>
       )}
+
 
       {categorieOrdinati.map(cat => (
         <div key={cat} className="card" style={{ padding: 0, overflow: "hidden" }}>

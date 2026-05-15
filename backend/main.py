@@ -655,4 +655,41 @@ def migrate_utente_leghe(db=Depends(get_db)):
         db.rollback()
         return {"message": f"Errore: {str(e)}"}
 
+@app.get("/gare/eventi")
+def gare_eventi(db=Depends(get_db)):
+    eventi = db.query(PuntiEvento.evento).distinct().all()
+    return [e[0] for e in eventi]
+
+@app.get("/gare/risultati")
+def gare_risultati(evento: str, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    # Prendi atleti della squadra dell'utente
+    squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
+    atleti_squadra = [a.id for a in squadra.atleti] if squadra else []
+    
+    # Prendi tutti i risultati dell'evento
+    risultati = db.query(PuntiEvento).filter(PuntiEvento.evento == evento).all()
+    
+    # Raggruppa per categoria
+    categorie = {}
+    for r in risultati:
+        atleta = db.query(Athlete).filter(Athlete.id == r.atleta_id).first()
+        if not atleta:
+            continue
+        cat = r.categoria
+        if cat not in categorie:
+            categorie[cat] = []
+        categorie[cat].append({
+            "id": atleta.id,
+            "name": atleta.name,
+            "punti": r.punti,
+            "in_squadra": atleta.id in atleti_squadra
+        })
+    
+    # Ordina ogni categoria per punti
+    for cat in categorie:
+        categorie[cat].sort(key=lambda x: x["punti"], reverse=True)
+    
+    return categorie
+
+
 

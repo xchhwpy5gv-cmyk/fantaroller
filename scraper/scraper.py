@@ -2,6 +2,171 @@ import requests
 from bs4 import BeautifulSoup
 import json
 
+ranking_nazionale = {
+    # RAGAZZI FEMMINE
+    "NOLLI BIANCA": 1,
+    "SANTACROCE ARIANNA": 2,
+    "BIFFI SVEVA": 3,
+    "PRINCIGALLI VALERIA NUNZIA": 4,
+    "DI SCIUVA ELISABETTA": 5,
+    "LATINO GIULIA": 6,
+    "BARICCI CHIARA": 7,
+    "ILLUMINATI CHIARA": 7,
+    "IDDA AURORA ANGELICA": 8,
+    "PILLI CRISTINA": 9,
+    "CAPOVILLA MATILDE": 10,
+    "MEO AURORA": 11,
+    "GRANDI ANITA": 12,
+    "TATTI CHIARA": 12,
+    "ALLEGRI ALLEGRA": 13,
+    "ANZELLOTTI SOFIA": 13,
+    "PINNA SARA GIOVANNA": 13,
+    "EBAI SOVIRA VIANA AWAYOR": 14,
+    "TORQUATI GIULIA": 14,
+    # RAGAZZI MASCHI
+    "MURRU GIOELE": 1,
+    "CHIUMIENTO ROMEO": 2,
+    "GRITTI MARCO": 3,
+    "CARNIELETTO NICOLO'": 4,
+    "CAMPAGNA SIMONE": 5,
+    "MAZZI PAUL MARIE": 6,
+    "TONON JACOPO": 7,
+    "GIOLITTO MATTEO": 8,
+    "PANUNZIO GIOELE": 8,
+    "BORRACELLI ALESSANDRO": 9,
+    "BONACCORSO F. CRISTIAN": 10,
+    "ACCIAIO NICCOLO' LAPO": 11,
+    "TONON ALVISE": 12,
+    "STELLA TOMMASO": 13,
+    "PICCHI GIOVANNI": 14,
+    "CASTELLAZZI FILIPPO": 15,
+    "FARINACCI ALESSANDRO": 15,
+    "GORIN ALBERTO": 15,
+    # ALLIEVI FEMMINE
+    "ANDREETTA VITTORIA": 1,
+    "PERALTA CARRILLO L. FERNANDA": 2,
+    "CHINELLATO MELISSA": 3,
+    "GUERCIO SOFIA": 4,
+    "BARICCI GIULIA": 5,
+    "RAMINZONI ELISA": 6,
+    "ZORZI ALICE": 7,
+    "DOLCI RACHELE YARA": 8,
+    "CATTANEO CAMILLA": 9,
+    "NOLLI MARIASOLE": 9,
+    "CHINELLATO MATILDE": 10,
+    "DI FILIPPO GINEVRA": 11,
+    "MASSA ELIZBET": 11,
+    "BARBAGALLO FRIDA": 12,
+    "ANGELUCCI EVA": 13,
+    "PAPIRIO REBECCA": 13,
+    "BRUZZESE CHIARA": 14,
+    "MARENAJ ANAISSA": 15,
+    "MANTOVANELLI ILARIA": 16,
+    "PIRILLO MARZIA": 17,
+    "CALDARELLI GIADA": 3,
+    "CANI EMILI": 5,
+    "PROIETTI BENEDETTA": 6,
+    "VALLIN ANNA": 7,
+    "BECK ALICE": 9,
+    "PASQUINI VIOLA": 10,
+    "PEREGO AURORA": 11,
+    "TRAMONTANI ALICE": 12,
+    # ALLIEVI MASCHI
+    "PACIONI SANTE": 1,
+    "RODI ALBERTO": 2,
+    "NICOLETTI CARLO": 3,
+    "BORSANI PIETRO": 4,
+    "VINCI GABRIELE": 5,
+    "FIORINI GABRIELE": 6,
+    "ROSSI DARIO": 7,
+    "CANGIANO DIEGO": 8,
+    "BASSETTI GIACOMO": 9,
+    "GIACOMETTI GIONA": 9,
+    "PENNAVARIA DANIELE": 10,
+    "TRIGILA ALESSANDRO": 11,
+    "BRAGIOTO ALBERTO": 12,
+    "MORNAGHI CHRISTIAN": 12,
+    "PITTATORE MATTIA": 12,
+    "CALZAVARA L. SAMUEL": 13,
+    "MEZZADRI ANDREA": 14,
+    "USAI GABRIELE": 15,
+    "IULIANI ANDREA": 4,
+    "RIZZA PAOLO RICARDHO": 6,
+    "SIRINGO GIOELE": 7,
+    "ROSSINI CRISTIANO": 9,
+    "DI BELLO COSIMO": 10,
+    "PECORARO LORIS": 12,
+    "BRAVI FEDERICO": 13,
+    # JUNIOR FEMMINE
+    "CHIUMIENTO SOFIA PAOLA": 1,
+    "DEIMANI LUDOVICA CLELIA": 2,
+    "SCOTTO SARA": 3,
+    "ORLANDI VALENTINA": 4,
+    "MATTII GIULIA": 5,
+    "VISINI CATIA SILVIA": 6,
+    "CRIVELLARI MATILDE": 7,
+    "DI PASQUALE CHIARA": 8,
+    "MARELLI GIULIA": 9,
+    "FALCIONI VIOLA": 10,
+    "DENGO KRISTAL": 11,
+    "PITTATORE ALESSIA": 12,
+    "PASSERO SARA": 13,
+    "GRANATO ELISA": 14,
+    "BAILO ASIA": 15,
+    "DOMINONI AGNESE": 1,
+    "FOSSEMO' SALVEMME GIORGIA": 3,
+    "GRANNO' VALENTINA": 7,
+    "BALLONE CARLOTTA": 8,
+    "MARCHIOTTO VITTORIA": 9,
+    "FIORATO AGNESE": 10,
+    # JUNIOR MASCHI
+    "ONESTI FRANCESCO": 1,
+    "GEROSA RICCARDO": 2,
+    "MAGGIONI LORENZO": 3,
+    "RAVELLI FILIPPO": 4,
+    "OSENDA NICCOLO'": 5,
+    "LICHERI GIORDANO": 6,
+    "LEVORATO JURI": 7,
+    "FRIGE' LORENZO": 8,
+    "ARENA GIOELE": 9,
+    "MAGGIOLO TOMMASO": 9,
+    "PAPPALARDO MATTIA": 10,
+    "TURANO FLAVIO": 11,
+    "MORI ALESSANDRO": 12,
+    "SITNIC CRISTIANO": 13,
+    "INCANDELA NICOLAS": 14,
+    "BEDIN JACOPO": 15,
+    "COLLE EDOARDO": 15,
+    "GHISIO ERBA GIORGIO": 1,
+    "PONZIANI MATTEO": 2,
+    "GIANNETTONI PIETRO": 3,
+    "TAGLIABUE CARLO": 6,
+    "MARZUCCHI TOMMASO": 7,
+    "GIOLO ANDREA": 8,
+    "FIORINI GIOVANNI": 9,
+    "RICCA MATTIA": 10,
+    "SIVIGLIA FILIPPO": 12,
+    "PICCOLI SIMONE": 13,
+    "LOMAGISTRO RICCARDO": 15,
+    "ROSSETTO FEDERICO": 15,
+    "NISI ELIA": 17,
+    "ROCCHETTI MICHELE": 19,
+}
+
+def bonus_ranking(nome):
+    pos = ranking_nazionale.get(nome.upper())
+    if pos is None:
+        return 0
+    if pos <= 3:
+        return 5
+    elif pos <= 7:
+        return 3
+    elif pos <= 15:
+        return 2
+    else:
+        return 1
+
+
 url = "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/SEM_7.htm"
 
 moltiplicatore = 1.2
@@ -229,7 +394,7 @@ for nome, dati in classifica.items():
     punti = dati["punti"]
     gare = dati["gare"]
     media = punti / gare
-    prezzo = round((media / 100) * 20 + gare * 2)
+    prezzo = round((media / 100) * 20 + gare * 2) + bonus_ranking(nome)
     if prezzo > 30:
         prezzo = 30
     if prezzo < 1:

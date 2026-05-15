@@ -1013,7 +1013,6 @@ function Admin({ token }) {
 
 function Lega({ token }) {
   const [vista, setVista] = useState("home");
-  const [legaAperta, setLegaAperta] = useState(null);
   const [nomeLega, setNomeLega] = useState("");
   const [password, setPassword] = useState("");
   const [messaggio, setMessaggio] = useState("");

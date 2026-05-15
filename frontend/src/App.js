@@ -1040,7 +1040,6 @@ function Lega({ token }) {
     });
     if (res2.ok) {
       setDettagli(await res2.json());
-      setLegaAperta(id);
       setVista("lega");
       caricaClassificaLega("", id);
       caricaEventi();

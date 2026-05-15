@@ -443,6 +443,7 @@ function App() {
             <button className={`nav-btn ${pagina === "classifica" ? "active" : ""}`} onClick={() => setPagina("classifica")}>Classifica</button>
             <button className={`nav-btn ${pagina === "regolamento" ? "active" : ""}`} onClick={() => setPagina("regolamento")}>Regolamento</button>
             <button className={`nav-btn ${pagina === "lega" ? "active" : ""}`} onClick={() => setPagina("lega")}>Lega</button>
+            <button className={`nav-btn ${pagina === "gare" ? "active" : ""}`} onClick={() => setPagina("gare")}>Gare</button>
             {isAdmin && <button className="nav-btn admin-btn" onClick={() => setPagina("admin")}>Admin</button>}
             <button className="nav-btn logout" onClick={() => { setToken(null); setPagina("squadra"); }}>Esci</button>
           </nav>
@@ -452,6 +453,7 @@ function App() {
         {pagina === "classifica" && <Classifica />}
         {pagina === "regolamento" && <Regolamento />}
         {pagina === "lega" && <Lega token={token} />}
+        {pagina === "gare" && <Gare token={token} />}
         {pagina === "admin" && <Admin token={token} />}
       </div>
     </>
@@ -1210,6 +1212,97 @@ function Lega({ token }) {
   );
 }
 
+function Gare({ token }) {
+  const [eventi, setEventi] = useState([]);
+  const [eventoSelezionato, setEventoSelezionato] = useState("");
+  const [risultati, setRisultati] = useState({});
+  const [categoriaAperta, setCategoriaAperta] = useState(null);
+
+  useState(() => {
+    fetch(`${API}/gare/eventi`)
+      .then(r => r.json())
+      .then(setEventi);
+  }, []);
+
+  const caricaRisultati = async (evento) => {
+    setEventoSelezionato(evento);
+    setCategoriaAperta(null);
+    if (!evento) { setRisultati({}); return; }
+    const res = await fetch(`${API}/gare/risultati?evento=${encodeURIComponent(evento)}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (res.ok) setRisultati(await res.json());
+  };
+
+  const ordineCategorie = [
+    "Ragazzi Maschi", "Ragazze Femminile",
+    "Allievi Maschi", "Allieve Femminile",
+    "Junior Maschi", "Junior Femminile",
+    "Senior Maschi", "Senior Femminile"
+  ];
+
+  const categorieOrdinati = ordineCategorie.filter(c => risultati[c]);
+
+  return (
+    <div>
+      <div className="card">
+        <div className="card-title">📅 Gare</div>
+        <select className="select" value={eventoSelezionato} onChange={e => caricaRisultati(e.target.value)}>
+          <option value="">Seleziona un campionato...</option>
+          {eventi.map(e => <option key={e} value={e}>{e}</option>)}
+        </select>
+      </div>
+
+      {eventoSelezionato && categorieOrdinati.length === 0 && (
+        <div className="card">
+          <p style={{ color: theme.textMuted }}>Nessun risultato per questo evento.</p>
+        </div>
+      )}
+
+      {categorieOrdinati.map(cat => (
+        <div key={cat} className="card" style={{ padding: 0, overflow: "hidden" }}>
+          <div
+            style={{ padding: "14px 20px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", background: categoriaAperta === cat ? "#1a2235" : theme.bgCard }}
+            onClick={() => setCategoriaAperta(categoriaAperta === cat ? null : cat)}
+          >
+            <span style={{ fontWeight: 600, fontSize: 15 }}>{cat}</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <span className="badge badge-blue">{risultati[cat].length} atleti</span>
+              <span style={{ color: theme.textMuted }}>{categoriaAperta === cat ? "▲" : "▼"}</span>
+            </div>
+          </div>
+
+          {categoriaAperta === cat && (
+            <table className="table">
+              <thead>
+                <tr>
+                  <th style={{ paddingLeft: 20, width: 50 }}>#</th>
+                  <th>Atleta</th>
+                  <th>Punti</th>
+                </tr>
+              </thead>
+              <tbody>
+                {risultati[cat].map((a, i) => (
+                  <tr key={a.id} style={{
+                    background: a.in_squadra ? "#f9731615" : "",
+                    borderLeft: a.in_squadra ? `3px solid ${theme.accent}` : "3px solid transparent"
+                  }}>
+                    <td style={{ paddingLeft: 20, color: theme.textMuted }}>{i + 1}</td>
+                    <td style={{ fontWeight: a.in_squadra ? 700 : 400 }}>
+                      {a.name}
+                      {a.in_squadra && <span className="badge badge-orange" style={{ marginLeft: 8 }}>⭐ Tuo</span>}
+                    </td>
+                    <td style={{ color: theme.accent, fontWeight: 700, fontFamily: "'Bebas Neue', cursive", fontSize: "1.1rem" }}>{a.punti}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 
 export default App;

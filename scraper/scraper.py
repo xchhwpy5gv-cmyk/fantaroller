@@ -2,6 +2,58 @@ import requests
 from bs4 import BeautifulSoup
 import json
 
+def get_atleti_da_index(url_index):
+    """Legge tutti gli atleti da un index di gare, restituisce {nome: categoria}"""
+    import re
+    response = requests.get(url_index)
+    soup = BeautifulSoup(response.text, "html.parser")
+    base_url = url_index.rsplit("/", 1)[0]
+    links = soup.find_all("a", href=True)
+    
+    atleti = {}
+    
+    for link in links:
+        href = link["href"]
+        if not href.endswith(".htm") or href == "index.htm":
+            continue
+            
+        # Determina categoria
+        categoria = None
+        if "JUM" in href: categoria = "Junior Maschi"
+        elif "JUF" in href: categoria = "Junior Femminile"
+        elif "SEM" in href: categoria = "Senior Maschi"
+        elif "SEF" in href: categoria = "Senior Femminile"
+        elif "ALM" in href: categoria = "Allievi Maschi"
+        elif "ALF" in href: categoria = "Allieve Femminile"
+        elif "RAM" in href: categoria = "Ragazzi Maschi"
+        elif "RAF" in href: categoria = "Ragazze Femminile"
+        
+        if not categoria:
+            continue
+            
+        try:
+            url_gara = f"{base_url}/{href}"
+            res = requests.get(url_gara)
+            s = BeautifulSoup(res.text, "html.parser")
+            
+            # Controlla se è staffetta
+            titolo = s.get_text()
+            if "Staffetta" in titolo or "staffetta" in titolo:
+                continue
+                
+            rows = s.find_all("tr")
+            for row in rows:
+                cols = row.find_all("td")
+                if len(cols) > 3:
+                    posizione = cols[0].text.strip()
+                    nome = cols[2].text.strip().replace("?", "'").upper()
+                    if posizione and posizione.isdigit():
+                        atleti[nome] = categoria
+        except:
+            pass
+    
+    return atleti
+
 ranking_nazionale = {
     # RAGAZZI FEMMINE
     "NOLLI BIANCA": 1,
@@ -362,6 +414,29 @@ gare = [
         }
 ]
 
+# Categorie precedenti per chi cambia categoria
+CAMBIO_CATEGORIA = {
+    "Junior Maschi": "Allievi Maschi",
+    "Junior Femminile": "Allieve Femminile",
+    "Allievi Maschi": "Ragazzi Maschi",
+    "Allieve Femminile": "Ragazze Femminile",
+    "Senior Maschi": "Junior Maschi",
+    "Senior Femminile": "Junior Femminile",
+}
+
+print("Caricamento atleti 2025 per confronto categorie...")
+atleti_2025 = get_atleti_da_index("https://attivita.rollergames.it/corsa/rrunn/2025/197482/RW00100.1/index.htm")
+print(f"Trovati {len(atleti_2025)} atleti nel 2025")
+
+def e_primo_anno(nome, categoria_2026):
+    """Ritorna True se l'atleta è al primo anno nella categoria 2026"""
+    nome_upper = nome.upper()
+    cat_precedente = CAMBIO_CATEGORIA.get(categoria_2026)
+    if not cat_precedente:
+        return False
+    # Era nella categoria precedente nel 2025?
+    cat_2025 = atleti_2025.get(nome_upper)
+    return cat_2025 == cat_precedente
 
 tutti_risultati = []
 
@@ -394,20 +469,31 @@ for nome, dati in classifica.items():
     punti = dati["punti"]
     gare = dati["gare"]
     media = punti / gare
-    prezzo = round((media / 100) * 20 + gare * 2) + bonus_ranking(nome)
+    
+    # Estrai nome e categoria dalla chiave
+    if " \u2013 " in nome:
+        nome_atleta = nome.split(" \u2013 ")[0].strip()
+        categoria_corrente = nome.split(" \u2013 ")[1].strip()
+    else:
+        nome_atleta = nome.strip()
+        categoria_corrente = ""
+    
+    prezzo_base = round((media / 100) * 20 + gare * 2) + bonus_ranking(nome_atleta)
+
+    # Sconto del 30% per chi è al primo anno nella nuova categoria
+    if e_primo_anno(nome_atleta, categoria_corrente):
+        prezzo_base = round(prezzo_base * 0.7)
+        print(f"PRIMO ANNO: {nome_atleta} prezzo ridotto a {prezzo_base}")
+
+    prezzo = prezzo_base
     if prezzo > 30:
         prezzo = 30
     if prezzo < 1:
         prezzo = 1
     prezzi[nome] = prezzo
 
-classifica_ordinata = sorted(
-    classifica.items(),
-    key=lambda x: x[1]["punti"],
-    reverse=True
-)
-
 output = []
+
 for nome, dati in classifica.items():
     output.append({
         "nome": nome,

@@ -17,84 +17,84 @@
         "nome": "PONZIANI MATTEO \u2013 Junior Maschi",
         "punti": 218,
         "gare": 2,
-        "prezzo": 26,
+        "prezzo": 22,
         "malus": 0
     },
     {
         "nome": "TAGLIABUE CARLO \u2013 Junior Maschi",
         "punti": 144,
         "gare": 2,
-        "prezzo": 18,
+        "prezzo": 15,
         "malus": 0
     },
     {
         "nome": "GEROSA RICCARDO \u2013 Junior Maschi",
         "punti": 200,
         "gare": 2,
-        "prezzo": 24,
+        "prezzo": 20,
         "malus": 0
     },
     {
         "nome": "ONESTI FRANCESCO \u2013 Junior Maschi",
         "punti": 140,
         "gare": 2,
-        "prezzo": 18,
+        "prezzo": 23,
         "malus": 0
     },
     {
         "nome": "GIANNETTONI PIETRO \u2013 Junior Maschi",
         "punti": 170,
         "gare": 2,
-        "prezzo": 21,
+        "prezzo": 18,
         "malus": 0
     },
     {
         "nome": "MARZUCCHI TOMMASO \u2013 Junior Maschi",
         "punti": 96,
         "gare": 2,
-        "prezzo": 14,
+        "prezzo": 12,
         "malus": 0
     },
     {
         "nome": "MORI ALESSANDRO \u2013 Junior Maschi",
         "punti": 76,
         "gare": 2,
-        "prezzo": 12,
+        "prezzo": 10,
         "malus": 0
     },
     {
         "nome": "LOMAGISTRO RICCARDO \u2013 Junior Maschi",
         "punti": 69,
         "gare": 2,
-        "prezzo": 11,
+        "prezzo": 9,
         "malus": 0
     },
     {
         "nome": "SIVIGLIA FILIPPO \u2013 Junior Maschi",
         "punti": 44,
         "gare": 2,
-        "prezzo": 8,
+        "prezzo": 7,
         "malus": 0
     },
     {
         "nome": "GIOLO ANDREA \u2013 Junior Maschi",
         "punti": 96,
         "gare": 2,
-        "prezzo": 14,
+        "prezzo": 11,
         "malus": 0
     },
     {
         "nome": "LEVORATO JURI \u2013 Junior Maschi",
         "punti": 78,
         "gare": 2,
-        "prezzo": 12,
+        "prezzo": 10,
         "malus": 0
     },
     {
         "nome": "VECCHI DANIELE \u2013 Junior Maschi",
         "punti": 54,
         "gare": 2,
-        "prezzo": 9,
+        "prezzo": 6,
         "malus": 0
     },
     {
@@ -108,35 +108,35 @@
         "nome": "INCANDELA NICOLAS \u2013 Junior Maschi",
         "punti": 72,
         "gare": 2,
-        "prezzo": 11,
+        "prezzo": 9,
         "malus": 0
     },
     {
         "nome": "PICCOLI SIMONE \u2013 Junior Maschi",
         "punti": 78,
         "gare": 2,
-        "prezzo": 12,
+        "prezzo": 10,
         "malus": 0
     },
     {
         "nome": "ROCCHETTI MICHELE \u2013 Junior Maschi",
         "punti": 54,
         "gare": 2,
-        "prezzo": 9,
+        "prezzo": 10,
         "malus": 0
     },
     {
         "nome": "NISI ELIA \u2013 Junior Maschi",
         "punti": 54,
         "gare": 2,
-        "prezzo": 9,
+        "prezzo": 7,
         "malus": 0
     },
     {
         "nome": "MAGGIONI LORENZO \u2013 Junior Maschi",
         "punti": 120,
         "gare": 2,
-        "prezzo": 16,
+        "prezzo": 21,
         "malus": 0
     },
     {
@@ -150,7 +150,7 @@
         "nome": "ROSSETTO FEDERICO \u2013 Junior Maschi",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 9,
         "malus": 0
     },
     {
@@ -164,7 +164,7 @@
         "nome": "RAVELLI FILIPPO \u2013 Junior Maschi",
         "punti": 128,
         "gare": 2,
-        "prezzo": 17,
+        "prezzo": 14,
         "malus": 0
     },
     {
@@ -178,14 +178,14 @@
         "nome": "MAGGIOLO TOMMASO \u2013 Junior Maschi",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 9,
         "malus": 0
     },
     {
         "nome": "FILOIA ANDREA GABRIEL \u2013 Junior Maschi",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 5,
         "malus": 0
     },
     {
@@ -199,21 +199,21 @@
         "nome": "BATTIATO MATTEO \u2013 Junior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "ARENA GIOELE \u2013 Junior Maschi",
         "punti": 74,
         "gare": 2,
-        "prezzo": 11,
+        "prezzo": 13,
         "malus": 0
     },
     {
         "nome": "PAPPALARDO MATTIA \u2013 Junior Maschi",
         "punti": 68,
         "gare": 2,
-        "prezzo": 11,
+        "prezzo": 13,
         "malus": 0
     },
     {
@@ -227,14 +227,14 @@
         "nome": "PESCE TOMMASO \u2013 Junior Maschi",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 5,
         "malus": 0
     },
     {
         "nome": "BELFIORI ALESSIO \u2013 Junior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -248,7 +248,7 @@
         "nome": "CAROLEO LORENZO \u2013 Junior Maschi",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 5,
         "malus": 0
     },
     {
@@ -262,84 +262,84 @@
         "nome": "LAURETI LEONARDO \u2013 Junior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "LICHERI GIORDANO \u2013 Junior Maschi",
         "punti": 86,
         "gare": 2,
-        "prezzo": 13,
+        "prezzo": 16,
         "malus": 0
     },
     {
         "nome": "COGNETTO ANGELO \u2013 Junior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "FABRIS DAMIANO \u2013 Junior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "TURANO FLAVIO \u2013 Junior Maschi",
         "punti": 62,
         "gare": 2,
-        "prezzo": 10,
+        "prezzo": 12,
         "malus": 0
     },
     {
         "nome": "ZAPPATERRA SIMONE \u2013 Junior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "FORMAGGIO ANDREA \u2013 Junior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "PARLA SAMUELE \u2013 Junior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "SIVIGLIA ALESSANDRO \u2013 Junior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "RESCHINI LORENZO \u2013 Junior Maschi",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 5,
         "malus": 0
     },
     {
         "nome": "BEVILACQUA GIORGIO \u2013 Junior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "BAGNOLINI FILIPPO \u2013 Junior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -353,14 +353,14 @@
         "nome": "BEDIN JACOPO \u2013 Junior Maschi",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 6,
         "malus": 0
     },
     {
         "nome": "NGUALANE ALESSIO \u2013 Junior Maschi",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 5,
         "malus": 0
     },
     {
@@ -381,21 +381,21 @@
         "nome": "COLLE EDOARDO \u2013 Junior Maschi",
         "punti": 44,
         "gare": 2,
-        "prezzo": 8,
+        "prezzo": 10,
         "malus": 0
     },
     {
         "nome": "LAMBERTINI NICOLA \u2013 Junior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "PERETTI ARTURO \u2013 Junior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -409,14 +409,14 @@
         "nome": "DI BARI MATTIA \u2013 Junior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "MARGIOTTA ANDREA \u2013 Junior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -430,7 +430,7 @@
         "nome": "BARRA GIUSEPPE \u2013 Junior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -444,14 +444,14 @@
         "nome": "RICCA MATTIA \u2013 Junior Maschi",
         "punti": 50,
         "gare": 1,
-        "prezzo": 12,
+        "prezzo": 14,
         "malus": 0
     },
     {
         "nome": "SITNIC CRISTIANO \u2013 Junior Maschi",
         "punti": 54,
         "gare": 1,
-        "prezzo": 13,
+        "prezzo": 15,
         "malus": 0
     },
     {
@@ -479,7 +479,7 @@
         "nome": "SCASSELLATI CRISTIAN \u2013 Senior Maschi",
         "punti": 78,
         "gare": 1,
-        "prezzo": 18,
+        "prezzo": 13,
         "malus": 0
     },
     {
@@ -500,7 +500,7 @@
         "nome": "LORENZONI GUGLIELMO \u2013 Senior Maschi",
         "punti": 62,
         "gare": 2,
-        "prezzo": 10,
+        "prezzo": 7,
         "malus": 0
     },
     {
@@ -598,14 +598,14 @@
         "nome": "CONSORTI STEFANO \u2013 Senior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "CECCARELLO TOMMASO \u2013 Senior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -745,7 +745,7 @@
         "nome": "CITTERIO GIOELE \u2013 Senior Maschi",
         "punti": 76,
         "gare": 2,
-        "prezzo": 12,
+        "prezzo": 8,
         "malus": 0
     },
     {
@@ -808,7 +808,7 @@
         "nome": "PIERACCINI MARCO \u2013 Senior Maschi",
         "punti": 22,
         "gare": 2,
-        "prezzo": 6,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -843,7 +843,7 @@
         "nome": "FERRETTI TOBIA \u2013 Senior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -892,7 +892,7 @@
         "nome": "DI PAOLA ANDREA \u2013 Senior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -948,28 +948,28 @@
         "nome": "SIRI MATTIA \u2013 Senior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "TAGLIATA FABRIZIO \u2013 Senior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "FORTINO BERNARDO \u2013 Senior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "TROVATO RICCARDO \u2013 Senior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -983,7 +983,7 @@
         "nome": "MORETTI MATTEO \u2013 Senior Maschi",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -1004,56 +1004,56 @@
         "nome": "GIUFFRE' DANIELE \u2013 Senior Maschi",
         "punti": 6,
         "gare": 1,
-        "prezzo": 3,
+        "prezzo": 2,
         "malus": 0
     },
     {
         "nome": "PACIONI SANTE \u2013 Allievi Maschi",
         "punti": 248,
         "gare": 2,
-        "prezzo": 29,
+        "prezzo": 30,
         "malus": 0
     },
     {
         "nome": "NICOLETTI CARLO \u2013 Allievi Maschi",
         "punti": 110,
         "gare": 2,
-        "prezzo": 15,
+        "prezzo": 20,
         "malus": 0
     },
     {
         "nome": "VINCI GABRIELE \u2013 Allievi Maschi",
         "punti": 98,
         "gare": 2,
-        "prezzo": 14,
+        "prezzo": 17,
         "malus": 0
     },
     {
         "nome": "RODI ALBERTO \u2013 Allievi Maschi",
         "punti": 190,
         "gare": 2,
-        "prezzo": 23,
+        "prezzo": 28,
         "malus": 0
     },
     {
         "nome": "BASSETTI GIACOMO \u2013 Allievi Maschi",
         "punti": 96,
         "gare": 2,
-        "prezzo": 14,
+        "prezzo": 16,
         "malus": 0
     },
     {
         "nome": "BORSANI PIETRO \u2013 Allievi Maschi",
         "punti": 90,
         "gare": 2,
-        "prezzo": 13,
+        "prezzo": 16,
         "malus": 0
     },
     {
         "nome": "TRIGILA ALESSANDRO \u2013 Allievi Maschi",
         "punti": 84,
         "gare": 2,
-        "prezzo": 12,
+        "prezzo": 14,
         "malus": 0
     },
     {
@@ -1067,21 +1067,21 @@
         "nome": "PITTATORE MATTIA \u2013 Allievi Maschi",
         "punti": 87,
         "gare": 2,
-        "prezzo": 13,
+        "prezzo": 15,
         "malus": 0
     },
     {
         "nome": "MEZZADRI ANDREA \u2013 Allievi Maschi",
         "punti": 44,
         "gare": 2,
-        "prezzo": 8,
+        "prezzo": 10,
         "malus": 0
     },
     {
         "nome": "USAI GABRIELE \u2013 Allievi Maschi",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 9,
         "malus": 0
     },
     {
@@ -1102,7 +1102,7 @@
         "nome": "CANGIANO DIEGO \u2013 Allievi Maschi",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 9,
         "malus": 0
     },
     {
@@ -1319,35 +1319,35 @@
         "nome": "FIORINI GABRIELE \u2013 Allievi Maschi",
         "punti": 132,
         "gare": 2,
-        "prezzo": 17,
+        "prezzo": 20,
         "malus": 0
     },
     {
         "nome": "IULIANI ANDREA \u2013 Allievi Maschi",
         "punti": 158,
         "gare": 2,
-        "prezzo": 20,
+        "prezzo": 23,
         "malus": 0
     },
     {
         "nome": "BRAGIOTO ALBERTO \u2013 Allievi Maschi",
         "punti": 153,
         "gare": 2,
-        "prezzo": 19,
+        "prezzo": 21,
         "malus": 0
     },
     {
         "nome": "SIRINGO GIOELE \u2013 Allievi Maschi",
         "punti": 164,
         "gare": 2,
-        "prezzo": 20,
+        "prezzo": 23,
         "malus": 0
     },
     {
         "nome": "RIZZA PAOLO RICARDHO \u2013 Allievi Maschi",
         "punti": 112,
         "gare": 2,
-        "prezzo": 15,
+        "prezzo": 18,
         "malus": 0
     },
     {
@@ -1361,28 +1361,28 @@
         "nome": "ROSSI DARIO \u2013 Allievi Maschi",
         "punti": 130,
         "gare": 2,
-        "prezzo": 17,
+        "prezzo": 20,
         "malus": 0
     },
     {
         "nome": "DI BELLO COSIMO \u2013 Allievi Maschi",
         "punti": 102,
         "gare": 2,
-        "prezzo": 14,
+        "prezzo": 16,
         "malus": 0
     },
     {
         "nome": "ROSSINI CRISTIANO \u2013 Allievi Maschi",
         "punti": 44,
         "gare": 2,
-        "prezzo": 8,
+        "prezzo": 10,
         "malus": 0
     },
     {
         "nome": "BRAVI FEDERICO \u2013 Allievi Maschi",
         "punti": 54,
         "gare": 2,
-        "prezzo": 9,
+        "prezzo": 11,
         "malus": 0
     },
     {
@@ -1403,7 +1403,7 @@
         "nome": "PECORARO LORIS \u2013 Allievi Maschi",
         "punti": 54,
         "gare": 2,
-        "prezzo": 9,
+        "prezzo": 11,
         "malus": 0
     },
     {
@@ -1459,7 +1459,7 @@
         "nome": "GIACOMETTI GIONA \u2013 Allievi Maschi",
         "punti": 36,
         "gare": 2,
-        "prezzo": 8,
+        "prezzo": 10,
         "malus": 0
     },
     {
@@ -1641,7 +1641,7 @@
         "nome": "NEGRI ASIA \u2013 Senior Femminile",
         "punti": 218,
         "gare": 2,
-        "prezzo": 26,
+        "prezzo": 18,
         "malus": 0
     },
     {
@@ -1662,7 +1662,7 @@
         "nome": "FALCO CAROLA \u2013 Senior Femminile",
         "punti": 130,
         "gare": 2,
-        "prezzo": 17,
+        "prezzo": 12,
         "malus": 0
     },
     {
@@ -1676,14 +1676,14 @@
         "nome": "SARRACINO GRETA \u2013 Senior Femminile",
         "punti": 68,
         "gare": 2,
-        "prezzo": 11,
+        "prezzo": 8,
         "malus": 0
     },
     {
         "nome": "DE GIANNI RITA \u2013 Senior Femminile",
         "punti": 84,
         "gare": 2,
-        "prezzo": 12,
+        "prezzo": 8,
         "malus": 0
     },
     {
@@ -1697,7 +1697,7 @@
         "nome": "CASASOLE EMMA \u2013 Senior Femminile",
         "punti": 72,
         "gare": 2,
-        "prezzo": 11,
+        "prezzo": 8,
         "malus": 0
     },
     {
@@ -1711,14 +1711,14 @@
         "nome": "GUEVARA SANCHEZ RACHELE IRIS \u2013 Senior Femminile",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 5,
         "malus": 0
     },
     {
         "nome": "FANTIN GIOIA \u2013 Senior Femminile",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 5,
         "malus": 0
     },
     {
@@ -1795,7 +1795,7 @@
         "nome": "DIBRA REBECCA \u2013 Senior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -1816,21 +1816,21 @@
         "nome": "SARANITI MARZIA \u2013 Senior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "BENIGNI SARA \u2013 Senior Femminile",
         "punti": 12,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "BEVILACQUA FRANCESCA \u2013 Senior Femminile",
         "punti": 12,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -1886,7 +1886,7 @@
         "nome": "CASTORINA GIORGIA \u2013 Senior Femminile",
         "punti": 56,
         "gare": 2,
-        "prezzo": 10,
+        "prezzo": 7,
         "malus": 0
     },
     {
@@ -1900,7 +1900,7 @@
         "nome": "SERAFIN GIULIA \u2013 Senior Femminile",
         "punti": 81,
         "gare": 2,
-        "prezzo": 12,
+        "prezzo": 8,
         "malus": 0
     },
     {
@@ -1914,7 +1914,7 @@
         "nome": "FOLLI ELISA \u2013 Senior Femminile",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 5,
         "malus": 0
     },
     {
@@ -1928,7 +1928,7 @@
         "nome": "CASTORINA MARTINA \u2013 Senior Femminile",
         "punti": 99,
         "gare": 2,
-        "prezzo": 14,
+        "prezzo": 10,
         "malus": 0
     },
     {
@@ -1949,7 +1949,7 @@
         "nome": "CLEMENTONI SOFIA \u2013 Senior Femminile",
         "punti": 54,
         "gare": 2,
-        "prezzo": 9,
+        "prezzo": 6,
         "malus": 0
     },
     {
@@ -1963,7 +1963,7 @@
         "nome": "FRANCOLINI ALESSIA \u2013 Senior Femminile",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 5,
         "malus": 0
     },
     {
@@ -1991,7 +1991,7 @@
         "nome": "ZANELLA CECILIA \u2013 Senior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -2012,7 +2012,7 @@
         "nome": "ORONZO NAIKE \u2013 Senior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -2026,7 +2026,7 @@
         "nome": "PALUMBO SOFIA \u2013 Senior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -2040,7 +2040,7 @@
         "nome": "ZINGARETTI REBECCA \u2013 Senior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -2082,7 +2082,7 @@
         "nome": "LECCHI ANDREA \u2013 Senior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -2110,84 +2110,84 @@
         "nome": "DEIMANI LUDOVICA CLELIA \u2013 Junior Femminile",
         "punti": 184,
         "gare": 2,
-        "prezzo": 22,
+        "prezzo": 27,
         "malus": 0
     },
     {
         "nome": "MATTII GIULIA \u2013 Junior Femminile",
         "punti": 150,
         "gare": 2,
-        "prezzo": 19,
+        "prezzo": 15,
         "malus": 0
     },
     {
         "nome": "VISINI CATIA SILVIA \u2013 Junior Femminile",
         "punti": 86,
         "gare": 2,
-        "prezzo": 13,
+        "prezzo": 11,
         "malus": 0
     },
     {
         "nome": "DI PASQUALE CHIARA \u2013 Junior Femminile",
         "punti": 66,
         "gare": 1,
-        "prezzo": 15,
+        "prezzo": 12,
         "malus": 0
     },
     {
         "nome": "ORLANDI VALENTINA \u2013 Junior Femminile",
         "punti": 90,
         "gare": 2,
-        "prezzo": 13,
+        "prezzo": 16,
         "malus": 0
     },
     {
         "nome": "DENGO KRISTAL \u2013 Junior Femminile",
         "punti": 62,
         "gare": 2,
-        "prezzo": 10,
+        "prezzo": 12,
         "malus": 0
     },
     {
         "nome": "PASSERO SARA \u2013 Junior Femminile",
         "punti": 56,
         "gare": 2,
-        "prezzo": 10,
+        "prezzo": 12,
         "malus": 0
     },
     {
         "nome": "GRANATO ELISA \u2013 Junior Femminile",
         "punti": 50,
         "gare": 2,
-        "prezzo": 9,
+        "prezzo": 8,
         "malus": 0
     },
     {
         "nome": "BAILO ASIA \u2013 Junior Femminile",
         "punti": 66,
         "gare": 2,
-        "prezzo": 11,
+        "prezzo": 13,
         "malus": 0
     },
     {
         "nome": "CRIVELLARI MATILDE \u2013 Junior Femminile",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 10,
         "malus": 0
     },
     {
         "nome": "BISIGNANO VIVIANA \u2013 Junior Femminile",
         "punti": 54,
         "gare": 2,
-        "prezzo": 9,
+        "prezzo": 6,
         "malus": 0
     },
     {
         "nome": "SCIORE EVA \u2013 Junior Femminile",
         "punti": 48,
         "gare": 2,
-        "prezzo": 9,
+        "prezzo": 6,
         "malus": 0
     },
     {
@@ -2201,21 +2201,21 @@
         "nome": "OSENDA LUCREZIA \u2013 Junior Femminile",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 5,
         "malus": 0
     },
     {
         "nome": "MARTINATO ALESSIA \u2013 Junior Femminile",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 5,
         "malus": 0
     },
     {
         "nome": "BULLO ALICE \u2013 Junior Femminile",
         "punti": 54,
         "gare": 2,
-        "prezzo": 9,
+        "prezzo": 6,
         "malus": 0
     },
     {
@@ -2229,28 +2229,28 @@
         "nome": "GIVETTI ALESSI LARA \u2013 Junior Femminile",
         "punti": 54,
         "gare": 2,
-        "prezzo": 9,
+        "prezzo": 6,
         "malus": 0
     },
     {
         "nome": "CALZATI SOFIA \u2013 Junior Femminile",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 5,
         "malus": 0
     },
     {
         "nome": "FAGAN ESTER \u2013 Junior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "CONSORTI SARA \u2013 Junior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -2264,7 +2264,7 @@
         "nome": "DIONISIO LUDOVICA \u2013 Junior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -2292,14 +2292,14 @@
         "nome": "ZANCHETTA MATILDE \u2013 Junior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "GALVAGNA RACHELE \u2013 Junior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -2313,14 +2313,14 @@
         "nome": "PERENCIN GIULIA \u2013 Junior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "DOTTORI ANNA \u2013 Junior Femminile",
         "punti": 12,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -2369,7 +2369,7 @@
         "nome": "SCHIRRU SOFIA \u2013 Junior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -2383,7 +2383,7 @@
         "nome": "VACCA IRENE \u2013 Junior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -2404,7 +2404,7 @@
         "nome": "ASCANI MARIAGRAZIA \u2013 Junior Femminile",
         "punti": 12,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -2425,28 +2425,28 @@
         "nome": "SCOTTO SARA \u2013 Junior Femminile",
         "punti": 194,
         "gare": 2,
-        "prezzo": 23,
+        "prezzo": 20,
         "malus": 0
     },
     {
         "nome": "FOSSEMO' SALVEMME GIORGIA \u2013 Junior Femminile",
         "punti": 202,
         "gare": 2,
-        "prezzo": 24,
+        "prezzo": 20,
         "malus": 0
     },
     {
         "nome": "FALCIONI VIOLA \u2013 Junior Femminile",
         "punti": 176,
         "gare": 2,
-        "prezzo": 22,
+        "prezzo": 24,
         "malus": 0
     },
     {
         "nome": "BALLONE CARLOTTA \u2013 Junior Femminile",
         "punti": 129,
         "gare": 2,
-        "prezzo": 17,
+        "prezzo": 19,
         "malus": 0
     },
     {
@@ -2460,21 +2460,21 @@
         "nome": "DOMINONI AGNESE \u2013 Junior Femminile",
         "punti": 172,
         "gare": 2,
-        "prezzo": 21,
+        "prezzo": 26,
         "malus": 0
     },
     {
         "nome": "MARCHIOTTO VITTORIA \u2013 Junior Femminile",
         "punti": 69,
         "gare": 2,
-        "prezzo": 11,
+        "prezzo": 9,
         "malus": 0
     },
     {
         "nome": "FIORATO AGNESE \u2013 Junior Femminile",
         "punti": 66,
         "gare": 2,
-        "prezzo": 11,
+        "prezzo": 9,
         "malus": 0
     },
     {
@@ -2488,35 +2488,35 @@
         "nome": "PITTATORE ALESSIA \u2013 Junior Femminile",
         "punti": 122,
         "gare": 2,
-        "prezzo": 16,
+        "prezzo": 18,
         "malus": 0
     },
     {
         "nome": "SPREGA OLIVIA \u2013 Junior Femminile",
         "punti": 54,
         "gare": 2,
-        "prezzo": 9,
+        "prezzo": 6,
         "malus": 0
     },
     {
         "nome": "BOTTICELLI ELENA \u2013 Junior Femminile",
         "punti": 72,
         "gare": 2,
-        "prezzo": 11,
+        "prezzo": 8,
         "malus": 0
     },
     {
         "nome": "ZANETTI ANNA \u2013 Junior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "D'ANDRETTA MATILDE \u2013 Junior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -2530,14 +2530,14 @@
         "nome": "GRANNO' VALENTINA \u2013 Junior Femminile",
         "punti": 68,
         "gare": 2,
-        "prezzo": 11,
+        "prezzo": 14,
         "malus": 0
     },
     {
         "nome": "NAPOLITANO MATILDE \u2013 Junior Femminile",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 5,
         "malus": 0
     },
     {
@@ -2572,49 +2572,49 @@
         "nome": "CICCHINE' ARIANNA \u2013 Junior Femminile",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 5,
         "malus": 0
     },
     {
         "nome": "ARESU ALICE \u2013 Junior Femminile",
         "punti": 56,
         "gare": 2,
-        "prezzo": 10,
+        "prezzo": 7,
         "malus": 0
     },
     {
         "nome": "GIANNETTA ANNA CAROLA \u2013 Junior Femminile",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 5,
         "malus": 0
     },
     {
         "nome": "DE GRADO MARTINA \u2013 Junior Femminile",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 5,
         "malus": 0
     },
     {
         "nome": "CAZZANIGA GAIA \u2013 Junior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "DI PAOLO SARA \u2013 Junior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "NAFTI MIRIAM \u2013 Junior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -2628,7 +2628,7 @@
         "nome": "IEZZI ANGELICA \u2013 Junior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -2642,49 +2642,49 @@
         "nome": "MAZZA MARTINA \u2013 Junior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "GROPPI-NIDOLA SOFIA \u2013 Junior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "MERONI MATILDE \u2013 Junior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "TORASSA ELENA \u2013 Junior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "BIANCHI CHANEL \u2013 Junior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "SAMMARTINO CHIARA \u2013 Junior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "GROPPI - NIDOLA NICOLE \u2013 Junior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -2698,7 +2698,7 @@
         "nome": "BALDINI MAYA \u2013 Junior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
@@ -2719,14 +2719,14 @@
         "nome": "PIGATO ASIA \u2013 Junior Femminile",
         "punti": 14,
         "gare": 2,
-        "prezzo": 5,
+        "prezzo": 4,
         "malus": 0
     },
     {
         "nome": "ANDREETTA VITTORIA \u2013 Allieve Femminile",
         "punti": 128,
         "gare": 2,
-        "prezzo": 17,
+        "prezzo": 22,
         "malus": 0
     },
     {
@@ -2740,91 +2740,91 @@
         "nome": "GUERCIO SOFIA \u2013 Allieve Femminile",
         "punti": 98,
         "gare": 2,
-        "prezzo": 14,
+        "prezzo": 17,
         "malus": 0
     },
     {
         "nome": "BARICCI GIULIA \u2013 Allieve Femminile",
         "punti": 138,
         "gare": 2,
-        "prezzo": 18,
+        "prezzo": 21,
         "malus": 0
     },
     {
         "nome": "CHINELLATO MELISSA \u2013 Allieve Femminile",
         "punti": 74,
         "gare": 2,
-        "prezzo": 11,
+        "prezzo": 16,
         "malus": 0
     },
     {
         "nome": "CHINELLATO MATILDE \u2013 Allieve Femminile",
         "punti": 68,
         "gare": 2,
-        "prezzo": 11,
+        "prezzo": 13,
         "malus": 0
     },
     {
         "nome": "RAMINZONI ELISA \u2013 Allieve Femminile",
         "punti": 62,
         "gare": 2,
-        "prezzo": 10,
+        "prezzo": 13,
         "malus": 0
     },
     {
         "nome": "ANGELUCCI EVA \u2013 Allieve Femminile",
         "punti": 130,
         "gare": 2,
-        "prezzo": 17,
+        "prezzo": 19,
         "malus": 0
     },
     {
         "nome": "CATTANEO CAMILLA \u2013 Allieve Femminile",
         "punti": 72,
         "gare": 2,
-        "prezzo": 11,
+        "prezzo": 13,
         "malus": 0
     },
     {
         "nome": "DI FILIPPO GINEVRA \u2013 Allieve Femminile",
         "punti": 88,
         "gare": 2,
-        "prezzo": 13,
+        "prezzo": 15,
         "malus": 0
     },
     {
         "nome": "MARENAJ ANAISSA \u2013 Allieve Femminile",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 9,
         "malus": 0
     },
     {
         "nome": "MANTOVANELLI ILARIA \u2013 Allieve Femminile",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 8,
         "malus": 0
     },
     {
         "nome": "BRUZZESE CHIARA \u2013 Allieve Femminile",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 9,
         "malus": 0
     },
     {
         "nome": "PAPIRIO REBECCA \u2013 Allieve Femminile",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 9,
         "malus": 0
     },
     {
         "nome": "PIRILLO MARZIA \u2013 Allieve Femminile",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 8,
         "malus": 0
     },
     {
@@ -3244,42 +3244,42 @@
         "nome": "CALDARELLI GIADA \u2013 Allieve Femminile",
         "punti": 232,
         "gare": 2,
-        "prezzo": 27,
+        "prezzo": 30,
         "malus": 0
     },
     {
         "nome": "ZORZI ALICE \u2013 Allieve Femminile",
         "punti": 220,
         "gare": 2,
-        "prezzo": 26,
+        "prezzo": 29,
         "malus": 0
     },
     {
         "nome": "BARBAGALLO FRIDA \u2013 Allieve Femminile",
         "punti": 120,
         "gare": 2,
-        "prezzo": 16,
+        "prezzo": 18,
         "malus": 0
     },
     {
         "nome": "DOLCI RACHELE YARA \u2013 Allieve Femminile",
         "punti": 228,
         "gare": 2,
-        "prezzo": 27,
+        "prezzo": 29,
         "malus": 0
     },
     {
         "nome": "VALLIN ANNA \u2013 Allieve Femminile",
         "punti": 74,
         "gare": 2,
-        "prezzo": 11,
+        "prezzo": 14,
         "malus": 0
     },
     {
         "nome": "PROIETTI BENEDETTA \u2013 Allieve Femminile",
         "punti": 128,
         "gare": 2,
-        "prezzo": 17,
+        "prezzo": 20,
         "malus": 0
     },
     {
@@ -3293,28 +3293,28 @@
         "nome": "PEREGO AURORA \u2013 Allieve Femminile",
         "punti": 68,
         "gare": 2,
-        "prezzo": 11,
+        "prezzo": 13,
         "malus": 0
     },
     {
         "nome": "CANI EMILI \u2013 Allieve Femminile",
         "punti": 87,
         "gare": 2,
-        "prezzo": 13,
+        "prezzo": 16,
         "malus": 0
     },
     {
         "nome": "PASQUINI VIOLA \u2013 Allieve Femminile",
         "punti": 66,
         "gare": 2,
-        "prezzo": 11,
+        "prezzo": 13,
         "malus": 0
     },
     {
         "nome": "TRAMONTANI ALICE \u2013 Allieve Femminile",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 9,
         "malus": 0
     },
     {
@@ -3335,14 +3335,14 @@
         "nome": "MASSA ELIZBET \u2013 Allieve Femminile",
         "punti": 112,
         "gare": 2,
-        "prezzo": 15,
+        "prezzo": 17,
         "malus": 0
     },
     {
         "nome": "BECK ALICE \u2013 Allieve Femminile",
         "punti": 99,
         "gare": 2,
-        "prezzo": 14,
+        "prezzo": 16,
         "malus": 0
     },
     {
@@ -3867,42 +3867,42 @@
         "nome": "MAZZI PAUL MARIE \u2013 Ragazzi Maschi",
         "punti": 248,
         "gare": 2,
-        "prezzo": 29,
+        "prezzo": 30,
         "malus": 0
     },
     {
         "nome": "BORRACELLI ALESSANDRO \u2013 Ragazzi Maschi",
         "punti": 110,
         "gare": 2,
-        "prezzo": 15,
+        "prezzo": 17,
         "malus": 0
     },
     {
         "nome": "TONON JACOPO \u2013 Ragazzi Maschi",
         "punti": 188,
         "gare": 2,
-        "prezzo": 23,
+        "prezzo": 26,
         "malus": 0
     },
     {
         "nome": "STELLA TOMMASO \u2013 Ragazzi Maschi",
         "punti": 86,
         "gare": 2,
-        "prezzo": 13,
+        "prezzo": 15,
         "malus": 0
     },
     {
         "nome": "ACCIAIO NICCOLO' LAPO \u2013 Ragazzi Maschi",
         "punti": 148,
         "gare": 2,
-        "prezzo": 19,
+        "prezzo": 21,
         "malus": 0
     },
     {
         "nome": "CASTELLAZZI FILIPPO \u2013 Ragazzi Maschi",
         "punti": 90,
         "gare": 2,
-        "prezzo": 13,
+        "prezzo": 15,
         "malus": 0
     },
     {
@@ -4238,7 +4238,7 @@
         "nome": "MURRU GIOELE \u2013 Ragazzi Maschi",
         "punti": 156,
         "gare": 2,
-        "prezzo": 20,
+        "prezzo": 25,
         "malus": 0
     },
     {
@@ -4280,49 +4280,49 @@
         "nome": "GIOLITTO MATTEO \u2013 Ragazzi Maschi",
         "punti": 214,
         "gare": 2,
-        "prezzo": 25,
+        "prezzo": 27,
         "malus": 0
     },
     {
         "nome": "PANUNZIO GIOELE \u2013 Ragazzi Maschi",
         "punti": 110,
         "gare": 2,
-        "prezzo": 15,
+        "prezzo": 17,
         "malus": 0
     },
     {
         "nome": "GRITTI MARCO \u2013 Ragazzi Maschi",
         "punti": 153,
         "gare": 2,
-        "prezzo": 19,
+        "prezzo": 24,
         "malus": 0
     },
     {
         "nome": "PICCHI GIOVANNI \u2013 Ragazzi Maschi",
         "punti": 74,
         "gare": 2,
-        "prezzo": 11,
+        "prezzo": 13,
         "malus": 0
     },
     {
         "nome": "CHIUMIENTO ROMEO \u2013 Ragazzi Maschi",
         "punti": 80,
         "gare": 2,
-        "prezzo": 12,
+        "prezzo": 17,
         "malus": 0
     },
     {
         "nome": "TONON ALVISE \u2013 Ragazzi Maschi",
         "punti": 64,
         "gare": 2,
-        "prezzo": 10,
+        "prezzo": 12,
         "malus": 0
     },
     {
         "nome": "CAMPAGNA SIMONE \u2013 Ragazzi Maschi",
         "punti": 116,
         "gare": 2,
-        "prezzo": 16,
+        "prezzo": 19,
         "malus": 0
     },
     {
@@ -4364,7 +4364,7 @@
         "nome": "FARINACCI ALESSANDRO \u2013 Ragazzi Maschi",
         "punti": 32,
         "gare": 2,
-        "prezzo": 7,
+        "prezzo": 9,
         "malus": 0
     },
     {
@@ -4385,7 +4385,7 @@
         "nome": "GORIN ALBERTO \u2013 Ragazzi Maschi",
         "punti": 66,
         "gare": 2,
-        "prezzo": 11,
+        "prezzo": 13,
         "malus": 0
     },
     {
@@ -4644,49 +4644,49 @@
         "nome": "SANTACROCE ARIANNA \u2013 Ragazze Femminile",
         "punti": 120,
         "gare": 1,
-        "prezzo": 26,
+        "prezzo": 30,
         "malus": 0
     },
     {
         "nome": "DI SCIUVA ELISABETTA \u2013 Ragazze Femminile",
         "punti": 102,
         "gare": 1,
-        "prezzo": 22,
+        "prezzo": 25,
         "malus": 0
     },
     {
         "nome": "ILLUMINATI CHIARA \u2013 Ragazze Femminile",
         "punti": 90,
         "gare": 1,
-        "prezzo": 20,
+        "prezzo": 23,
         "malus": 0
     },
     {
         "nome": "TATTI CHIARA \u2013 Ragazze Femminile",
         "punti": 78,
         "gare": 1,
-        "prezzo": 18,
+        "prezzo": 20,
         "malus": 0
     },
     {
         "nome": "IDDA AURORA ANGELICA \u2013 Ragazze Femminile",
         "punti": 66,
         "gare": 1,
-        "prezzo": 15,
+        "prezzo": 17,
         "malus": 0
     },
     {
         "nome": "EBAI SOVIRA VIANA AWAYOR \u2013 Ragazze Femminile",
         "punti": 60,
         "gare": 1,
-        "prezzo": 14,
+        "prezzo": 16,
         "malus": 0
     },
     {
         "nome": "PINNA SARA GIOVANNA \u2013 Ragazze Femminile",
         "punti": 54,
         "gare": 1,
-        "prezzo": 13,
+        "prezzo": 15,
         "malus": 0
     },
     {
@@ -5603,35 +5603,35 @@
         "nome": "NOLLI BIANCA \u2013 Ragazze Femminile",
         "punti": 128,
         "gare": 1,
-        "prezzo": 28,
+        "prezzo": 30,
         "malus": 0
     },
     {
         "nome": "PRINCIGALLI VALERIA NUNZIA \u2013 Ragazze Femminile",
         "punti": 102,
         "gare": 1,
-        "prezzo": 22,
+        "prezzo": 25,
         "malus": 0
     },
     {
         "nome": "LATINO GIULIA \u2013 Ragazze Femminile",
         "punti": 98,
         "gare": 1,
-        "prezzo": 22,
+        "prezzo": 25,
         "malus": 0
     },
     {
         "nome": "ANZELLOTTI SOFIA \u2013 Ragazze Femminile",
         "punti": 82,
         "gare": 1,
-        "prezzo": 18,
+        "prezzo": 20,
         "malus": 0
     },
     {
         "nome": "CAPOVILLA MATILDE \u2013 Ragazze Femminile",
         "punti": 75,
         "gare": 1,
-        "prezzo": 17,
+        "prezzo": 19,
         "malus": 0
     },
     {
@@ -5645,7 +5645,7 @@
         "nome": "GRANDI ANITA \u2013 Ragazze Femminile",
         "punti": 60,
         "gare": 1,
-        "prezzo": 14,
+        "prezzo": 16,
         "malus": 0
     },
     {
@@ -5659,7 +5659,7 @@
         "nome": "MEO AURORA \u2013 Ragazze Femminile",
         "punti": 45,
         "gare": 1,
-        "prezzo": 11,
+        "prezzo": 13,
         "malus": 0
     },
     {
@@ -5673,7 +5673,7 @@
         "nome": "PILLI CRISTINA \u2013 Ragazze Femminile",
         "punti": 30,
         "gare": 1,
-        "prezzo": 8,
+        "prezzo": 10,
         "malus": 0
     },
     {
@@ -5694,7 +5694,7 @@
         "nome": "ALLEGRI ALLEGRA \u2013 Ragazze Femminile",
         "punti": 30,
         "gare": 1,
-        "prezzo": 8,
+        "prezzo": 10,
         "malus": 0
     },
     {
@@ -5722,7 +5722,7 @@
         "nome": "TORQUATI GIULIA \u2013 Ragazze Femminile",
         "punti": 30,
         "gare": 1,
-        "prezzo": 8,
+        "prezzo": 10,
         "malus": 0
     },
     {
@@ -5757,7 +5757,7 @@
         "nome": "BARICCI CHIARA \u2013 Ragazze Femminile",
         "punti": 8,
         "gare": 1,
-        "prezzo": 4,
+        "prezzo": 7,
         "malus": 0
     },
     {

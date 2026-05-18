@@ -481,7 +481,9 @@ for nome, dati in classifica.items():
     prezzo_base = round((media / 100) * 20 + gare * 2) + bonus_ranking(nome_atleta)
 
     # Sconto del 30% per chi è al primo anno nella nuova categoria
-    if e_primo_anno(nome_atleta, categoria_corrente):
+    APPLICA_CAMBIO_CATEGORIA = False  # Cambia in True a fine stagione
+
+    if APPLICA_CAMBIO_CATEGORIA and e_primo_anno(nome_atleta, categoria_corrente):
         prezzo_base = round(prezzo_base * 0.7)
         print(f"PRIMO ANNO: {nome_atleta} prezzo ridotto a {prezzo_base}")
 

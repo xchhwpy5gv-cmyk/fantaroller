@@ -53,6 +53,7 @@ class Athlete(Base):
     prezzo = Column(Integer)
     gare = Column(Integer)
     malus = Column(Integer, default=0)
+    visibile = Column(Integer, default=1)
 
 class Impostazioni(Base):
     __tablename__ = "impostazioni"

@@ -127,7 +127,7 @@ def reset_athletes(db=Depends(get_db)):
 
 @app.get("/athletes/")
 def lista_atleti(db=Depends(get_db)):
-    atleti = db.query(Athlete).all()
+    atleti = db.query(Athlete).filter(Athlete.visibile == 1).all()
     return atleti
 
 @app.post("/squadra/crea")
@@ -691,5 +691,47 @@ def gare_risultati(evento: str, utente=Depends(get_utente_corrente), db=Depends(
     
     return categorie
 
+@app.post("/admin/migrate-visibile")
+def migrate_visibile(db=Depends(get_db)):
+    try:
+        db.execute(text("ALTER TABLE athletes ADD COLUMN IF NOT EXISTS visibile INTEGER DEFAULT 1"))
+        db.commit()
+        return {"message": "Migrazione completata"}
+    except Exception as e:
+        db.rollback()
+        return {"message": f"Errore: {str(e)}"}
 
+@app.post("/admin/atleta-visibilita/{atleta_id}")
+def cambia_visibilita(atleta_id: int, visibile: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.is_admin:
+        raise HTTPException(status_code=403, detail="Non sei admin")
+    atleta = db.query(Athlete).filter(Athlete.id == atleta_id).first()
+    if not atleta:
+        raise HTTPException(status_code=404, detail="Atleta non trovato")
+    atleta.visibile = visibile
+    db.commit()
+    return {"message": f"{atleta.name} {'visibile' if visibile else 'nascosto'}"}
 
+@app.post("/admin/nascondi-tutti")
+def nascondi_tutti(utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.is_admin:
+        raise HTTPException(status_code=403, detail="Non sei admin")
+    db.query(Athlete).update({"visibile": 0})
+    db.commit()
+    return {"message": "Tutti gli atleti nascosti"}
+
+@app.post("/admin/mostra-tutti")
+def mostra_tutti(utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.is_admin:
+        raise HTTPException(status_code=403, detail="Non sei admin")
+    db.query(Athlete).update({"visibile": 1})
+    db.commit()
+    return {"message": "Tutti gli atleti visibili"}
+
+@app.get("/admin/atleti-tutti")
+def atleti_tutti(utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.is_admin:
+        raise HTTPException(status_code=403, detail="Non sei admin")
+    atleti = db.query(Athlete).all()
+    return atleti
+    

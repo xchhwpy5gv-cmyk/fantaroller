@@ -79,6 +79,19 @@ def get_gare_da_index(url_index, categorie_incluse, promuovi=False):
         elif "RAF" in href: categoria = "Ragazze Femminile"
         
         if categoria and categoria in categorie_incluse:
+            # Estrai numero dalla gara
+            import re
+            numeri = re.findall(r'_(\d+)\.htm', href)
+            if numeri:
+                num = int(numeri[0])
+                cat_ragazzi = ["Ragazzi Maschi", "Ragazze Femminile"]
+                escludi_ragazzi = [4, 8]
+                escludi_altri = [4, 8, 18, 22]
+                
+                if categoria in cat_ragazzi and num in escludi_ragazzi:
+                    continue
+                if categoria not in cat_ragazzi and num in escludi_altri:
+                    continue
             try:
                 url_gara = f"{base_url}/{href}"
                 res = requests.get(url_gara)
@@ -97,7 +110,7 @@ def get_gare_da_index(url_index, categorie_incluse, promuovi=False):
     
     return gare_trovate
 
-    
+
 promozioni_categoria = {
     "Ragazzi Maschi": "Allievi Maschi",
     "Ragazze Femminile": "Allieve Femminile", 

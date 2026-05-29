@@ -703,7 +703,6 @@ function Mercato({ token }) {
             <tr>
               <th style={{ paddingLeft: 20 }}>Nome</th>
               <th>Categoria</th>
-              <th>Punti</th>
               <th>Prezzo</th>
               <th></th>
             </tr>

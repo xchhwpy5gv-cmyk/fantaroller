@@ -318,6 +318,7 @@ def parse_gara(url, moltiplicatore, categoria):
             nome = cols[2].text.strip()
             nome = nome.replace("?", "'")
             nome = nome.replace("FRIG' ", "FRIGO' ")
+            nome = nome.replace("FRIGE'", "FRIGO'")
 
 
             if posizione and posizione.isdigit():

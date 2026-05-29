@@ -60,6 +60,13 @@ def get_gare_da_index(url_index, categorie_incluse):
     soup = BeautifulSoup(response.text, "html.parser")
     base_url = url_index.rsplit("/", 1)[0]
     links = soup.find_all("a", href=True)
+    def get_gare_da_index(url_index, categorie_incluse, promuovi=False):
+        cat_finale = promozioni_categoria.get(categoria, categoria) if promuovi else categoria
+        gare_trovate.append({
+            "url": url_gara,
+            "moltiplicatore": 1.2,
+            "categoria": cat_finale
+        })
     
     gare_trovate = []
     
@@ -95,6 +102,15 @@ def get_gare_da_index(url_index, categorie_incluse):
                 pass
     
     return gare_trovate
+
+promozioni_categoria = {
+    "Ragazzi Maschi": "Allievi Maschi",
+    "Ragazze Femminile": "Allieve Femminile", 
+    "Allievi Maschi": "Junior Maschi",
+    "Allieve Femminile": "Junior Femminile",
+    "Junior Maschi": "Senior Maschi",
+    "Junior Femminile": "Senior Femminile",
+}
 
 ranking_nazionale = {
     # RAGAZZI FEMMINE
@@ -457,16 +473,16 @@ gare = [
 ]
 
 # Aggiungi gare 2024 per avere tutti gli atleti
-print("Caricamento gare 2024 ragazzi...")
 gare += get_gare_da_index(
     "https://attivita.rollergames.it/corsa/rrunn/2024/197997/RW00045.1/index.htm",
-    ["Ragazzi Maschi", "Ragazze Femminile"]
+    ["Ragazzi Maschi", "Ragazze Femminile"],
+    promuovi=True
 )
 
-print("Caricamento gare 2024 resto...")
 gare += get_gare_da_index(
     "https://attivita.rollergames.it/corsa/rrunn/2024/361245/RW00013.1/index.htm",
-    ["Allievi Maschi", "Allieve Femminile", "Junior Maschi", "Junior Femminile", "Senior Maschi", "Senior Femminile"]
+    ["Allievi Maschi", "Allieve Femminile", "Junior Maschi", "Junior Femminile", "Senior Maschi", "Senior Femminile"],
+    promuovi=True
 )
 
 print(f"Totale gare da processare: {len(gare)}")

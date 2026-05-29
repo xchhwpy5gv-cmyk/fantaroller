@@ -89,31 +89,59 @@ def import_athletes(db=Depends(get_db)):
     try:
         with open("../scraper/listone.json", "r") as file:
             data = json.load(file)
+
+        importati = 0
+        errori = 0
+        
         for atleta in data:
-            nome_completo = atleta["nome"]
-            separatore = None
-            for sep in [" \u2013 ", " - ", "\u2013", "-"]:
-                if sep in nome_completo:
-                    separatore = sep
-                    break
-            if separatore:
-                parti = nome_completo.split(separatore, 1)
-                nome = parti[0].strip()
-                categoria = parti[1].strip()
-            else:
-                nome = nome_completo.strip()
-                categoria = ""
-            nuovo_atleta = Athlete(
-                name=nome,
-                categoria=categoria,
-                punti=atleta["punti"],
-                prezzo=atleta["prezzo"],
-                gare=atleta["gare"],
-                malus=atleta.get("malus", 0)
-            )
-            db.add(nuovo_atleta)
+            try:
+                nome_completo = atleta["nome"]
+                separatore = None
+                for sep in [" \u2013 ", " - ", "\u2013", "-"]:
+                    if sep in nome_completo:
+                        separatore = sep
+                        break
+                if separatore:
+                    parti = nome_completo.split(separatore, 1)
+                    nome = parti[0].strip()
+                    categoria = parti[1].strip()
+                else:
+                    nome = nome_completo.strip()
+                    categoria = ""
+
+                # Controlla se esiste già
+                esistente = db.query(Athlete).filter(
+                    Athlete.name == nome,
+                    Athlete.categoria == categoria
+                ).first()
+                
+                if esistente:
+                    esistente.punti = atleta["punti"]
+                    esistente.prezzo = atleta["prezzo"]
+                    esistente.gare = atleta["gare"]
+                    esistente.malus = atleta.get("malus", 0)
+                else:
+                    nuovo = Athlete(
+                        name=nome,
+                        categoria=categoria,
+                        punti=atleta["punti"],
+                        prezzo=atleta["prezzo"],
+                        gare=atleta["gare"],
+                        malus=atleta.get("malus", 0),
+                        visibile=1
+                    )
+                    db.add(nuovo)
+                importati += 1
+                
+                if importati % 100 == 0:
+                    db.commit()
+                    
+            except Exception as e:
+                errori += 1
+                print(f"Errore atleta {atleta.get('nome', '?')}: {e}")
+                
         db.commit()
-        return {"message": f"Atleti importati: {len(data)}"}
+        return {"message": f"Atleti importati: {importati}, errori: {errori}"}
     except Exception as e:
         db.rollback()
         return {"message": f"Errore: {str(e)}"}

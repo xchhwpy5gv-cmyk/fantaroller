@@ -54,19 +54,12 @@ def get_atleti_da_index(url_index):
     
     return atleti
 
-def get_gare_da_index(url_index, categorie_incluse):
+def get_gare_da_index(url_index, categorie_incluse, promuovi=False):
     """Legge tutte le gare da un index, filtra per categorie"""
     response = requests.get(url_index)
     soup = BeautifulSoup(response.text, "html.parser")
     base_url = url_index.rsplit("/", 1)[0]
     links = soup.find_all("a", href=True)
-    def get_gare_da_index(url_index, categorie_incluse, promuovi=False):
-        cat_finale = promozioni_categoria.get(categoria, categoria) if promuovi else categoria
-        gare_trovate.append({
-            "url": url_gara,
-            "moltiplicatore": 1.2,
-            "categoria": cat_finale
-        })
     
     gare_trovate = []
     
@@ -92,17 +85,19 @@ def get_gare_da_index(url_index, categorie_incluse):
                 titolo = BeautifulSoup(res.text, "html.parser").get_text()
                 if "Staffetta" in titolo or "staffetta" in titolo:
                     continue
+                cat_finale = promozioni_categoria.get(categoria, categoria) if promuovi else categoria
                 gare_trovate.append({
                     "url": url_gara,
                     "moltiplicatore": 1.2,
-                    "categoria": categoria
+                    "categoria": cat_finale
                 })
-                print(f"  Aggiunta: {categoria} - {href}")
+                print(f"  Aggiunta: {cat_finale} - {href}")
             except:
                 pass
     
     return gare_trovate
 
+    
 promozioni_categoria = {
     "Ragazzi Maschi": "Allievi Maschi",
     "Ragazze Femminile": "Allieve Femminile", 

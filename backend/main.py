@@ -763,3 +763,15 @@ def atleti_tutti(utente=Depends(get_utente_corrente), db=Depends(get_db)):
     atleti = db.query(Athlete).all()
     return atleti
     
+
+@app.post("/admin/reset-totale")
+def reset_totale(db=Depends(get_db)):
+    try:
+        db.execute(text("DELETE FROM squadra_atleti"))
+        db.execute(text("DELETE FROM punti_evento"))
+        db.execute(text("DELETE FROM athletes"))
+        db.commit()
+        return {"message": "Reset totale completato"}
+    except Exception as e:
+        db.rollback()
+        return {"message": f"Errore: {str(e)}"}

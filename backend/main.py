@@ -775,3 +775,15 @@ def reset_totale(db=Depends(get_db)):
     except Exception as e:
         db.rollback()
         return {"message": f"Errore: {str(e)}"}
+
+
+@app.delete("/admin/elimina-atleta/{atleta_id}")
+def elimina_atleta(atleta_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.is_admin:
+        raise HTTPException(status_code=403, detail="Non sei admin")
+    atleta = db.query(Athlete).filter(Athlete.id == atleta_id).first()
+    if not atleta:
+        raise HTTPException(status_code=404, detail="Atleta non trovato")
+    db.delete(atleta)
+    db.commit()
+    return {"message": f"{atleta.name} eliminato"}

@@ -716,7 +716,6 @@ function Mercato({ token }) {
                   <div className="mobile-category">{a.categoria}</div>
                 </td>
                 <td><span className="badge badge-blue">{a.categoria}</span></td>
-                <td style={{ color: theme.blue, fontWeight: 700 }}>{a.punti}</td>
                 <td style={{ color: theme.accent, fontWeight: 700 }}>{a.prezzo}cr</td>
                 <td style={{ paddingRight: 16 }}>
                   {squadra.includes(a.id)
@@ -845,9 +844,8 @@ function Regolamento() {
         <table className="table">
           <thead><tr><th>Tipo</th><th>Moltiplicatore</th></tr></thead>
           <tbody>
-            <tr><td>Gara veloce</td><td><span className="badge badge-blue">×1.2</span></td></tr>
-            <tr><td>Gara media</td><td><span className="badge badge-orange">×1.5</span></td></tr>
-            <tr><td>Gara lunga</td><td><span className="badge badge-blue">×1.2</span></td></tr>
+            <tr><td>Gara sprint</td><td><span className="badge badge-blue">×1.2</span></td></tr>
+            <tr><td>Gara di fondo</td><td><span className="badge badge-blue">×1.2</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -1282,7 +1280,6 @@ const caricaRisultati = async (evento) => {
                 <tr>
                   <th style={{ paddingLeft: 20, width: 50 }}>#</th>
                   <th>Atleta</th>
-                  <th>Punti</th>
                 </tr>
               </thead>
               <tbody>

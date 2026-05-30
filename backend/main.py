@@ -787,3 +787,20 @@ def elimina_atleta(atleta_id: int, utente=Depends(get_utente_corrente), db=Depen
     db.delete(atleta)
     db.commit()
     return {"message": f"{atleta.name} eliminato"}
+
+@app.get("/squadre/pubbliche")
+def squadre_pubbliche(db=Depends(get_db)):
+    imp = db.query(Impostazioni).first()
+    if imp and imp.mercato_aperto:
+        raise HTTPException(status_code=403, detail="Il mercato è ancora aperto")
+    utenti = db.query(User).all()
+    risultato = []
+    for u in utenti:
+        squadra = db.query(Squadra).filter(Squadra.user_id == u.id).first()
+        if squadra:
+            risultato.append({
+                "username": u.username,
+                "squadra": squadra.nome,
+                "atleti": [{"name": a.name, "categoria": a.categoria, "prezzo": a.prezzo} for a in squadra.atleti]
+            })
+    return risultato

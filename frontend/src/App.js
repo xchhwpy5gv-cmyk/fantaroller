@@ -446,6 +446,8 @@ function App() {
             <button className={`nav-btn ${pagina === "gare" ? "active" : ""}`} onClick={() => setPagina("gare")}>Gare</button>
             {isAdmin && <button className="nav-btn admin-btn" onClick={() => setPagina("admin")}>Admin</button>}
             <button className="nav-btn logout" onClick={() => { setToken(null); setPagina("squadra"); }}>Esci</button>
+            <button className={`nav-btn ${pagina === "privacy" ? "active" : ""}`} onClick={() => setPagina("privacy")}>Privacy</button>
+            <button className={`nav-btn ${pagina === "squadre" ? "active" : ""}`} onClick={() => setPagina("squadre")}>Squadre</button>
           </nav>
         </div>
         {pagina === "squadra" && <Squadra token={token} />}
@@ -455,6 +457,8 @@ function App() {
         {pagina === "lega" && <Lega token={token} />}
         {pagina === "gare" && <Gare token={token} />}
         {pagina === "admin" && <Admin token={token} />}
+        {pagina === "privacy" && <Privacy />}
+        {pagina === "squadre" && <SquadrePubbliche />}
       </div>
     </>
   );
@@ -1304,5 +1308,104 @@ const caricaRisultati = async (evento) => {
   );
 }
 
+function Privacy() {
+  return (
+    <div>
+      <div className="card">
+        <div className="card-title">🔒 Privacy & Dati</div>
+        <p style={{ color: theme.textSub, fontSize: 14, lineHeight: 1.8 }}>
+          FantaRoller utilizza esclusivamente dati pubblicamente disponibili sul sito ufficiale della 
+          Federazione Italiana Sport Rotellistici (FISR) all'indirizzo <span style={{ color: theme.blue }}>attivita.rollergames.it</span>.
+        </p>
+      </div>
+      <div className="card">
+        <div className="card-title">📋 Informazioni sugli Atleti</div>
+        <p style={{ color: theme.textSub, fontSize: 14, lineHeight: 1.8, marginBottom: 12 }}>
+          I nomi, i risultati e le classifiche degli atleti presenti su FantaRoller sono 
+          già pubblicamente accessibili online attraverso i comunicati ufficiali FISR. 
+          Nessun dato privato viene raccolto o pubblicato.
+        </p>
+        <p style={{ color: theme.textSub, fontSize: 14, lineHeight: 1.8 }}>
+          Per richiedere la rimozione dei propri dati contattare l'amministratore del sito.
+        </p>
+      </div>
+      <div className="card">
+        <div className="card-title">👤 Dati degli Utenti</div>
+        <p style={{ color: theme.textSub, fontSize: 14, lineHeight: 1.8 }}>
+          FantaRoller raccoglie solo username e password (cifrata) per il login. 
+          Nessuna informazione personale aggiuntiva viene richiesta o memorizzata.
+        </p>
+      </div>
+    </div>
+  );
+}
 
+function SquadrePubbliche() {
+  const [squadre, setSquadre] = useState([]);
+  const [errore, setErrore] = useState("");
+  const [aperta, setAperta] = useState(null);
+
+  useState(() => {
+    fetch(`${API}/squadre/pubbliche`)
+      .then(r => {
+        if (!r.ok) throw new Error("mercato aperto");
+        return r.json();
+      })
+      .then(setSquadre)
+      .catch(() => setErrore("Le squadre saranno visibili quando il mercato chiuderà"));
+  }, []);
+
+  if (errore) return (
+    <div className="card">
+      <div className="card-title">👥 Squadre</div>
+      <p style={{ color: theme.textMuted }}>{errore}</p>
+    </div>
+  );
+
+  return (
+    <div>
+      <div className="card">
+        <div className="card-title">👥 Squadre dei Partecipanti</div>
+        <p style={{ color: theme.textSub, fontSize: 13 }}>Il mercato è chiuso — puoi vedere le squadre di tutti!</p>
+      </div>
+      {squadre.map(s => (
+        <div key={s.username} className="card" style={{ padding: 0, overflow: "hidden" }}>
+          <div
+            style={{ padding: "14px 20px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}
+            onClick={() => setAperta(aperta === s.username ? null : s.username)}
+          >
+            <div>
+              <span style={{ fontWeight: 600, fontSize: 15 }}>{s.squadra}</span>
+              <span style={{ color: theme.textMuted, fontSize: 12, marginLeft: 10 }}>di {s.username}</span>
+            </div>
+            <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+              <span className="badge badge-blue">{s.atleti.length} atleti</span>
+              <span style={{ color: theme.textMuted }}>{aperta === s.username ? "▲" : "▼"}</span>
+            </div>
+          </div>
+          {aperta === s.username && (
+            <table className="table">
+              <thead>
+                <tr>
+                  <th style={{ paddingLeft: 20 }}>Nome</th>
+                  <th>Categoria</th>
+                  <th>Prezzo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {s.atleti.map(a => (
+                  <tr key={a.name + a.categoria}>
+                    <td style={{ paddingLeft: 20, fontWeight: 600 }}>{a.name}</td>
+                    <td><span className="badge badge-blue">{a.categoria}</span></td>
+                    <td style={{ color: theme.accent, fontWeight: 700 }}>{a.prezzo}cr</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
 export default App;

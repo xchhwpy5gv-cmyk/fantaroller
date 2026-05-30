@@ -513,14 +513,14 @@ gare += get_gare_da_index(
     "https://attivita.rollergames.it/corsa/rrunn/2024/197997/RW00045.1/index.htm",
     ["Ragazzi Maschi", "Ragazze Femminile"],
     promuovi=True,
-    "anno"=2024
+    anno=2024
 )
 
 gare += get_gare_da_index(
     "https://attivita.rollergames.it/corsa/rrunn/2024/361245/RW00013.1/index.htm",
     ["Allievi Maschi", "Allieve Femminile", "Junior Maschi", "Junior Femminile", "Senior Maschi", "Senior Femminile"],
     promuovi=True,
-    "anno"=2024
+    anno=2024
 )
 
 print(f"Totale gare da processare: {len(gare)}")

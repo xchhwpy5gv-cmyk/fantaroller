@@ -369,141 +369,141 @@ gare = [
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/JUM_13.htm",
         "moltiplicatore": 1.5,
-        "categoria": "Junior Maschi"
+        "categoria": "Junior Maschi",
         "anno": 2026
     },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/JUM_14.htm",
         "moltiplicatore": 1.2,
-        "categoria": "Junior Maschi"
+        "categoria": "Junior Maschi",
         "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/JUM_12.htm",
         "moltiplicatore": 1.2,
-        "categoria": "Junior Maschi"
+        "categoria": "Junior Maschi",
         "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/SEM_5.htm",
         "moltiplicatore": 1.2,
-        "categoria": "Senior Maschi"
+        "categoria": "Senior Maschi",
         "anno": 2026
         
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/SEM_6.htm",
         "moltiplicatore": 1.5,
-        "categoria": "Senior Maschi"
+        "categoria": "Senior Maschi",
         "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/SEM_7.htm",
         "moltiplicatore": 1.2,
-        "categoria": "Senior Maschi"
+        "categoria": "Senior Maschi",
         "anno": 2026
         
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/ALM_19.htm",
         "moltiplicatore": 1.2,
-        "categoria": "Allievi Maschi"
+        "categoria": "Allievi Maschi",
         "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/ALM_20.htm",
         "moltiplicatore": 1.2,
-        "categoria": "Allievi Maschi"
+        "categoria": "Allievi Maschi",
         "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/ALM_21.htm",
         "moltiplicatore": 1.5,
-        "categoria": "Allievi Maschi"
+        "categoria": "Allievi Maschi",
         "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/SEF_1.htm",
         "moltiplicatore": 1.2,
-        "categoria": "Senior Femminile"
+        "categoria": "Senior Femminile",
         "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/SEF_3.htm",
         "moltiplicatore": 1.2,
-        "categoria": "Senior Femminile"
+        "categoria": "Senior Femminile",
         "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/SEF_2.htm",
         "moltiplicatore": 1.5,
-        "categoria": "Senior Femminile"
+        "categoria": "Senior Femminile",
         "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/JUF_9.htm",
         "moltiplicatore": 1.2,
-        "categoria": "Junior Femminile"
+        "categoria": "Junior Femminile",
         "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/JUF_10.htm",
         "moltiplicatore": 1.5,
-        "categoria": "Junior Femminile"
+        "categoria": "Junior Femminile",
         "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/JUF_11.htm",
         "moltiplicatore": 1.2,
-        "categoria": "Junior Femminile"
+        "categoria": "Junior Femminile",
         "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/ALF_15.htm",
         "moltiplicatore": 1.2,
-        "categoria": "Allieve Femminile"
+        "categoria": "Allieve Femminile",
         "anno": 2026  
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/ALF_16.htm",
         "moltiplicatore": 1.2,
-        "categoria": "Allieve Femminile"
+        "categoria": "Allieve Femminile",
         "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/ALF_17.htm",
         "moltiplicatore": 1.5,
-        "categoria": "Allieve Femminile"
+        "categoria": "Allieve Femminile",
         "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/197997/RW00088.1/RAM_5.htm",
         "moltiplicatore": 1.2,
-        "categoria": "Ragazzi Maschi"
+        "categoria": "Ragazzi Maschi",
         "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/197997/RW00088.1/RAM_7.htm",
         "moltiplicatore": 1.2,
-        "categoria": "Ragazzi Maschi"
+        "categoria": "Ragazzi Maschi",
         "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/197997/RW00088.1/RAM_6.htm",
         "moltiplicatore": 1.5,
-        "categoria": "Ragazzi Maschi"
+        "categoria": "Ragazzi Maschi",
         "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/197997/RW00088.1/RAF_1.htm",
         "moltiplicatore": 1.2,
-        "categoria": "Ragazze Femminile"
+        "categoria": "Ragazze Femminile",
         "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/197997/RW00088.1/RAF_3.htm",
         "moltiplicatore": 1.5,
-        "categoria": "Ragazze Femminile"
+        "categoria": "Ragazze Femminile",
         "anno": 2026
         }
 ]

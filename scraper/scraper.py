@@ -54,7 +54,7 @@ def get_atleti_da_index(url_index):
     
     return atleti
 
-def get_gare_da_index(url_index, categorie_incluse, promuovi=False):
+def get_gare_da_index(url_index, categorie_incluse, promuovi=False, anno=2024):
     """Legge tutte le gare da un index, filtra per categorie"""
     response = requests.get(url_index)
     soup = BeautifulSoup(response.text, "html.parser")
@@ -102,7 +102,8 @@ def get_gare_da_index(url_index, categorie_incluse, promuovi=False):
                 gare_trovate.append({
                     "url": url_gara,
                     "moltiplicatore": 1.2,
-                    "categoria": cat_finale
+                    "categoria": cat_finale,
+                    "anno": anno
                 })
                 print(f"  Aggiunta: {cat_finale} - {href}")
             except:
@@ -300,7 +301,7 @@ def punti_base(pos):
     elif pos <= 20: return 20
     else: return 5
 
-def parse_gara(url, moltiplicatore, categoria):
+def parse_gara(url, moltiplicatore, categoria, anno=2026):
     print(f"Leggendo: {url}")
     response = requests.get(url)
     print(f"Status: {response.status_code}")
@@ -328,7 +329,8 @@ def parse_gara(url, moltiplicatore, categoria):
                 risultati.append({
                     "nome": nome,
                     "punti": punti,
-                    "categoria": categoria
+                    "categoria": categoria,
+                    "anno": anno
                 })
 
     # Leggi sanzioni dal testo della pagina
@@ -368,116 +370,141 @@ gare = [
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/JUM_13.htm",
         "moltiplicatore": 1.5,
         "categoria": "Junior Maschi"
+        "anno": 2026
     },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/JUM_14.htm",
         "moltiplicatore": 1.2,
         "categoria": "Junior Maschi"
+        "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/JUM_12.htm",
         "moltiplicatore": 1.2,
         "categoria": "Junior Maschi"
+        "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/SEM_5.htm",
         "moltiplicatore": 1.2,
         "categoria": "Senior Maschi"
+        "anno": 2026
+        
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/SEM_6.htm",
         "moltiplicatore": 1.5,
         "categoria": "Senior Maschi"
+        "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/SEM_7.htm",
         "moltiplicatore": 1.2,
         "categoria": "Senior Maschi"
+        "anno": 2026
+        
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/ALM_19.htm",
         "moltiplicatore": 1.2,
         "categoria": "Allievi Maschi"
+        "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/ALM_20.htm",
         "moltiplicatore": 1.2,
         "categoria": "Allievi Maschi"
+        "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/ALM_21.htm",
         "moltiplicatore": 1.5,
         "categoria": "Allievi Maschi"
+        "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/SEF_1.htm",
         "moltiplicatore": 1.2,
         "categoria": "Senior Femminile"
+        "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/SEF_3.htm",
         "moltiplicatore": 1.2,
         "categoria": "Senior Femminile"
+        "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/SEF_2.htm",
         "moltiplicatore": 1.5,
         "categoria": "Senior Femminile"
+        "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/JUF_9.htm",
         "moltiplicatore": 1.2,
         "categoria": "Junior Femminile"
+        "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/JUF_10.htm",
         "moltiplicatore": 1.5,
         "categoria": "Junior Femminile"
+        "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/JUF_11.htm",
         "moltiplicatore": 1.2,
         "categoria": "Junior Femminile"
+        "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/ALF_15.htm",
         "moltiplicatore": 1.2,
         "categoria": "Allieve Femminile"
+        "anno": 2026  
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/ALF_16.htm",
         "moltiplicatore": 1.2,
         "categoria": "Allieve Femminile"
+        "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/362435/RW00120.1/ALF_17.htm",
         "moltiplicatore": 1.5,
         "categoria": "Allieve Femminile"
+        "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/197997/RW00088.1/RAM_5.htm",
         "moltiplicatore": 1.2,
         "categoria": "Ragazzi Maschi"
+        "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/197997/RW00088.1/RAM_7.htm",
         "moltiplicatore": 1.2,
         "categoria": "Ragazzi Maschi"
+        "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/197997/RW00088.1/RAM_6.htm",
         "moltiplicatore": 1.5,
         "categoria": "Ragazzi Maschi"
+        "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/197997/RW00088.1/RAF_1.htm",
         "moltiplicatore": 1.2,
         "categoria": "Ragazze Femminile"
+        "anno": 2026
         },
     {
         "url": "https://attivita.rollergames.it/corsa/rrunn/2026/197997/RW00088.1/RAF_3.htm",
         "moltiplicatore": 1.5,
         "categoria": "Ragazze Femminile"
+        "anno": 2026
         }
 ]
 
@@ -486,12 +513,14 @@ gare += get_gare_da_index(
     "https://attivita.rollergames.it/corsa/rrunn/2024/197997/RW00045.1/index.htm",
     ["Ragazzi Maschi", "Ragazze Femminile"],
     promuovi=True
+    "anno": 2024
 )
 
 gare += get_gare_da_index(
     "https://attivita.rollergames.it/corsa/rrunn/2024/361245/RW00013.1/index.htm",
     ["Allievi Maschi", "Allieve Femminile", "Junior Maschi", "Junior Femminile", "Senior Maschi", "Senior Femminile"],
     promuovi=True
+    "anno": 2024
 )
 
 print(f"Totale gare da processare: {len(gare)}")
@@ -526,23 +555,44 @@ for gara in gare:
     risultati = parse_gara(
         gara["url"],
         gara["moltiplicatore"],
-        gara["categoria"]
+        gara["categoria"],
+        gara.get("anno", 2026)
     )
     tutti_risultati.extend(risultati)
 
-classifica = {}
+classifica_2026 = {}
+classifica_2024 = {}
 
 for r in tutti_risultati:
     nome = r["nome"] + " \u2013 " + r["categoria"]
     punti = r["punti"]
-
-    if nome not in classifica:
-        classifica[nome] = {"punti": 0, "gare": 0}
+    anno = r.get("anno", 2026)
     
-    classifica[nome]["punti"] += punti
-    classifica[nome]["gare"] += 1
-    if "malus" not in classifica[nome]:
-        classifica[nome]["malus"] = 0
+    classifica_target = classifica_2026 if anno == 2026 else classifica_2024
+    
+    if nome not in classifica_target:
+        classifica_target[nome] = {"punti": 0, "gare": 0, "malus": 0}
+    classifica_target[nome]["punti"] += punti
+    classifica_target[nome]["gare"] += 1
+
+# Unisci le due classifiche
+classifica = {}
+tutti_nomi = set(classifica_2026.keys()) | set(classifica_2024.keys())
+
+for nome in tutti_nomi:
+    dati_2026 = classifica_2026.get(nome)
+    dati_2024 = classifica_2024.get(nome)
+    
+    if dati_2026 and dati_2024:
+        media_2026 = dati_2026["punti"] / dati_2026["gare"]
+        media_2024 = dati_2024["punti"] / dati_2024["gare"]
+        media_finale = (media_2026 + media_2024) / 2
+        gare_totali = dati_2026["gare"] + dati_2024["gare"]
+        classifica[nome] = {"punti": round(media_finale * gare_totali), "gare": gare_totali, "malus": 0}
+    elif dati_2026:
+        classifica[nome] = dati_2026
+    else:
+        classifica[nome] = dati_2024
 
 max_punti = max(atleta["punti"] for atleta in classifica.values())
 prezzi = {}
@@ -552,7 +602,6 @@ for nome, dati in classifica.items():
     gare = dati["gare"]
     media = punti / gare
     
-    # Estrai nome e categoria dalla chiave
     if " \u2013 " in nome:
         nome_atleta = nome.split(" \u2013 ")[0].strip()
         categoria_corrente = nome.split(" \u2013 ")[1].strip()
@@ -562,8 +611,7 @@ for nome, dati in classifica.items():
     
     prezzo_base = round((media / 100) * 20 + gare * 2) + bonus_ranking(nome_atleta)
 
-    # Sconto del 30% per chi è al primo anno nella nuova categoria
-    APPLICA_CAMBIO_CATEGORIA = False  # Cambia in True a fine stagione
+    APPLICA_CAMBIO_CATEGORIA = False
 
     if APPLICA_CAMBIO_CATEGORIA and e_primo_anno(nome_atleta, categoria_corrente):
         prezzo_base = round(prezzo_base * 0.7)

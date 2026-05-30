@@ -418,6 +418,7 @@ function App() {
   const [token, setToken] = useState(null);
   const [pagina, setPagina] = useState("squadra");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [menuAperto, setMenuAperto] = useState(false);
 
   const dopoLogin = async (t) => {
     setToken(t);
@@ -431,34 +432,96 @@ function App() {
 
   if (!token) return <Login setToken={dopoLogin} />;
 
+  const vaiA = (p) => { setPagina(p); setMenuAperto(false); };
+
   return (
     <>
       <style>{styles}</style>
+      <style>{`
+        .drawer-overlay {
+          position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+          z-index: 99; cursor: pointer;
+        }
+        .drawer {
+          position: fixed; top: 0; left: 0; height: 100vh; width: 260px;
+          background: ${theme.bgCard}; border-right: 1px solid ${theme.border};
+          z-index: 100; padding: 24px 0; display: flex; flex-direction: column;
+          transform: translateX(-100%); transition: transform 0.25s ease;
+        }
+        .drawer.open { transform: translateX(0); }
+        .drawer-item {
+          padding: 12px 24px; color: ${theme.textSub}; cursor: pointer;
+          font-size: 14px; font-weight: 500; transition: all 0.15s;
+          display: flex; align-items: center; gap: 10px;
+        }
+        .drawer-item:hover { background: ${theme.bgCardHover}; color: ${theme.white}; }
+        .drawer-item.active { color: ${theme.accent}; background: ${theme.bgCardHover}; }
+        .drawer-title {
+          padding: 8px 24px 16px; font-family: 'Bebas Neue', cursive;
+          font-size: 1.4rem; letter-spacing: 2px; color: ${theme.white};
+          border-bottom: 1px solid ${theme.border}; margin-bottom: 8px;
+        }
+        .drawer-section {
+          padding: 6px 24px 4px; font-size: 10px; font-weight: 700;
+          text-transform: uppercase; letter-spacing: 1px; color: ${theme.muted};
+          margin-top: 8px;
+        }
+      `}</style>
+
+      {/* DRAWER */}
+      {menuAperto && <div className="drawer-overlay" onClick={() => setMenuAperto(false)} />}
+      <div className={`drawer ${menuAperto ? "open" : ""}`}>
+        <div className="drawer-title">⚡ Fanta<span style={{ color: theme.accent }}>Roller</span></div>
+        
+        <div className="drawer-section">Gioco</div>
+        <div className={`drawer-item ${pagina === "lega" ? "active" : ""}`} onClick={() => vaiA("lega")}>🏅 Le mie Leghe</div>
+        <div className={`drawer-item ${pagina === "gare" ? "active" : ""}`} onClick={() => vaiA("gare")}>📅 Gare</div>
+        <div className={`drawer-item ${pagina === "squadre" ? "active" : ""}`} onClick={() => vaiA("squadre")}>👥 Squadre</div>
+        
+        <div className="drawer-section">Info</div>
+        <div className={`drawer-item ${pagina === "regolamento" ? "active" : ""}`} onClick={() => vaiA("regolamento")}>📋 Regolamento</div>
+        <div className={`drawer-item ${pagina === "privacy" ? "active" : ""}`} onClick={() => vaiA("privacy")}>🔒 Privacy</div>
+        
+        {isAdmin && <>
+          <div className="drawer-section">Admin</div>
+          <div className={`drawer-item ${pagina === "admin" ? "active" : ""}`} onClick={() => vaiA("admin")}>🔧 Pannello Admin</div>
+        </>}
+
+        <div style={{ marginTop: "auto", padding: "0 16px 8px" }}>
+          <button className="btn btn-danger" style={{ width: "100%", fontSize: 13 }} onClick={() => { setToken(null); setPagina("squadra"); setMenuAperto(false); }}>
+            Esci
+          </button>
+        </div>
+      </div>
+
+      {/* MAIN */}
       <div className="app-wrapper">
         <div className="header">
-          <div className="logo">⚡ Fanta<span>Roller</span></div>
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <button
+              onClick={() => setMenuAperto(!menuAperto)}
+              style={{ background: "none", border: `1px solid ${theme.border}`, color: theme.textSub, cursor: "pointer", padding: "6px 10px", borderRadius: 8, fontSize: 18 }}
+            >
+              ☰
+            </button>
+            <div className="logo">⚡ Fanta<span>Roller</span></div>
+          </div>
           <nav className="nav">
             <button className={`nav-btn ${pagina === "squadra" ? "active" : ""}`} onClick={() => setPagina("squadra")}>Squadra</button>
             <button className={`nav-btn ${pagina === "mercato" ? "active" : ""}`} onClick={() => setPagina("mercato")}>Mercato</button>
             <button className={`nav-btn ${pagina === "classifica" ? "active" : ""}`} onClick={() => setPagina("classifica")}>Classifica</button>
-            <button className={`nav-btn ${pagina === "regolamento" ? "active" : ""}`} onClick={() => setPagina("regolamento")}>Regolamento</button>
-            <button className={`nav-btn ${pagina === "lega" ? "active" : ""}`} onClick={() => setPagina("lega")}>Lega</button>
-            <button className={`nav-btn ${pagina === "gare" ? "active" : ""}`} onClick={() => setPagina("gare")}>Gare</button>
-            {isAdmin && <button className="nav-btn admin-btn" onClick={() => setPagina("admin")}>Admin</button>}
-            <button className="nav-btn logout" onClick={() => { setToken(null); setPagina("squadra"); }}>Esci</button>
-            <button className={`nav-btn ${pagina === "privacy" ? "active" : ""}`} onClick={() => setPagina("privacy")}>Privacy</button>
-            <button className={`nav-btn ${pagina === "squadre" ? "active" : ""}`} onClick={() => setPagina("squadre")}>Squadre</button>
           </nav>
         </div>
+
         {pagina === "squadra" && <Squadra token={token} />}
         {pagina === "mercato" && <Mercato token={token} />}
         {pagina === "classifica" && <Classifica />}
-        {pagina === "regolamento" && <Regolamento />}
         {pagina === "lega" && <Lega token={token} />}
         {pagina === "gare" && <Gare token={token} />}
-        {pagina === "admin" && <Admin token={token} />}
-        {pagina === "privacy" && <Privacy />}
         {pagina === "squadre" && <SquadrePubbliche />}
+        {pagina === "regolamento" && <Regolamento />}
+        {pagina === "privacy" && <Privacy />}
+        {pagina === "admin" && <Admin token={token} />}
       </div>
     </>
   );

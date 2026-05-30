@@ -584,19 +584,19 @@ for nome in tutti_nomi:
     dati_2024 = classifica_2024.get(nome)
     
    if dati_2026 and dati_2024:
-    # Calcola prezzo separato per ogni anno
-    media_2026 = dati_2026["punti"] / dati_2026["gare"]
-    media_2024 = dati_2024["punti"] / dati_2024["gare"]
-    prezzo_2026 = round((media_2026 / 100) * 20 + dati_2026["gare"] * 2)
-    prezzo_2024 = round((media_2024 / 100) * 20 + dati_2024["gare"] * 2)
-    prezzo_medio = round((prezzo_2026 + prezzo_2024) / 2)
-    # Usa i punti 2026 come punti reali, ma il prezzo sarà quello medio
-    classifica[nome] = {
-        "punti": dati_2026["punti"],
-        "gare": dati_2026["gare"],
-        "malus": 0,
-        "prezzo_override": prezzo_medio
-    }
+        # Calcola prezzo separato per ogni anno
+        media_2026 = dati_2026["punti"] / dati_2026["gare"]
+        media_2024 = dati_2024["punti"] / dati_2024["gare"]
+        prezzo_2026 = round((media_2026 / 100) * 20 + dati_2026["gare"] * 2)
+        prezzo_2024 = round((media_2024 / 100) * 20 + dati_2024["gare"] * 2)
+        prezzo_medio = round((prezzo_2026 + prezzo_2024) / 2)
+        # Usa i punti 2026 come punti reali, ma il prezzo sarà quello medio
+        classifica[nome] = {
+            "punti": dati_2026["punti"],
+            "gare": dati_2026["gare"],
+            "malus": 0,
+            "prezzo_override": prezzo_medio
+        }
     elif dati_2026:
         classifica[nome] = dati_2026
     else:

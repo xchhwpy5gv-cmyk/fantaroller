@@ -600,9 +600,7 @@ def dettagli_lega(utente=Depends(get_utente_corrente), db=Depends(get_db)):
 
 
 @app.post("/admin/reset-budget")
-def reset_budget(utente=Depends(get_utente_corrente), db=Depends(get_db)):
-    if not utente.is_admin:
-        raise HTTPException(status_code=403, detail="Non sei admin")
+def reset_budget(db=Depends(get_db)):
     db.query(User).update({"budget": 150})
     db.commit()
     return {"message": "Budget resettato a 150 per tutti"}
@@ -797,7 +795,7 @@ def squadre_pubbliche(db=Depends(get_db)):
     risultato = []
     for u in utenti:
         squadra = db.query(Squadra).filter(Squadra.user_id == u.id).first()
-        if squadra:
+        if squadra and len(squadra.atleti) == 16:
             risultato.append({
                 "username": u.username,
                 "squadra": squadra.nome,

@@ -583,12 +583,20 @@ for nome in tutti_nomi:
     dati_2026 = classifica_2026.get(nome)
     dati_2024 = classifica_2024.get(nome)
     
-    if dati_2026 and dati_2024:
-        media_2026 = dati_2026["punti"] / dati_2026["gare"]
-        media_2024 = dati_2024["punti"] / dati_2024["gare"]
-        media_finale = (media_2026 + media_2024) / 2
-        gare_totali = dati_2026["gare"] + dati_2024["gare"]
-        classifica[nome] = {"punti": round(media_finale * gare_totali), "gare": gare_totali, "malus": 0}
+   if dati_2026 and dati_2024:
+    # Calcola prezzo separato per ogni anno
+    media_2026 = dati_2026["punti"] / dati_2026["gare"]
+    media_2024 = dati_2024["punti"] / dati_2024["gare"]
+    prezzo_2026 = round((media_2026 / 100) * 20 + dati_2026["gare"] * 2)
+    prezzo_2024 = round((media_2024 / 100) * 20 + dati_2024["gare"] * 2)
+    prezzo_medio = round((prezzo_2026 + prezzo_2024) / 2)
+    # Usa i punti 2026 come punti reali, ma il prezzo sarà quello medio
+    classifica[nome] = {
+        "punti": dati_2026["punti"],
+        "gare": dati_2026["gare"],
+        "malus": 0,
+        "prezzo_override": prezzo_medio
+    }
     elif dati_2026:
         classifica[nome] = dati_2026
     else:
@@ -610,6 +618,10 @@ for nome, dati in classifica.items():
         categoria_corrente = ""
     
     prezzo_base = round((media / 100) * 20 + gare * 2) + bonus_ranking(nome_atleta)
+
+    # Se ha un prezzo override (media tra anni), usalo
+    if "prezzo_override" in dati:
+        prezzo_base = dati["prezzo_override"] + bonus_ranking(nome_atleta)
 
     APPLICA_CAMBIO_CATEGORIA = False
 

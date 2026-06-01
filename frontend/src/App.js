@@ -892,28 +892,26 @@ function Regolamento() {
 
       <div className="card">
         <div className="card-title">🏆 Punteggi per Posizione</div>
-        <table className="table">
-          <thead><tr><th>Posizione</th><th>Punti base</th></tr></thead>
-          <tbody>
-            {[["1°", 100], ["2°", 85], ["3°", 75], ["4°", 65], ["5°", 55], ["6°", 50], ["7°", 45], ["8°", 40], ["9°", 35], ["10°", 30], ["11° - 20°", 20], ["21° e oltre", 5]].map(([pos, pts]) => (
-              <tr key={pos}>
-                <td style={{ fontWeight: 600 }}>{pos}</td>
-                <td style={{ color: theme.accent, fontWeight: 700 }}>{pts}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+          {[["1°", 100], ["2°", 85], ["3°", 75], ["4°", 65], ["5°", 55], ["6°", 50], ["7°", 45], ["8°", 40], ["9°", 35], ["10°", 30], ["11°-20°", 20], ["21°+", 5]].map(([pos, pts]) => (
+            <div key={pos} style={{ background: "#0d1526", border: `1px solid ${theme.border}`, borderRadius: 8, padding: "10px 14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ color: theme.textSub, fontSize: 13, fontWeight: 600 }}>{pos}</span>
+              <span style={{ color: theme.accent, fontWeight: 700, fontSize: 15 }}>{pts}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="card">
         <div className="card-title">✖️ Moltiplicatori Gara</div>
-        <table className="table">
-          <thead><tr><th>Tipo</th><th>Moltiplicatore</th></tr></thead>
-          <tbody>
-            <tr><td>Gara sprint</td><td><span className="badge badge-blue">×1.2</span></td></tr>
-            <tr><td>Gara di fondo</td><td><span className="badge badge-blue">×1.2</span></td></tr>
-          </tbody>
-        </table>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {[["Gara sprint", "×1.2"], ["Gara di fondo", "×1.2"]].map(([tipo, molt]) => (
+            <div key={tipo} style={{ background: "#0d1526", border: `1px solid ${theme.border}`, borderRadius: 8, padding: "12px 14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ color: theme.textSub, fontSize: 13 }}>{tipo}</span>
+              <span className="badge badge-blue">{molt}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="card">

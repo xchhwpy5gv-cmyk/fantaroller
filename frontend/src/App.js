@@ -878,7 +878,7 @@ function Regolamento() {
         <p style={{ color: theme.textSub, fontSize: 13, marginBottom: 14 }}>Ogni squadra è composta da <strong style={{ color: theme.accent }}>16 atleti</strong>, 2 per categoria:</p>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           {["Ragazzi Maschi", "Ragazze Femminile", "Allievi Maschi", "Allieve Femminile", "Junior Maschi", "Junior Femminile", "Senior Maschi", "Senior Femminile"].map(c => (
-            <div key={c} style={{ background: "#0d1526", border: `1px solid ${theme.border}`, borderRadius: 8, padding: "10px 14px", fontSize: 13, color: theme.textSub }}>
+            <div key={c} style={{ background: "#0d1526", border: "1px solid #1E2D45", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: theme.textSub }}>
               <span style={{ color: theme.blue }}>×2</span> {c}
             </div>
           ))}
@@ -894,7 +894,7 @@ function Regolamento() {
         <div className="card-title">🏆 Punteggi per Posizione</div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           {[["1°", 100], ["2°", 85], ["3°", 75], ["4°", 65], ["5°", 55], ["6°", 50], ["7°", 45], ["8°", 40], ["9°", 35], ["10°", 30], ["11°-20°", 20], ["21°+", 5]].map(([pos, pts]) => (
-            <div key={pos} style={{ background: "#0d1526", border: `1px solid ${theme.border}`, borderRadius: 8, padding: "10px 14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div key={pos} style={{ background: "#0d1526", border: "1px solid #1E2D45", borderRadius: 8, padding: "10px 14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span style={{ color: theme.textSub, fontSize: 13, fontWeight: 600 }}>{pos}</span>
               <span style={{ color: theme.accent, fontWeight: 700, fontSize: 15 }}>{pts}</span>
             </div>
@@ -906,9 +906,9 @@ function Regolamento() {
         <div className="card-title">✖️ Moltiplicatori Gara</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {[["Gara sprint", "×1.2"], ["Gara di fondo", "×1.2"]].map(([tipo, molt]) => (
-            <div key={tipo} style={{ background: "#0d1526", border: `1px solid ${theme.border}`, borderRadius: 8, padding: "12px 14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div key={tipo} style={{ background: "#0d1526", border: "1px solid #1E2D45", borderRadius: 8, padding: "12px 14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span style={{ color: theme.textSub, fontSize: 13 }}>{tipo}</span>
-              <span className="badge badge-blue">{molt}</span>
+              <span style={{ color: theme.blue, fontWeight: 700 }}>{molt}</span>
             </div>
           ))}
         </div>
@@ -917,14 +917,21 @@ function Regolamento() {
       <div className="card">
         <div className="card-title">⚠️ Malus Sanzioni</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {[["Ammonizione", "-10", theme.yellow], ["Diffida", "-20", theme.accent], ["Espulsione", "-50", theme.red]].map(([san, pts, col]) => (
-            <div key={san} style={{ background: "#0d1526", border: `1px solid ${theme.border}`, borderRadius: 8, padding: "12px 14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ color: theme.textSub, fontSize: 13 }}>{san}</span>
-              <span style={{ color: col, fontWeight: 700, fontSize: 15 }}>{pts}</span>
-            </div>
-          ))}
+          <div style={{ background: "#0d1526", border: "1px solid #1E2D45", borderRadius: 8, padding: "12px 14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ color: theme.textSub, fontSize: 13 }}>Ammonizione</span>
+            <span style={{ color: theme.yellow, fontWeight: 700, fontSize: 15 }}>-10</span>
+          </div>
+          <div style={{ background: "#0d1526", border: "1px solid #1E2D45", borderRadius: 8, padding: "12px 14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ color: theme.textSub, fontSize: 13 }}>Diffida</span>
+            <span style={{ color: theme.accent, fontWeight: 700, fontSize: 15 }}>-20</span>
+          </div>
+          <div style={{ background: "#0d1526", border: "1px solid #1E2D45", borderRadius: 8, padding: "12px 14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ color: theme.textSub, fontSize: 13 }}>Espulsione</span>
+            <span style={{ color: theme.red, fontWeight: 700, fontSize: 15 }}>-50</span>
+          </div>
         </div>
       </div>
+    </div>
   );
 }
 
@@ -1070,6 +1077,7 @@ function Admin({ token }) {
       </div>
     </div>
   );
+}
 
 function Lega({ token }) {
   const [vista, setVista] = useState("home");

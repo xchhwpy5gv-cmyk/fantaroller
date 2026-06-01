@@ -916,16 +916,15 @@ function Regolamento() {
 
       <div className="card">
         <div className="card-title">⚠️ Malus Sanzioni</div>
-        <table className="table">
-          <thead><tr><th>Sanzione</th><th>Punti</th></tr></thead>
-          <tbody>
-            <tr><td>Ammonizione</td><td style={{ color: theme.yellow, fontWeight: 700 }}>-10</td></tr>
-            <tr><td>Diffida</td><td style={{ color: theme.accent, fontWeight: 700 }}>-20</td></tr>
-            <tr><td>Espulsione</td><td style={{ color: theme.red, fontWeight: 700 }}>-50</td></tr>
-          </tbody>
-        </table>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {[["Ammonizione", "-10", theme.yellow], ["Diffida", "-20", theme.accent], ["Espulsione", "-50", theme.red]].map(([san, pts, col]) => (
+            <div key={san} style={{ background: "#0d1526", border: `1px solid ${theme.border}`, borderRadius: 8, padding: "12px 14px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ color: theme.textSub, fontSize: 13 }}>{san}</span>
+              <span style={{ color: col, fontWeight: 700, fontSize: 15 }}>{pts}</span>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
   );
 }
 
@@ -1071,7 +1070,6 @@ function Admin({ token }) {
       </div>
     </div>
   );
-}
 
 function Lega({ token }) {
   const [vista, setVista] = useState("home");

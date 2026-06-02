@@ -774,6 +774,28 @@ def reset_totale(db=Depends(get_db)):
         db.rollback()
         return {"message": f"Errore: {str(e)}"}
 
+@app.get("/admin/statistiche")
+def statistiche(utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.is_admin:
+        raise HTTPException(status_code=403, detail="Non sei admin")
+    
+    totale_utenti = db.query(User).count()
+    utenti_con_squadra = db.query(Squadra).count()
+    squadre_complete = 0
+    
+    squadre = db.query(Squadra).all()
+    for s in squadre:
+        if len(s.atleti) == 16:
+            squadre_complete += 1
+    
+    return {
+        "utenti_registrati": totale_utenti,
+        "utenti_con_squadra": utenti_con_squadra,
+        "squadre_complete": squadre_complete,
+        "utenti_senza_squadra": totale_utenti - utenti_con_squadra
+    }
+
+
 
 @app.delete("/admin/elimina-atleta/{atleta_id}")
 def elimina_atleta(atleta_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):

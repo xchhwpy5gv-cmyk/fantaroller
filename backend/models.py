@@ -22,7 +22,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True)
     password = Column(String)
-    budget = Column(Integer, default=150)
+    budget = Column(Integer, default=200)
     is_admin = Column(Integer, default=0)
     league_id = Column(Integer, nullable=True)
     squadra = relationship("Squadra", back_populates="utente", uselist=False)

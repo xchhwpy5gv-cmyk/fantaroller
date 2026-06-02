@@ -784,6 +784,13 @@ def rinomina_squadra(nome: str, utente=Depends(get_utente_corrente), db=Depends(
     return {"message": f"Squadra rinominata in '{nome}'"}
 
 
+@app.post("/admin/aggiungi-budget")
+def aggiungi_budget(importo: int, db=Depends(get_db)):
+    db.query(User).update({"budget": User.budget + importo})
+    db.commit()
+    return {"message": f"+{importo} crediti aggiunti a tutti"}
+
+
 @app.get("/admin/statistiche")
 def statistiche(utente=Depends(get_utente_corrente), db=Depends(get_db)):
     if not utente.is_admin:

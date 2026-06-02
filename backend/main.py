@@ -795,6 +795,37 @@ def statistiche(utente=Depends(get_utente_corrente), db=Depends(get_db)):
         "utenti_senza_squadra": totale_utenti - utenti_con_squadra
     }
 
+@app.get("/admin/statistiche")
+def statistiche(utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.is_admin:
+        raise HTTPException(status_code=403, detail="Non sei admin")
+    
+    utenti = db.query(User).all()
+    totale_utenti = len(utenti)
+    utenti_con_squadra = db.query(Squadra).count()
+    squadre_complete = 0
+    
+    lista_utenti = []
+    for u in utenti:
+        squadra = db.query(Squadra).filter(Squadra.user_id == u.id).first()
+        n_atleti = len(squadra.atleti) if squadra else 0
+        if n_atleti == 16:
+            squadre_complete += 1
+        lista_utenti.append({
+            "username": u.username,
+            "ha_squadra": squadra is not None,
+            "n_atleti": n_atleti,
+            "completa": n_atleti == 16
+        })
+    
+    return {
+        "utenti_registrati": totale_utenti,
+        "utenti_con_squadra": utenti_con_squadra,
+        "squadre_complete": squadre_complete,
+        "utenti_senza_squadra": totale_utenti - utenti_con_squadra,
+        "lista": lista_utenti
+    }
+
 
 
 @app.delete("/admin/elimina-atleta/{atleta_id}")

@@ -1016,7 +1016,7 @@ useState(() => {
         {stats && (
           <div className="card">
             <div className="card-title">📊 Statistiche</div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
               <div className="stat-box">
                 <span className="stat-label">Utenti registrati</span>
                 <span className="stat-value">{stats.utenti_registrati}</span>
@@ -1034,8 +1034,33 @@ useState(() => {
                 <span className="stat-value">{stats.utenti_senza_squadra}</span>
               </div>
             </div>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Squadra</th>
+                  <th>Atleti</th>
+                  <th>Stato</th>
+                </tr>
+              </thead>
+              <tbody>
+                {stats.lista.map(u => (
+                  <tr key={u.username}>
+                    <td style={{ fontWeight: 600 }}>{u.username}</td>
+                    <td style={{ color: theme.textSub }}>{u.ha_squadra ? "✅" : "❌"}</td>
+                    <td style={{ textAlign: "center" }}>{u.n_atleti}/16</td>
+                    <td>
+                      <span className={`badge ${u.completa ? "badge-green" : u.ha_squadra ? "badge-orange" : "badge-red"}`}>
+                        {u.completa ? "Completa" : u.ha_squadra ? "In corso" : "Nessuna"}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
+
 
         <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>

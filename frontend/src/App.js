@@ -418,6 +418,7 @@ function App() {
   const [token, setToken] = useState(null);
   const [pagina, setPagina] = useState("squadra");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [username, setUsername] = useState("");
   const [menuAperto, setMenuAperto] = useState(false);
 
   const dopoLogin = async (t) => {
@@ -427,6 +428,7 @@ function App() {
     });
     const data = await res.json();
     setIsAdmin(data.is_admin === 1);
+    setUsername(data.username);
     setPagina("squadra");
   };
 
@@ -515,7 +517,7 @@ function App() {
 
         {pagina === "squadra" && <Squadra token={token} />}
         {pagina === "mercato" && <Mercato token={token} />}
-        {pagina === "classifica" && <Classifica />}
+        {pagina === "classifica" && <Classifica username={username} />}
         {pagina === "lega" && <Lega token={token} />}
         {pagina === "gare" && <Gare token={token} />}
         {pagina === "squadre" && <SquadrePubbliche />}
@@ -595,6 +597,21 @@ function Squadra({ token }) {
   const [squadra, setSquadra] = useState(null);
   const [errore, setErrore] = useState("");
   const [nomeSquadra, setNomeSquadra] = useState("");
+  const [nuovoNome, setNuovoNome] = useState("");
+  const [rinominaAperto, setRinominaAperto] = useState(false);
+
+  const rinomina = async () => {
+  const res = await fetch(`${API}/squadra/rinomina?nome=${encodeURIComponent(nuovoNome)}`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  const data = await res.json();
+  setMessaggio(data.message);
+  setRinominaAperto(false);
+  caricaSquadra();
+};
+
+
 
   const caricaSquadra = async () => {
     const res = await fetch(`${API}/squadra/`, { headers: { Authorization: `Bearer ${token}` } });
@@ -636,6 +653,18 @@ function Squadra({ token }) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
           <div>
             <div className="card-title">🏆 {squadra.nome}</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+              <div className="card-title" style={{ marginBottom: 0 }}>🏆 {squadra.nome}</div>
+              <button className="btn btn-blue" style={{ padding: "4px 10px", fontSize: 11 }} onClick={() => setRinominaAperto(!rinominaAperto)}>✏️ Rinomina</button>
+            </div>
+            {rinominaAperto && (
+              <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+                <input className="input" style={{ marginBottom: 0, flex: 1 }} placeholder="Nuovo nome squadra" value={nuovoNome} onChange={e => setNuovoNome(e.target.value)} />
+                <button className="btn btn-primary" onClick={rinomina}>Salva</button>
+                <button className="btn btn-danger" onClick={() => setRinominaAperto(false)}>✕</button>
+              </div>
+            )}
+
             {squadraCompleta
               ? <div className="badge badge-green">✅ Squadra completa</div>
               : <div className="badge badge-orange">⚠️ Squadra incompleta</div>}
@@ -797,7 +826,7 @@ function Mercato({ token }) {
   );
 }
 
-function Classifica() {
+function Classifica({ username }) {
   const [classifica, setClassifica] = useState([]);
   const [eventi, setEventi] = useState([]);
   const [eventoSelezionato, setEventoSelezionato] = useState("");
@@ -817,8 +846,8 @@ function Classifica() {
 
   const handleEvento = (e) => { setEventoSelezionato(e.target.value); caricaClassifica(e.target.value); };
 
-  const rankColor = (i) => i === 0 ? "gold" : i === 1 ? "silver" : i === 2 ? "bronze" : "";
   const rankEmoji = (i) => i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : "";
+  const rankColor = (i) => i === 0 ? theme.yellow : i === 1 ? "#94a3b8" : i === 2 ? "#b45309" : theme.textSub;
 
   return (
     <div>
@@ -833,35 +862,34 @@ function Classifica() {
       </div>
 
       <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-        <table className="table">
-          <thead>
-            <tr>
-              <th style={{ paddingLeft: 20, width: 60 }}>#</th>
-              <th>Utente</th>
-              <th>Squadra</th>
-              <th>Punti</th>
-            </tr>
-          </thead>
-          <tbody>
-            {classifica.length === 0
-              ? <tr><td colSpan={4} style={{ textAlign: "center", color: theme.textMuted, padding: 24 }}>Nessuna squadra completa in classifica</td></tr>
-              : classifica.map((u, i) => (
-                <tr key={u.username}>
-                  <td style={{ paddingLeft: 20 }}>
-                    <span className={`rank-number ${rankColor(i)}`}>{rankEmoji(i) || i + 1}</span>
-                  </td>
-                  <td style={{ fontWeight: 600 }}>{u.username}</td>
-                  <td style={{ color: theme.textSub }}>{u.squadra}</td>
-                  <td style={{ color: theme.accent, fontWeight: 700, fontFamily: "'Bebas Neue', cursive", fontSize: "1.1rem" }}>{u.punti}</td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
+        {classifica.length === 0
+          ? <p style={{ textAlign: "center", color: theme.textMuted, padding: 24 }}>Nessuna squadra completa in classifica</p>
+          : classifica.map((u, i) => (
+            <div key={u.username} style={{
+              display: "flex", alignItems: "center", gap: 12, padding: "12px 16px",
+              borderBottom: `1px solid ${theme.border}22`,
+              background: u.username === username ? "#f9731610" : "",
+              borderLeft: u.username === username ? `3px solid ${theme.accent}` : "3px solid transparent"
+            }}>
+              <span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "1.3rem", color: rankColor(i), minWidth: 28 }}>
+                {rankEmoji(i) || i + 1}
+              </span>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontWeight: 600, fontSize: 14, color: theme.white }}>
+                  {u.squadra}
+                  {u.username === username && <span className="badge badge-orange" style={{ marginLeft: 8 }}>Tu</span>}
+                </div>
+                <div style={{ fontSize: 11, color: theme.textMuted }}>@{u.username}</div>
+              </div>
+              <span style={{ color: theme.accent, fontWeight: 700, fontFamily: "'Bebas Neue', cursive", fontSize: "1.2rem" }}>{u.punti}</span>
+            </div>
+          ))
+        }
       </div>
     </div>
   );
 }
+
 
 function Regolamento() {
   return (

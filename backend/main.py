@@ -774,6 +774,15 @@ def reset_totale(db=Depends(get_db)):
         db.rollback()
         return {"message": f"Errore: {str(e)}"}
 
+@app.post("/squadra/rinomina")
+def rinomina_squadra(nome: str, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
+    if not squadra:
+        raise HTTPException(status_code=404, detail="Nessuna squadra trovata")
+    squadra.nome = nome
+    db.commit()
+    return {"message": f"Squadra rinominata in '{nome}'"}
+
 
 @app.get("/admin/statistiche")
 def statistiche(utente=Depends(get_utente_corrente), db=Depends(get_db)):

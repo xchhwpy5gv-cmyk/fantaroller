@@ -946,6 +946,14 @@ function Admin({ token }) {
   const [nuovoEvento, setNuovoEvento] = useState("");
   const [urlIndex, setUrlIndex] = useState("");
   const [nomeEventoIndex, setNomeEventoIndex] = useState("");
+  const [stats, setStats] = useState(null);
+
+useState(() => {
+  fetch(`${API}/admin/statistiche`, {
+    headers: { Authorization: `Bearer ${token}` },
+  }).then(r => r.json()).then(setStats);
+}, []);
+
 
   const categorie = ["Ragazzi Maschi", "Ragazze Femminile", "Allievi Maschi", "Allieve Femminile", "Junior Maschi", "Junior Femminile", "Senior Maschi", "Senior Femminile"];
 
@@ -1005,6 +1013,30 @@ function Admin({ token }) {
       <div className="card">
         <div className="card-title">🔧 Pannello Admin</div>
         {messaggio && <div className="msg-box">{messaggio}</div>}
+        {stats && (
+          <div className="card">
+            <div className="card-title">📊 Statistiche</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <div className="stat-box">
+                <span className="stat-label">Utenti registrati</span>
+                <span className="stat-value">{stats.utenti_registrati}</span>
+              </div>
+              <div className="stat-box">
+                <span className="stat-label">Con squadra</span>
+                <span className="stat-value">{stats.utenti_con_squadra}</span>
+              </div>
+              <div className="stat-box">
+                <span className="stat-label">Squadre complete</span>
+                <span className="stat-value">{stats.squadre_complete}</span>
+              </div>
+              <div className="stat-box">
+                <span className="stat-label">Senza squadra</span>
+                <span className="stat-value">{stats.utenti_senza_squadra}</span>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <span style={{ fontSize: 13, color: theme.textSub }}>Mercato:</span>

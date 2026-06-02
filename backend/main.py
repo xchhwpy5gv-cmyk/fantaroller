@@ -822,6 +822,18 @@ def statistiche(utente=Depends(get_utente_corrente), db=Depends(get_db)):
         "lista": lista_utenti
     }
 
+@app.delete("/admin/elimina-utente/{username}")
+def elimina_utente(username: str, db=Depends(get_db)):
+    utente = db.query(User).filter(User.username == username).first()
+    if not utente:
+        raise HTTPException(status_code=404, detail="Utente non trovato")
+    squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
+    if squadra:
+        db.execute(text(f"DELETE FROM squadra_atleti WHERE squadra_id = {squadra.id}"))
+        db.delete(squadra)
+    db.delete(utente)
+    db.commit()
+    return {"message": f"Utente '{username}' eliminato"}
 
 
 @app.delete("/admin/elimina-atleta/{atleta_id}")

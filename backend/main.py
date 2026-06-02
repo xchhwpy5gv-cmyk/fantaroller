@@ -835,6 +835,11 @@ def elimina_utente(username: str, db=Depends(get_db)):
     db.commit()
     return {"message": f"Utente '{username}' eliminato"}
 
+@app.get("/league/tutte")
+def tutte_le_leghe(db=Depends(get_db)):
+    leghe = db.query(League).all()
+    return [{"id": l.id, "nome": l.nome, "membri": len(db.query(User).filter(User.league_id == l.id).all())} for l in leghe]
+
 
 @app.delete("/admin/elimina-atleta/{atleta_id}")
 def elimina_atleta(atleta_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):

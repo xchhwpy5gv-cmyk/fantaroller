@@ -1166,6 +1166,7 @@ useState(() => {
 
 function Lega({ token }) {
   const [vista, setVista] = useState("home");
+  const [legaAperta, setLegaAperta] = useState(null);
   const [nomeLega, setNomeLega] = useState("");
   const [password, setPassword] = useState("");
   const [messaggio, setMessaggio] = useState("");
@@ -1174,13 +1175,21 @@ function Lega({ token }) {
   const [eventi, setEventi] = useState([]);
   const [eventoSelezionato, setEventoSelezionato] = useState("");
   const [mieLeghe, setMieLeghe] = useState([]);
+  const [tutteLeghe, setTutteLeghe] = useState([]);
+  const [ricerca, setRicerca] = useState("");
   const [copiato, setCopiato] = useState(false);
+  const [legaEntrata, setLegaEntrata] = useState(null);
 
   const caricaMieLeghe = async () => {
     const res = await fetch(`${API}/league/mie-leghe`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     if (res.ok) setMieLeghe(await res.json());
+  };
+
+  const caricaTutteLeghe = async () => {
+    const res = await fetch(`${API}/league/tutte`);
+    if (res.ok) setTutteLeghe(await res.json());
   };
 
   const apriLega = async (id) => {
@@ -1194,7 +1203,7 @@ function Lega({ token }) {
     if (res2.ok) {
       setDettagli(await res2.json());
       setVista("lega");
-      caricaClassificaLega("", id);
+      caricaClassificaLega("");
       caricaEventi();
     }
   };
@@ -1205,14 +1214,12 @@ function Lega({ token }) {
   };
 
   const caricaClassificaLega = async (evento) => {
-    const url = evento
-      ? `${API}/league/classifica?evento=${encodeURIComponent(evento)}`
-      : `${API}/league/classifica`;
+    const url = evento ? `${API}/league/classifica?evento=${encodeURIComponent(evento)}` : `${API}/league/classifica`;
     const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
     if (res.ok) setClassifica(await res.json());
   };
 
-  useState(() => { caricaMieLeghe(); }, []);
+  useState(() => { caricaMieLeghe(); caricaTutteLeghe(); }, []);
 
   const creaLega = async () => {
     const res = await fetch(`${API}/league/create?nome=${encodeURIComponent(nomeLega)}&password=${encodeURIComponent(password)}`, {
@@ -1220,16 +1227,17 @@ function Lega({ token }) {
     });
     const data = await res.json();
     setMessaggio(data.message || data.detail);
-    if (res.ok) { setNomeLega(""); setPassword(""); caricaMieLeghe(); setVista("home"); }
+    if (res.ok) { setNomeLega(""); setPassword(""); caricaMieLeghe(); caricaTutteLeghe(); setVista("home"); }
   };
 
-  const entraLega = async () => {
-    const res = await fetch(`${API}/league/join?nome=${encodeURIComponent(nomeLega)}&password=${encodeURIComponent(password)}`, {
+  const entraLega = async (nomeL) => {
+    const res = await fetch(`${API}/league/join?nome=${encodeURIComponent(nomeL)}&password=${encodeURIComponent(password)}`, {
       method: "POST", headers: { Authorization: `Bearer ${token}` },
     });
     const data = await res.json();
     setMessaggio(data.message || data.detail);
-    if (res.ok) { setNomeLega(""); setPassword(""); caricaMieLeghe(); setVista("home"); }
+    if (res.ok) { setPassword(""); setLegaEntrata(null); caricaMieLeghe(); caricaTutteLeghe(); }
+    else setMessaggio("❌ Password errata");
   };
 
   const copiaPassword = () => {
@@ -1240,6 +1248,9 @@ function Lega({ token }) {
 
   const rankEmoji = (i) => i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : i + 1;
   const rankColor = (i) => i === 0 ? theme.yellow : i === 1 ? "#94a3b8" : i === 2 ? "#b45309" : theme.textSub;
+
+  const sonoMembro = (id) => mieLeghe.some(l => l.id === id);
+  const legheFiltrate = tutteLeghe.filter(l => l.nome.toLowerCase().includes(ricerca.toLowerCase()));
 
   // PAGINA LEGA APERTA
   if (vista === "lega" && dettagli) return (
@@ -1306,55 +1317,82 @@ function Lega({ token }) {
     </div>
   );
 
-  // PAGINA HOME LEGHE
+  // HOME LEGHE
   return (
     <div>
       {messaggio && <div className="msg-box">{messaggio}</div>}
 
       <div className="card">
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: mieLeghe.length > 0 ? 0 : 0 }}>
           <button className="btn btn-primary" onClick={() => setVista("crea")}>➕ Crea Lega</button>
-          <button className="btn btn-blue" onClick={() => setVista("entra")}>🔑 Unisciti a una Lega</button>
         </div>
       </div>
 
+      {mieLeghe.length > 0 && (
+        <div className="card">
+          <div className="card-title">🏅 Le tue Leghe</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {mieLeghe.map(l => (
+              <div key={l.id} style={{ background: "#0d1526", border: `1px solid ${theme.border}`, borderRadius: 10, padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontWeight: 600, fontSize: 15 }}>🏅 {l.nome}</span>
+                <button className="btn btn-primary" style={{ padding: "6px 14px", fontSize: 13 }} onClick={() => apriLega(l.id)}>Apri →</button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="card">
-        <div className="card-title">🏅 Le tue Leghe</div>
-        {mieLeghe.length === 0
-          ? <p style={{ color: theme.textMuted, fontSize: 14 }}>Non sei ancora in nessuna lega — creane una o unisciti!</p>
-          : <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {mieLeghe.map(l => (
-                <div key={l.id} style={{ background: "#0d1526", border: `1px solid ${theme.border}`, borderRadius: 10, padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontWeight: 600, fontSize: 15 }}>🏅 {l.nome}</span>
-                  <button className="btn btn-primary" style={{ padding: "6px 14px", fontSize: 13 }} onClick={() => apriLega(l.id)}>Apri →</button>
+        <div className="card-title">🔍 Tutte le Leghe</div>
+        <input
+          className="input"
+          placeholder="Cerca lega..."
+          value={ricerca}
+          onChange={e => setRicerca(e.target.value)}
+        />
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {legheFiltrate.length === 0
+            ? <p style={{ color: theme.textMuted, fontSize: 13 }}>Nessuna lega trovata</p>
+            : legheFiltrate.map(l => (
+              <div key={l.id} style={{ background: "#0d1526", border: `1px solid ${theme.border}`, borderRadius: 10, padding: "14px 16px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <div>
+                    <span style={{ fontWeight: 600, fontSize: 14, color: theme.white }}>🔒 {l.nome}</span>
+                    <span style={{ color: theme.textMuted, fontSize: 12, marginLeft: 10 }}>{l.membri} membri</span>
+                  </div>
+                  {sonoMembro(l.id)
+                    ? <button className="btn btn-success" style={{ fontSize: 12, padding: "5px 12px" }} onClick={() => apriLega(l.id)}>Apri →</button>
+                    : <button className="btn btn-blue" style={{ fontSize: 12, padding: "5px 12px" }} onClick={() => setLegaEntrata(legaEntrata === l.id ? null : l.id)}>
+                        {legaEntrata === l.id ? "Annulla" : "🔑 Entra"}
+                      </button>
+                  }
                 </div>
-              ))}
-            </div>
-        }
+                {legaEntrata === l.id && (
+                  <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                    <input
+                      className="input"
+                      style={{ marginBottom: 0, flex: 1 }}
+                      placeholder="Password lega"
+                      type="password"
+                      value={password}
+                      onChange={e => setPassword(e.target.value)}
+                    />
+                    <button className="btn btn-primary" onClick={() => entraLega(l.nome)}>Entra</button>
+                  </div>
+                )}
+              </div>
+            ))
+          }
+        </div>
       </div>
 
-      {(vista === "crea" || vista === "entra") && (
+      {vista === "crea" && (
         <div className="card">
-          <div className="card-title">{vista === "crea" ? "➕ Crea Lega" : "🔑 Unisciti a una Lega"}</div>
+          <div className="card-title">➕ Crea Lega</div>
           <input className="input" placeholder="Nome lega" value={nomeLega} onChange={e => setNomeLega(e.target.value)} />
           <input className="input" placeholder="Password lega" type="password" value={password} onChange={e => setPassword(e.target.value)} />
           <div style={{ display: "flex", gap: 10 }}>
-            <div style={{ display: "flex", gap: 10 }}>
-              <button
-                className="btn btn-blue"
-                onClick={() => setVista("crea")}
-              >
-                ➕ Crea lega
-              </button>
-
-              <button
-                className="btn btn-primary"
-                onClick={() => setVista("entra")}
-              >
-                ➕ Unisciti ad altra lega
-              </button>
-            </div>
-            <button className="btn btn-primary" onClick={vista === "crea" ? creaLega : entraLega}>{vista === "crea" ? "Crea" : "Entra"}</button>
+            <button className="btn btn-primary" onClick={creaLega}>Crea</button>
             <button className="btn btn-danger" onClick={() => { setVista("home"); setMessaggio(""); }}>Annulla</button>
           </div>
         </div>
@@ -1362,6 +1400,7 @@ function Lega({ token }) {
     </div>
   );
 }
+
 
 function Gare({ token }) {
   const [eventi, setEventi] = useState([]);

@@ -1345,29 +1345,26 @@ const caricaRisultati = async (evento) => {
           </div>
 
           {categoriaAperta === cat && (
-            <table className="table">
-              <thead>
-                <tr>
-                  <th style={{ paddingLeft: 20, width: 50 }}>#</th>
-                  <th>Atleta</th>
-                </tr>
-              </thead>
-              <tbody>
-                {risultati[cat].map((a, i) => (
-                  <tr key={a.id} style={{
-                    background: a.in_squadra ? "#f9731615" : "",
-                    borderLeft: a.in_squadra ? `3px solid ${theme.accent}` : "3px solid transparent"
-                  }}>
-                    <td style={{ paddingLeft: 20, color: theme.textMuted }}>{i + 1}</td>
-                    <td style={{ fontWeight: a.in_squadra ? 700 : 400 }}>
+            <div style={{ padding: "8px 12px" }}>
+              {risultati[cat].map((a, i) => (
+                <div key={a.id} style={{
+                  display: "flex", alignItems: "center", justifyContent: "space-between",
+                  padding: "10px 12px", marginBottom: 4, borderRadius: 8,
+                  background: a.in_squadra ? "#f9731615" : "#0d1526",
+                  borderLeft: a.in_squadra ? `3px solid ${theme.accent}` : `3px solid transparent`
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0 }}>
+                    <span style={{ color: theme.textMuted, fontSize: 12, minWidth: 24 }}>{i + 1}</span>
+                    <span style={{ fontWeight: a.in_squadra ? 700 : 400, fontSize: 13, color: theme.white, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {a.name}
-                      {a.in_squadra && <span className="badge badge-orange" style={{ marginLeft: 8 }}>⭐ Tuo</span>}
-                    </td>
-                    <td style={{ color: theme.accent, fontWeight: 700, fontFamily: "'Bebas Neue', cursive", fontSize: "1.1rem" }}>{a.punti}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </span>
+                    {a.in_squadra && <span className="badge badge-orange" style={{ flexShrink: 0 }}>⭐</span>}
+                  </div>
+                  <span style={{ color: theme.accent, fontWeight: 700, fontFamily: "'Bebas Neue', cursive", fontSize: "1.1rem", flexShrink: 0, marginLeft: 8 }}>{a.punti}</span>
+                </div>
+              ))}
+            </div>
+
           )}
         </div>
       ))}

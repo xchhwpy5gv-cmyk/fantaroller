@@ -869,8 +869,8 @@ function Mercato({ token }) {
                           }
                         </div>
                         <div className="stat-box">
-                          <span className="stat-label">In squadre</span>
-                          <span className="stat-value" style={{ fontSize: "1.2rem" }}>{atletaDettagli.in_squadre}</span>
+                          <span className="stat-label">Acquistato da</span>
+                          <span className="stat-value" style={{ fontSize: "1.2rem" }}>{atletaDettagli.in_squadre} squadre</span>
                         </div>
                         <div className="stat-box">
                           <span className="stat-label">Gare disputate</span>
@@ -978,7 +978,7 @@ function Regolamento() {
 
       <div className="card">
         <div className="card-title">💰 Budget</div>
-        <p style={{ color: theme.textSub, fontSize: 14 }}>Ogni utente ha <strong style={{ color: theme.accent }}>150 crediti</strong> per costruire la propria squadra.</p>
+        <p style={{ color: theme.textSub, fontSize: 14 }}>Ogni utente ha <strong style={{ color: theme.accent }}>200 crediti</strong> per costruire la propria squadra.</p>
       </div>
 
       <div className="card">

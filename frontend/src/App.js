@@ -601,7 +601,16 @@ function Squadra({ token }) {
   const [rinominaAperto, setRinominaAperto] = useState(false);
 
   const rinomina = async () => {
-  const res = await fetch(`${API}/squadra/rinomina?nome=${encodeURIComponent(nuovoNome)}`, {
+    if (nomeSquadra.length > 25) {
+      setMessaggio("❌ Nome squadra troppo lungo (max 25 caratteri)");
+      return;
+    }
+    if (nomeSquadra.length < 3) {
+      setMessaggio("❌ Nome squadra troppo corto (min 3 caratteri)");
+      return;
+    }
+
+    const res = await fetch(`${API}/squadra/rinomina?nome=${encodeURIComponent(nuovoNome)}`, {
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -620,6 +629,15 @@ function Squadra({ token }) {
   };
 
   const creaSquadra = async () => {
+    if (nomeSquadra.length > 25) {
+      setMessaggio("❌ Nome squadra troppo lungo (max 25 caratteri)");
+      return;
+    }
+    if (nomeSquadra.length < 3) {
+      setMessaggio("❌ Nome squadra troppo corto (min 3 caratteri)");
+      return;
+    }
+
     const res = await fetch(`${API}/squadra/crea?nome=${nomeSquadra}`, { method: "POST", headers: { Authorization: `Bearer ${token}` } });
     if (res.ok) caricaSquadra();
   };
@@ -729,6 +747,16 @@ function Mercato({ token }) {
   const [ricerca, setRicerca] = useState("");
   const [squadra, setSquadra] = useState([]);
   const [ordinePrezzo, setOrdinePrezzo] = useState("");
+  const [atletaDettagli, setAtletaDettagli] = useState(null);
+  const [atletaAperto, setAtletaAperto] = useState(null);
+
+  const apriDettagli = async (id) => {
+    if (atletaAperto === id) { setAtletaAperto(null); return; }
+    setAtletaAperto(id);
+    const res = await fetch(`${API}/atleta/${id}/statistiche`);
+    if (res.ok) setAtletaDettagli(await res.json());
+  };
+
   
   useState(() => {
     fetch(`${API}/athletes/`).then(r => r.json()).then(setAtleti);
@@ -805,19 +833,54 @@ function Mercato({ token }) {
           </thead>
           <tbody>
             {atletiFiltrati.map(a => (
-              <tr key={a.id}>
-                <td style={{ paddingLeft: 20 }}>
-                  <div style={{ fontWeight: 600 }}>{a.name}</div>
-                  <div className="mobile-category">{a.categoria}</div>
-                </td>
-                <td><span className="badge badge-blue">{a.categoria}</span></td>
-                <td style={{ color: theme.accent, fontWeight: 700 }}>{a.prezzo}cr</td>
-                <td style={{ paddingRight: 16 }}>
-                  {squadra.includes(a.id)
-                    ? <span style={{ color: theme.green, fontSize: 12, fontWeight: 600 }}>✓ In squadra</span>
-                    : <button className="btn btn-success" style={{ padding: "5px 12px", fontSize: 12 }} onClick={() => acquista(a.id)}>Acquista</button>}
-                </td>
-              </tr>
+              <>
+                <tr key={a.id}>
+                  <td style={{ paddingLeft: 20 }}>
+                    <div style={{ fontWeight: 600 }}>{a.name}</div>
+                    <div className="mobile-category">{a.categoria}</div>
+                  </td>
+                  <td><span className="badge badge-blue">{a.categoria}</span></td>
+                  <td style={{ color: theme.accent, fontWeight: 700 }}>{a.prezzo}cr</td>
+                  <td style={{ paddingRight: 16 }}>
+                    <div style={{ display: "flex", gap: 6, justifyContent: "center" }}>
+                      <button className="btn btn-blue" style={{ padding: "5px 8px", fontSize: 11 }} onClick={() => apriDettagli(a.id)}>
+                        {atletaAperto === a.id ? "▲" : "📊"}
+                      </button>
+                      {squadra.includes(a.id)
+                        ? <span style={{ color: theme.green, fontSize: 12, fontWeight: 600 }}>✓</span>
+                        : <button className="btn btn-success" style={{ padding: "5px 12px", fontSize: 12 }} onClick={() => acquista(a.id)}>Acquista</button>
+                      }
+                    </div>
+                  </td>
+                </tr>
+                {atletaAperto === a.id && atletaDettagli && (
+                  <tr key={`det-${a.id}`}>
+                    <td colSpan={5} style={{ padding: "12px 20px", background: "#0d1526" }}>
+                      <div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: "flex-start" }}>
+                        <div>
+                          <div style={{ fontSize: 11, color: theme.textMuted, marginBottom: 6, textTransform: "uppercase", letterSpacing: 1 }}>Punti per evento</div>
+                          {atletaDettagli.eventi.length === 0
+                            ? <span style={{ color: theme.textMuted, fontSize: 12 }}>Nessun evento</span>
+                            : atletaDettagli.eventi.map(e => (
+                              <div key={e.evento} style={{ fontSize: 12, color: theme.textSub, marginBottom: 3 }}>
+                                <span style={{ color: theme.blue, fontWeight: 600 }}>{e.punti} pt</span> — {e.evento}
+                              </div>
+                            ))
+                          }
+                        </div>
+                        <div className="stat-box">
+                          <span className="stat-label">In squadre</span>
+                          <span className="stat-value" style={{ fontSize: "1.2rem" }}>{atletaDettagli.in_squadre}</span>
+                        </div>
+                        <div className="stat-box">
+                          <span className="stat-label">Gare disputate</span>
+                          <span className="stat-value" style={{ fontSize: "1.2rem" }}>{atletaDettagli.gare}</span>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </>
             ))}
           </tbody>
         </table>
@@ -1597,3 +1660,4 @@ function SquadrePubbliche() {
   );
 }
 export default App;
+

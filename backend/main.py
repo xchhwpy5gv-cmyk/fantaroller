@@ -63,6 +63,14 @@ def home():
 
 @app.post("/register/")
 def register_user(user: UserCreate, db=Depends(get_db)):
+    if len(user.username) < 3:
+        raise HTTPException(status_code=400, detail="Username troppo corto (min 3 caratteri)")
+    if len(user.username) > 20:
+        raise HTTPException(status_code=400, detail="Username troppo lungo (max 20 caratteri)")
+    if len(user.password) < 4:
+        raise HTTPException(status_code=400, detail="Password troppo corta (min 4 caratteri)")
+    if len(user.password) > 30:
+        raise HTTPException(status_code=400, detail="Password troppo lunga (max 30 caratteri)")
     esistente = db.query(User).filter(User.username == user.username).first()
     if esistente:
         raise HTTPException(status_code=400, detail="Username già esistente")
@@ -71,6 +79,31 @@ def register_user(user: UserCreate, db=Depends(get_db)):
     db.add(nuovo)
     db.commit()
     return {"message": "Utente creato"}
+
+@app.get("/atleta/{atleta_id}/statistiche")
+def statistiche_atleta(atleta_id: int, db=Depends(get_db)):
+    atleta = db.query(Athlete).filter(Athlete.id == atleta_id).first()
+    if not atleta:
+        raise HTTPException(status_code=404, detail="Atleta non trovato")
+    
+    # Punti per evento
+    punti_eventi = db.query(PuntiEvento).filter(PuntiEvento.atleta_id == atleta_id).all()
+    eventi = [{"evento": p.evento, "punti": p.punti} for p in punti_eventi]
+    
+    # Quante squadre lo hanno
+    from sqlalchemy import text
+    count = db.execute(text(f"SELECT COUNT(*) FROM squadra_atleti WHERE atleta_id = {atleta_id}")).scalar()
+    
+    return {
+        "name": atleta.name,
+        "categoria": atleta.categoria,
+        "punti_totali": atleta.punti,
+        "gare": atleta.gare,
+        "prezzo": atleta.prezzo,
+        "eventi": eventi,
+        "in_squadre": count
+    }
+
 
 @app.post("/login/", response_model=Token)
 def login(user: UserLogin, db=Depends(get_db)):

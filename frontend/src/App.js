@@ -601,14 +601,14 @@ function Squadra({ token }) {
   const [rinominaAperto, setRinominaAperto] = useState(false);
 
   const rinomina = async () => {
-    if (nomeSquadra.length > 25) {
-      setMessaggio("❌ Nome squadra troppo lungo (max 25 caratteri)");
-      return;
-    }
-    if (nomeSquadra.length < 3) {
-      setMessaggio("❌ Nome squadra troppo corto (min 3 caratteri)");
-      return;
-    }
+      if (nuovoNome.length > 25) {
+  setMessaggio("❌ Nome squadra troppo lungo (max 25 caratteri)");
+  return;
+      }
+  if (nuovoNome.length < 3) {
+  setMessaggio("❌ Nome squadra troppo corto (min 3 caratteri)");
+  return;
+      }
 
     const res = await fetch(`${API}/squadra/rinomina?nome=${encodeURIComponent(nuovoNome)}`, {
     method: "POST",

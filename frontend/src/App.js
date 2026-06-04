@@ -422,6 +422,22 @@ function App() {
   const [countdown, setCountdown] = useState("");
 
   useState(() => {
+    const t = localStorage.getItem("token");
+    if (t) {
+      fetch(`${API}/me/`, { headers: { Authorization: `Bearer ${t}` } })
+        .then(r => r.json())
+        .then(data => {
+          setIsAdmin(data.is_admin === 1);
+          setUsername(data.username);
+        })
+        .catch(() => {
+          setToken(null);
+          localStorage.removeItem("token");
+        });
+    }
+  }, []);
+
+  useState(() => {
     const target = new Date("2026-06-05T09:00:00");
     const aggiorna = () => {
       const ora = new Date();

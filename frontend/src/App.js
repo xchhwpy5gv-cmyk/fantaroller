@@ -420,6 +420,25 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [username, setUsername] = useState("");
   const [menuAperto, setMenuAperto] = useState(false);
+  const [countdown, setCountdown] = useState("");
+
+  useState(() => {
+    const target = new Date("2026-06-06T09:00:00");
+    const aggiorna = () => {
+      const ora = new Date();
+      const diff = target - ora;
+      if (diff <= 0) { setCountdown("🔴 Gare iniziate!"); return; }
+      const giorni = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const ore = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minuti = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const secondi = Math.floor((diff % (1000 * 60)) / 1000);
+      setCountdown(`⏱️ Mercato chiude tra: ${giorni}g ${ore}h ${minuti}m ${secondi}s`);
+    };
+    aggiorna();
+    const interval = setInterval(aggiorna, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
 
   const dopoLogin = async (t) => {
     setToken(t);
@@ -507,6 +526,12 @@ function App() {
               ☰
             </button>
             <div className="logo">⚡ Fanta<span>Roller</span></div>
+            {countdown && (
+              <div style={{ fontSize: 11, color: theme.accent, fontWeight: 600, background: "#f9731615", border: "1px solid #f9731630", borderRadius: 8, padding: "4px 10px" }}>
+                {countdown}
+              </div>
+            )}
+
           </div>
           <nav className="nav">
             <button className={`nav-btn ${pagina === "squadra" ? "active" : ""}`} onClick={() => setPagina("squadra")}>Squadra</button>

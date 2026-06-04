@@ -1038,6 +1038,8 @@ function Classifica({ username }) {
   const [eventi, setEventi] = useState([]);
   const [eventoSelezionato, setEventoSelezionato] = useState("");
 
+  const EVENTO_PRINCIPALE = "Campionati Italiani Pista 2026";
+
   const caricaEventi = async () => {
     const res = await fetch(`${API}/classifica/eventi`);
     if (res.ok) setEventi(await res.json());
@@ -1049,7 +1051,11 @@ function Classifica({ username }) {
     if (res.ok) setClassifica(await res.json());
   };
 
-  useState(() => { caricaEventi(); caricaClassifica(""); }, []);
+  useState(() => { 
+    caricaEventi(); 
+    caricaClassifica(EVENTO_PRINCIPALE); 
+    setEventoSelezionato(EVENTO_PRINCIPALE);
+  }, []);
 
   const handleEvento = (e) => { setEventoSelezionato(e.target.value); caricaClassifica(e.target.value); };
 
@@ -1063,7 +1069,8 @@ function Classifica({ username }) {
           <div className="card-title" style={{ marginBottom: 0 }}>🏅 Classifica</div>
           <select className="select" value={eventoSelezionato} onChange={handleEvento}>
             <option value="">🌍 Generale</option>
-            {eventi.map(e => <option key={e} value={e}>{e}</option>)}
+            <option value={EVENTO_PRINCIPALE} style={{ fontWeight: 700 }}>🏆 {EVENTO_PRINCIPALE}</option>
+            {eventi.filter(e => e !== EVENTO_PRINCIPALE).map(e => <option key={e} value={e}>{e}</option>)}
           </select>
         </div>
       </div>

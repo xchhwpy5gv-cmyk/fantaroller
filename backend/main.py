@@ -237,7 +237,7 @@ def vedi_squadra(utente=Depends(get_utente_corrente), db=Depends(get_db)):
     return {
         "nome": squadra.nome,
         "budget": utente.budget,
-        "atleti": [{"id": a.id, "name": a.name, "categoria": a.categoria, "prezzo": a.prezzo} for a in squadra.atleti]
+       "atleti": [{"id": a.id, "name": a.name, "categoria": a.categoria, "prezzo": a.prezzo, "punti": a.punti} for a in squadra.atleti]
     }
 
 @app.post("/squadra/vendi/{atleta_id}")

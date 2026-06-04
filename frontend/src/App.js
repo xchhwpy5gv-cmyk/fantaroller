@@ -766,7 +766,7 @@ function Squadra({ token }) {
               <thead>
                 <tr>
                   <th>Nome</th>
-                  <th>Categoria</th>
+                  <th>Punti</th>
                   <th>Prezzo</th>
                   <th></th>
                 </tr>
@@ -776,9 +776,9 @@ function Squadra({ token }) {
                   <tr key={a.id}>
                     <td>
                       <div style={{ fontWeight: 600 }}>{a.name}</div>
-                      <div className="mobile-category">{a.categoria}</div>
+                      <div style={{ fontSize: 11, color: theme.textMuted }}>{a.categoria}</div>
                     </td>
-                    <td><span className="badge badge-blue">{a.categoria}</span></td>
+                    <td style={{ color: theme.green, fontWeight: 700 }}>{a.punti || 0}</td>
                     <td style={{ color: theme.accent, fontWeight: 700 }}>{a.prezzo}cr</td>
                     <td><button className="btn btn-danger" style={{ padding: "5px 10px", fontSize: 12 }} onClick={() => vendi(a.id)}>Vendi</button></td>
                   </tr>

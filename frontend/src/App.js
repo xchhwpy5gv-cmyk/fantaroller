@@ -875,7 +875,14 @@ function Mercato({ token }) {
     )}
 
     <div className="card">
-      <div className="card-title">🛒 Mercato Atleti</div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+        <div className="card-title" style={{ marginBottom: 0 }}>🛒 Mercato Atleti</div>
+        <div className="stat-box">
+          <span className="stat-label">Budget rimasto</span>
+          <span className="stat-value">{budget}</span>
+          <span style={{ fontSize: 11, color: theme.textMuted }}>crediti</span>
+        </div>
+      </div>
 
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
 

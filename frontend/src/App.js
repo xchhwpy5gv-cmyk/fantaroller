@@ -1645,10 +1645,12 @@ function Lega({ token }) {
   const sonoMembro = (id) => mieLeghe.some(l => l.id === id);
   const legheFiltrate = tutteLeghe.filter(l => l.nome.toLowerCase().includes(ricerca.toLowerCase()));
 
+  const [sezioneAperta, setSezioneAperta] = useState("classifica");
+
   // PAGINA LEGA APERTA
   if (vista === "lega" && dettagli) return (
     <div>
-      <div className="card">
+      <div className="card" style={{ background: "linear-gradient(135deg, #1a1f35, #111827)", border: `1px solid ${theme.accent}30` }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
           <div>
             <button className="btn btn-danger" style={{ fontSize: 12, padding: "4px 10px", marginBottom: 8 }} onClick={() => setVista("home")}>← Torna alle leghe</button>
@@ -1661,78 +1663,104 @@ function Lega({ token }) {
             </button>
           )}
         </div>
+        <div style={{ display: "flex", gap: 8, marginTop: 16, flexWrap: "wrap" }}>
+          {[
+            { id: "classifica", label: "🏆 Classifica" },
+            { id: "chat", label: "💬 Chat" },
+            { id: "utenti", label: "👥 Utenti" },
+            { id: "squadre", label: "👕 Squadre" },
+          ].map(s => (
+            <button
+              key={s.id}
+              className={`nav-btn ${sezioneAperta === s.id ? "active" : ""}`}
+              onClick={() => setSezioneAperta(s.id)}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className="card">
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 16 }}>
-          <div className="card-title" style={{ marginBottom: 0 }}>🏆 Classifica</div>
-          <select className="select" value={eventoSelezionato} onChange={e => { setEventoSelezionato(e.target.value); caricaClassificaLega(e.target.value); }}>
-            <option value="">🌍 Generale</option>
-            {eventi.map(e => <option key={e} value={e}>{e}</option>)}
-          </select>
+      {sezioneAperta === "classifica" && (
+        <div className="card">
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 16 }}>
+            <div className="card-title" style={{ marginBottom: 0 }}>🏆 Classifica</div>
+            <select className="select" value={eventoSelezionato} onChange={e => { setEventoSelezionato(e.target.value); caricaClassificaLega(e.target.value); }}>
+              <option value="">🌍 Generale</option>
+              {eventi.map(e => <option key={e} value={e}>{e}</option>)}
+            </select>
+          </div>
+          <table className="table">
+            <thead><tr><th style={{ width: 60 }}>#</th><th>Utente</th><th>Squadra</th><th>Punti</th></tr></thead>
+            <tbody>
+              {classifica.length === 0
+                ? <tr><td colSpan={4} style={{ textAlign: "center", color: theme.textMuted, padding: 24 }}>Nessuna squadra completa</td></tr>
+                : classifica.map((u, i) => (
+                  <tr key={u.username}>
+                    <td style={{ paddingLeft: 12 }}><span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "1.2rem", color: rankColor(i) }}>{rankEmoji(i)}</span></td>
+                    <td style={{ fontWeight: 600 }}>{u.username}</td>
+                    <td style={{ color: theme.textSub }}>{u.squadra}</td>
+                    <td style={{ color: theme.accent, fontWeight: 700, fontFamily: "'Bebas Neue', cursive", fontSize: "1.1rem" }}>{u.punti}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
         </div>
-        <table className="table">
-          <thead><tr><th style={{ width: 60 }}>#</th><th>Utente</th><th>Squadra</th><th>Punti</th></tr></thead>
-          <tbody>
-            {classifica.length === 0
-              ? <tr><td colSpan={4} style={{ textAlign: "center", color: theme.textMuted, padding: 24 }}>Nessuna squadra completa</td></tr>
-              : classifica.map((u, i) => (
-                <tr key={u.username}>
-                  <td style={{ paddingLeft: 12 }}><span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "1.2rem", color: rankColor(i) }}>{rankEmoji(i)}</span></td>
-                  <td style={{ fontWeight: 600 }}>{u.username}</td>
-                  <td style={{ color: theme.textSub }}>{u.squadra}</td>
-                  <td style={{ color: theme.accent, fontWeight: 700, fontFamily: "'Bebas Neue', cursive", fontSize: "1.1rem" }}>{u.punti}</td>
-                </tr>
+      )}
+
+      {sezioneAperta === "chat" && (
+        <div className="card">
+          <div className="card-title">💬 Chat Lega</div>
+          <div style={{ maxHeight: 300, overflowY: "auto", marginBottom: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+            {messaggi.length === 0
+              ? <p style={{ color: theme.textMuted, fontSize: 13 }}>Nessun messaggio ancora</p>
+              : messaggi.map(m => (
+                <div key={m.id} style={{ background: "#0d1526", borderRadius: 8, padding: "8px 12px" }}>
+                  <span style={{ color: theme.accent, fontWeight: 700, fontSize: 12 }}>{m.username}</span>
+                  <span style={{ color: theme.textSub, fontSize: 13, marginLeft: 8 }}>{m.testo}</span>
+                </div>
               ))
             }
-          </tbody>
-        </table>
-      </div>
+          </div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <input
+              className="input"
+              style={{ marginBottom: 0, flex: 1 }}
+              placeholder="Scrivi un messaggio..."
+              value={nuovoMessaggio}
+              onChange={e => setNuovoMessaggio(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && inviaMessaggio()}
+            />
+            <button className="btn btn-primary" onClick={inviaMessaggio}>Invia</button>
+          </div>
+        </div>
+      )}
 
-      <div className="card">
-        <div className="card-title">👥 Partecipanti</div>
-        <SquadreLega token={token} />
+      {sezioneAperta === "utenti" && (
         <div className="card">
-        <div className="card-title">💬 Chat Lega</div>
-        <div style={{ maxHeight: 300, overflowY: "auto", marginBottom: 12, display: "flex", flexDirection: "column", gap: 8 }}>
-          {messaggi.length === 0
-            ? <p style={{ color: theme.textMuted, fontSize: 13 }}>Nessun messaggio ancora</p>
-            : messaggi.map(m => (
-              <div key={m.id} style={{ background: "#0d1526", borderRadius: 8, padding: "8px 12px" }}>
-                <span style={{ color: theme.accent, fontWeight: 700, fontSize: 12 }}>{m.username}</span>
-                <span style={{ color: theme.textSub, fontSize: 13, marginLeft: 8 }}>{m.testo}</span>
-              </div>
-            ))
-          }
+          <div className="card-title">👥 Partecipanti</div>
+          <table className="table">
+            <thead><tr><th>Utente</th><th>Squadra</th><th>Atleti</th></tr></thead>
+            <tbody>
+              {dettagli.partecipanti.map(p => (
+                <tr key={p.username}>
+                  <td style={{ fontWeight: 600 }}>
+                    {p.username}
+                    {p.is_owner && <span className="badge badge-orange" style={{ marginLeft: 8 }}>Admin</span>}
+                  </td>
+                  <td style={{ color: theme.textSub }}>{p.squadra || "—"}</td>
+                  <td><span className={`badge ${p.n_atleti === 16 ? "badge-green" : "badge-orange"}`}>{p.n_atleti}/16</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-        <div style={{ display: "flex", gap: 8 }}>
-          <input
-            className="input"
-            style={{ marginBottom: 0, flex: 1 }}
-            placeholder="Scrivi un messaggio..."
-            value={nuovoMessaggio}
-            onChange={e => setNuovoMessaggio(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && inviaMessaggio()}
-          />
-          <button className="btn btn-primary" onClick={inviaMessaggio}>Invia</button>
-        </div>
-      </div>
-        <table className="table">
-          <thead><tr><th>Utente</th><th>Squadra</th><th>Atleti</th></tr></thead>
-          <tbody>
-            {dettagli.partecipanti.map(p => (
-              <tr key={p.username}>
-                <td style={{ fontWeight: 600 }}>
-                  {p.username}
-                  {p.is_owner && <span className="badge badge-orange" style={{ marginLeft: 8 }}>Admin</span>}
-                </td>
-                <td style={{ color: theme.textSub }}>{p.squadra || "—"}</td>
-                <td><span className={`badge ${p.n_atleti === 16 ? "badge-green" : "badge-orange"}`}>{p.n_atleti}/16</span></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      )}
+
+      {sezioneAperta === "squadre" && (
+        <SquadreLega token={token} />
+      )}
     </div>
   );
 

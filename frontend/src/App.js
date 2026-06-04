@@ -1362,6 +1362,8 @@ function Lega({ token }) {
   const [ricerca, setRicerca] = useState("");
   const [copiato, setCopiato] = useState(false);
   const [legaEntrata, setLegaEntrata] = useState(null);
+  const [messaggi, setMessaggi] = useState([]);
+  const [nuovoMessaggio, setNuovoMessaggio] = useState("");
 
   const caricaMieLeghe = async () => {
     const res = await fetch(`${API}/league/mie-leghe`, {
@@ -1388,6 +1390,7 @@ function Lega({ token }) {
       setVista("lega");
       caricaClassificaLega("");
       caricaEventi();
+      caricaMessaggi();
     }
   };
 
@@ -1421,6 +1424,25 @@ function Lega({ token }) {
     setMessaggio(data.message || data.detail);
     if (res.ok) { setPassword(""); setLegaEntrata(null); caricaMieLeghe(); caricaTutteLeghe(); }
     else setMessaggio("❌ Password errata");
+  };
+
+  const caricaMessaggi = async () => {
+    const res = await fetch(`${API}/league/messaggi`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (res.ok) setMessaggi(await res.json());
+  };
+
+  const inviaMessaggio = async () => {
+    if (!nuovoMessaggio.trim()) return;
+    const res = await fetch(`${API}/league/messaggio?testo=${encodeURIComponent(nuovoMessaggio)}`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (res.ok) {
+      setNuovoMessaggio("");
+      caricaMessaggi();
+    }
   };
 
   const copiaPassword = () => {
@@ -1481,6 +1503,31 @@ function Lega({ token }) {
 
       <div className="card">
         <div className="card-title">👥 Partecipanti</div>
+        <div className="card">
+        <div className="card-title">💬 Chat Lega</div>
+        <div style={{ maxHeight: 300, overflowY: "auto", marginBottom: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+          {messaggi.length === 0
+            ? <p style={{ color: theme.textMuted, fontSize: 13 }}>Nessun messaggio ancora</p>
+            : messaggi.map(m => (
+              <div key={m.id} style={{ background: "#0d1526", borderRadius: 8, padding: "8px 12px" }}>
+                <span style={{ color: theme.accent, fontWeight: 700, fontSize: 12 }}>{m.username}</span>
+                <span style={{ color: theme.textSub, fontSize: 13, marginLeft: 8 }}>{m.testo}</span>
+              </div>
+            ))
+          }
+        </div>
+        <div style={{ display: "flex", gap: 8 }}>
+          <input
+            className="input"
+            style={{ marginBottom: 0, flex: 1 }}
+            placeholder="Scrivi un messaggio..."
+            value={nuovoMessaggio}
+            onChange={e => setNuovoMessaggio(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && inviaMessaggio()}
+          />
+          <button className="btn btn-primary" onClick={inviaMessaggio}>Invia</button>
+        </div>
+      </div>
         <table className="table">
           <thead><tr><th>Utente</th><th>Squadra</th><th>Atleti</th></tr></thead>
           <tbody>

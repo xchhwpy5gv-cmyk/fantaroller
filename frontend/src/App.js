@@ -339,8 +339,7 @@ const styles = `
 
   @media (max-width: 768px) {
 
-    .table th:nth-child(2),
-    .table td:nth-child(2) {
+    .hide-mobile {
       display: none;
     }
 

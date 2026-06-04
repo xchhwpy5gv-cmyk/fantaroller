@@ -1063,6 +1063,7 @@ function Admin({ token }) {
   const [urlIndex, setUrlIndex] = useState("");
   const [nomeEventoIndex, setNomeEventoIndex] = useState("");
   const [stats, setStats] = useState(null);
+  const [listaAperta, setListaAperta] = useState(false);
 
 useState(() => {
   fetch(`${API}/admin/statistiche`, {
@@ -1150,30 +1151,39 @@ useState(() => {
                 <span className="stat-value">{stats.utenti_senza_squadra}</span>
               </div>
             </div>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Username</th>
-                  <th>Squadra</th>
-                  <th>Atleti</th>
-                  <th>Stato</th>
-                </tr>
-              </thead>
-              <tbody>
-                {stats.lista.map(u => (
-                  <tr key={u.username}>
-                    <td style={{ fontWeight: 600 }}>{u.username}</td>
-                    <td style={{ color: theme.textSub }}>{u.ha_squadra ? "✅" : "❌"}</td>
-                    <td style={{ textAlign: "center" }}>{u.n_atleti}/16</td>
-                    <td>
-                      <span className={`badge ${u.completa ? "badge-green" : u.ha_squadra ? "badge-orange" : "badge-red"}`}>
-                        {u.completa ? "Completa" : u.ha_squadra ? "In corso" : "Nessuna"}
-                      </span>
-                    </td>
+<div
+              style={{ cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", marginTop: 8 }}
+              onClick={() => setListaAperta(!listaAperta)}
+            >
+              <span style={{ color: theme.textSub, fontSize: 13, fontWeight: 600 }}>👥 Vedi iscritti</span>
+              <span style={{ color: theme.textMuted }}>{listaAperta ? "▲" : "▼"}</span>
+            </div>
+            {listaAperta && (
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Username</th>
+                    <th>Squadra</th>
+                    <th>Atleti</th>
+                    <th>Stato</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {stats.lista.map(u => (
+                    <tr key={u.username}>
+                      <td style={{ fontWeight: 600 }}>{u.username}</td>
+                      <td style={{ color: theme.textSub }}>{u.ha_squadra ? "✅" : "❌"}</td>
+                      <td style={{ textAlign: "center" }}>{u.n_atleti}/16</td>
+                      <td>
+                        <span className={`badge ${u.completa ? "badge-green" : u.ha_squadra ? "badge-orange" : "badge-red"}`}>
+                          {u.completa ? "Completa" : u.ha_squadra ? "In corso" : "Nessuna"}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         )}
 

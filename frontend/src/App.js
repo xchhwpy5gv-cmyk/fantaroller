@@ -423,7 +423,7 @@ function App() {
   const [countdown, setCountdown] = useState("");
 
   useState(() => {
-    const target = new Date("2026-06-06T09:00:00");
+    const target = new Date("2026-06-05T09:00:00");
     const aggiorna = () => {
       const ora = new Date();
       const diff = target - ora;

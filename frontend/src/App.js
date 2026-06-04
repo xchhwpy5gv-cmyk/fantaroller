@@ -579,9 +579,13 @@ function Login({ setToken }) {
       });
       const data = await res.json();
       if (registrati) {
-        setSuccesso("✅ Registrato! Ora fai login.");
-        setErrore("");
-        setRegistrati(false);
+        if (res.ok) {
+          setSuccesso("✅ Registrato! Ora fai login.");
+          setErrore("");
+          setRegistrati(false);
+        } else {
+          setErrore(`❌ ${data.detail}`);
+        }
       } else if (data.access_token) {
         setToken(data.access_token);
       } else {

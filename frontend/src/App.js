@@ -1150,6 +1150,8 @@ function Admin({ token }) {
   const [nomeEventoIndex, setNomeEventoIndex] = useState("");
   const [stats, setStats] = useState(null);
   const [listaAperta, setListaAperta] = useState(false);
+  const [eventoCalcolo, setEventoCalcolo] = useState("");
+  const [eventiAperti, setEventiAperti] = useState({});
 
 useState(() => {
   fetch(`${API}/admin/statistiche`, {
@@ -1207,7 +1209,8 @@ useState(() => {
 
   const calcolaPunti = async () => {
     setMessaggio("⏳ Calcolo punti in corso...");
-    const res = await fetch(`${API}/admin/calcola-punti`, { method: "POST", headers: { Authorization: `Bearer ${token}` } });
+    const url = eventoCalcolo ? `${API}/admin/calcola-punti?evento=${encodeURIComponent(eventoCalcolo)}` : `${API}/admin/calcola-punti`;
+    const res = await fetch(url, { method: "POST", headers: { Authorization: `Bearer ${token}` } });
     const data = await res.json(); setMessaggio(data.message);
   };
 
@@ -1315,33 +1318,56 @@ useState(() => {
           )}
         </div>
         {gare.length === 0 ? <p style={{ color: theme.textMuted, fontSize: 14 }}>Nessuna gara inserita</p> : (
-          <table className="table">
-            <thead><tr><th style={{ width: 40 }}>✓</th><th>Evento</th><th>Categoria</th><th>Molt.</th><th></th></tr></thead>
-            <tbody>
-              {gare.map(g => (
-                <tr key={g.id} style={{ background: gareSelezionate.includes(g.id) ? "#f9731610" : "" }}>
-                  <td>
-                    <input type="checkbox" checked={gareSelezionate.includes(g.id)} onChange={e => {
-                      if (e.target.checked) setGareSelezionate([...gareSelezionate, g.id]);
-                      else setGareSelezionate(gareSelezionate.filter(id => id !== g.id));
-                    }} />
-                  </td>
-                  <td style={{ fontWeight: 600 }}>{g.evento}</td>
-                  <td><span className="badge badge-blue">{g.categoria}</span></td>
-                  <td><span className="badge badge-orange">×{g.moltiplicatore}</span></td>
-                  <td><button className="btn btn-danger" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => eliminaGara(g.id)}>Elimina</button></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <>
+            {[...new Set(gare.map(g => g.evento))].map(evento => (
+              <div key={evento} style={{ marginBottom: 12 }}>
+                <div
+                  style={{ cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "#0d1526", borderRadius: 8, marginBottom: 6 }}
+                  onClick={() => setEventiAperti(prev => ({ ...prev, [evento]: !prev[evento] }))}
+                >
+                  <span style={{ fontWeight: 600, fontSize: 14 }}>{evento}</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <span className="badge badge-blue">{gare.filter(g => g.evento === evento).length} gare</span>
+                    <span style={{ color: theme.textMuted }}>{eventiAperti[evento] ? "▲" : "▼"}</span>
+                  </div>
+                </div>
+                {eventiAperti[evento] && (
+                  <table className="table">
+                    <thead><tr><th style={{ width: 40 }}>✓</th><th>Categoria</th><th>Molt.</th><th></th></tr></thead>
+                    <tbody>
+                      {gare.filter(g => g.evento === evento).map(g => (
+                        <tr key={g.id} style={{ background: gareSelezionate.includes(g.id) ? "#f9731610" : "" }}>
+                          <td>
+                            <input type="checkbox" checked={gareSelezionate.includes(g.id)} onChange={e => {
+                              if (e.target.checked) setGareSelezionate([...gareSelezionate, g.id]);
+                              else setGareSelezionate(gareSelezionate.filter(id => id !== g.id));
+                            }} />
+                          </td>
+                          <td><span className="badge badge-blue">{g.categoria}</span></td>
+                          <td><span className="badge badge-orange">×{g.moltiplicatore}</span></td>
+                          <td><button className="btn btn-danger" style={{ padding: "4px 8px", fontSize: 11 }} onClick={() => eliminaGara(g.id)}>Elimina</button></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            ))}
+          </>
         )}
       </div>
 
       <div className="card">
         <div className="card-title">🔄 Aggiorna Punti</div>
-        <p style={{ color: theme.textSub, fontSize: 13, marginBottom: 14 }}>Ricalcola i punti di tutti gli atleti in base alle gare inserite. Le sanzioni vengono applicate automaticamente.</p>
+        <p style={{ color: theme.textSub, fontSize: 13, marginBottom: 14 }}>Seleziona un campionato specifico o calcola tutto.</p>
+        <select className="select" style={{ marginBottom: 12, width: "100%" }} value={eventoCalcolo} onChange={e => setEventoCalcolo(e.target.value)}>
+          <option value="">🌍 Tutti i campionati</option>
+          {[...new Set(gare.map(g => g.evento))].map(e => (
+            <option key={e} value={e}>{e}</option>
+          ))}
+        </select>
         <button className="btn" style={{ background: "linear-gradient(135deg, #f97316, #ef4444)", color: "white", padding: "12px 24px", fontSize: 14 }} onClick={calcolaPunti}>
-          🔄 Calcola Punti
+          🔄 {eventoCalcolo ? `Calcola ${eventoCalcolo}` : "Calcola Tutti"}
         </button>
       </div>
     </div>

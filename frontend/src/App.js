@@ -867,7 +867,6 @@ function Mercato({ token }) {
             <tr>
               <th style={{ paddingLeft: 20 }}>#</th>
               <th>Nome</th>
-              <th>Categoria</th>
               <th>Squadre</th>
             </tr>
           </thead>
@@ -875,8 +874,10 @@ function Mercato({ token }) {
             {piuAcquistati.map((a, i) => (
               <tr key={a.id}>
                 <td style={{ paddingLeft: 20, fontFamily: "'Bebas Neue', cursive", fontSize: "1.1rem", color: i === 0 ? theme.yellow : i === 1 ? "#94a3b8" : i === 2 ? "#b45309" : theme.textMuted }}>{i + 1}</td>
-                <td style={{ fontWeight: 600 }}>{a.name}</td>
-                <td><span className="badge badge-blue">{a.categoria}</span></td>
+                <td>
+                  <div style={{ fontWeight: 600 }}>{a.name}</div>
+                  <div style={{ fontSize: 11, color: theme.textMuted }}>{a.categoria}</div>
+                </td>
                 <td style={{ color: theme.accent, fontWeight: 700 }}>{a.in_squadre}</td>
               </tr>
             ))}

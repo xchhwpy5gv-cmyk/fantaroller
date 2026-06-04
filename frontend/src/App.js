@@ -1037,6 +1037,7 @@ function Classifica({ username }) {
   const [classifica, setClassifica] = useState([]);
   const [eventi, setEventi] = useState([]);
   const [eventoSelezionato, setEventoSelezionato] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const EVENTO_PRINCIPALE = "Campionati Italiani Pista 2026";
 
@@ -1046,9 +1047,11 @@ function Classifica({ username }) {
   };
 
   const caricaClassifica = async (evento) => {
+    setLoading(true);
     const url = evento ? `${API}/classifica/?evento=${encodeURIComponent(evento)}` : `${API}/classifica/`;
     const res = await fetch(url);
     if (res.ok) setClassifica(await res.json());
+    setLoading(false);
   };
 
   useState(() => { 
@@ -1076,28 +1079,30 @@ function Classifica({ username }) {
       </div>
 
       <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-        {classifica.length === 0
-          ? <p style={{ textAlign: "center", color: theme.textMuted, padding: 24 }}>Nessuna squadra completa in classifica</p>
-          : classifica.map((u, i) => (
-            <div key={u.username} style={{
-              display: "flex", alignItems: "center", gap: 12, padding: "12px 16px",
-              borderBottom: `1px solid ${theme.border}22`,
-              background: u.username === username ? "#f9731610" : "",
-              borderLeft: u.username === username ? `3px solid ${theme.accent}` : "3px solid transparent"
-            }}>
-              <span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "1.3rem", color: rankColor(i), minWidth: 28 }}>
-                {rankEmoji(i) || i + 1}
-              </span>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontWeight: 600, fontSize: 14, color: theme.white }}>
-                  {u.squadra}
-                  {u.username === username && <span className="badge badge-orange" style={{ marginLeft: 8 }}>Tu</span>}
+        {loading
+          ? <p style={{ textAlign: "center", color: theme.textMuted, padding: 24 }}>⏳ Caricamento...</p>
+          : classifica.length === 0
+            ? <p style={{ textAlign: "center", color: theme.textMuted, padding: 24 }}>Nessuna squadra completa in classifica</p>
+            : classifica.map((u, i) => (
+                <div key={u.username} style={{
+                  display: "flex", alignItems: "center", gap: 12, padding: "12px 16px",
+                  borderBottom: `1px solid ${theme.border}22`,
+                  background: u.username === username ? "#f9731610" : "",
+                  borderLeft: u.username === username ? `3px solid ${theme.accent}` : "3px solid transparent"
+                }}>
+                  <span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "1.3rem", color: rankColor(i), minWidth: 28 }}>
+                    {rankEmoji(i) || i + 1}
+                  </span>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontWeight: 600, fontSize: 14, color: theme.white }}>
+                      {u.squadra}
+                      {u.username === username && <span className="badge badge-orange" style={{ marginLeft: 8 }}>Tu</span>}
+                    </div>
+                    <div style={{ fontSize: 11, color: theme.textMuted }}>@{u.username}</div>
+                  </div>
+                  <span style={{ color: theme.accent, fontWeight: 700, fontFamily: "'Bebas Neue', cursive", fontSize: "1.2rem" }}>{u.punti}</span>
                 </div>
-                <div style={{ fontSize: 11, color: theme.textMuted }}>@{u.username}</div>
-              </div>
-              <span style={{ color: theme.accent, fontWeight: 700, fontFamily: "'Bebas Neue', cursive", fontSize: "1.2rem" }}>{u.punti}</span>
-            </div>
-          ))
+              ))
         }
       </div>
     </div>

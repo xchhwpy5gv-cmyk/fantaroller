@@ -887,6 +887,9 @@ def tutte_le_leghe(db=Depends(get_db)):
 
 @app.delete("/admin/elimina-atleta/{atleta_id}")
 def elimina_atleta(atleta_id: int, db=Depends(get_db)):
+    db.execute(text(f"DELETE FROM squadra_atleti WHERE atleta_id = {atleta_id}"))
+    db.execute(text(f"DELETE FROM punti_evento WHERE atleta_id = {atleta_id}"))
+    db.commit()
     atleta = db.query(Athlete).filter(Athlete.id == atleta_id).first()
     if not atleta:
         raise HTTPException(status_code=404, detail="Atleta non trovato")

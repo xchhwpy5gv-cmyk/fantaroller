@@ -815,11 +815,23 @@ function Mercato({ token }) {
     }
   };
 
-  const categorie = [...new Set(atleti.map(a => a.categoria))].sort();
+  const ordineCategorie = ["Ragazzi Maschi", "Ragazze Femminile", "Allievi Maschi", "Allieve Femminile", "Junior Maschi", "Junior Femminile", "Senior Maschi", "Senior Femminile"];
+  const categorie = ordineCategorie.filter(c => atleti.some(a => a.categoria === c));
+  
+  const isDisponibile = (a) => {
+    const categoriapiena = (atletiPerCategoria[a.categoria] || 0) >= 2;
+    const troppoCostate = a.prezzo > budget;
+    return squadra.includes(a.id) || (!categoriapiena && !troppoCostate);
+  };
+
   const atletiFiltrati = atleti
     .filter(a => filtro ? a.categoria === filtro : true)
     .filter(a => ricerca ? a.name.toLowerCase().includes(ricerca.toLowerCase()) : true)
     .sort((a, b) => {
+      // Prima gli disponibili, poi gli sbiaditi
+      const dispA = isDisponibile(a) ? 0 : 1;
+      const dispB = isDisponibile(b) ? 0 : 1;
+      if (dispA !== dispB) return dispA - dispB;
       if (ordinePrezzo === "alto") return b.prezzo - a.prezzo;
       if (ordinePrezzo === "basso") return a.prezzo - b.prezzo;
       return 0;
@@ -891,9 +903,7 @@ function Mercato({ token }) {
                 </thead>
                 <tbody>
                   {atletiCategoria.map(a => {
-                    const categoriapiena = (atletiPerCategoria[a.categoria] || 0) >= 2;
-                    const troppoCostate = a.prezzo > budget;
-                    const sbiadito = !squadra.includes(a.id) && (categoriapiena || troppoCostate);
+                    const sbiadito = !isDisponibile(a);
                     return (
               <>
                 <tr key={a.id} style={{ opacity: sbiadito ? 0.4 : 1 }}>

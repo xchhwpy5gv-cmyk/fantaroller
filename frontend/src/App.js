@@ -580,9 +580,9 @@ function Login({ setToken }) {
 
   const handleSubmit = async () => {
     if (username.length < 3) { setErrore("❌ Username troppo corto (min 3 caratteri)"); return; }
-    if (username.length > 20) { setErrore("❌ Username troppo lungo (max 20 caratteri)"); return; }
+    if (username.length > 40) { setErrore("❌ Username troppo lungo (max 20 caratteri)"); return; }
     if (password.length < 4) { setErrore("❌ Password troppo corta (min 4 caratteri)"); return; }
-    if (password.length > 30) { setErrore("❌ Password troppo lunga (max 30 caratteri)"); return; }
+    if (password.length > 40) { setErrore("❌ Password troppo lunga (max 30 caratteri)"); return; }
     setLoading(true);
     setErrore("");
     const url = registrati ? `${API}/register/` : `${API}/login/`;

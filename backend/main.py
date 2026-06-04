@@ -946,6 +946,13 @@ def fix_utente_vuoto(db=Depends(get_db)):
     db.commit()
     return {"message": "Utente vuoto eliminato"}
 
+@app.post("/admin/aggiungi-atleta-manuale")
+def aggiungi_atleta_manuale(name: str, categoria: str, prezzo: int, db=Depends(get_db)):
+    nuovo = Athlete(name=name, categoria=categoria, punti=0, prezzo=prezzo, gare=0, malus=0, visibile=1)
+    db.add(nuovo)
+    db.commit()
+    return {"message": f"{name} aggiunto!"}
+
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):
     imp = db.query(Impostazioni).first()

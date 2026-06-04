@@ -962,9 +962,7 @@ function Mercato({ token }) {
                 <tr key={a.id} style={{ opacity: sbiadito ? 0.4 : 1 }}>
                   <td style={{ paddingLeft: 20 }}>
                     <div style={{ fontWeight: 600 }}>{a.name}</div>
-                    <div className="mobile-category">{a.categoria}</div>
                   </td>
-                  <td><span className="badge badge-blue">{a.categoria}</span></td>
                   <td style={{ color: theme.accent, fontWeight: 700 }}>{a.prezzo}cr</td>
                   <td style={{ paddingRight: 16 }}>
                     <div style={{ display: "flex", gap: 6, justifyContent: "center" }}>

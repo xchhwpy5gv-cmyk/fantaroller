@@ -525,14 +525,14 @@ function App() {
             >
               ☰
             </button>
-            <div className="logo">⚡ Fanta<span>Roller</span></div>
-            {countdown && (
-              <div style={{ fontSize: 11, color: theme.accent, fontWeight: 600, background: "#f9731615", border: "1px solid #f9731630", borderRadius: 8, padding: "4px 10px" }}>
-                {countdown}
-              </div>
-            )}
+            <div className="logo" style={{ whiteSpace: "nowrap" }}>⚡ Fanta<span>Roller</span></div>
 
           </div>
+          {countdown && (
+            <div style={{ textAlign: "center", fontSize: 12, color: theme.accent, fontWeight: 600, background: "#f9731615", border: "1px solid #f9731630", borderRadius: 8, padding: "6px 10px", marginBottom: 16 }}>
+              {countdown}
+            </div>
+          )}
           <nav className="nav">
             <button className={`nav-btn ${pagina === "squadra" ? "active" : ""}`} onClick={() => setPagina("squadra")}>Squadra</button>
             <button className={`nav-btn ${pagina === "mercato" ? "active" : ""}`} onClick={() => setPagina("mercato")}>Mercato</button>

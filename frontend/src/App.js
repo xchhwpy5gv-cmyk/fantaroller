@@ -1579,9 +1579,13 @@ function Lega({ token }) {
       {messaggio && <div className="msg-box">{messaggio}</div>}
 
       <div className="card">
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: mieLeghe.length > 0 ? 0 : 0 }}>
-          <button className="btn btn-primary" onClick={() => setVista("crea")}>➕ Crea Lega</button>
-        </div>
+        <div className="card-title">🏅 Le Leghe</div>
+        <p style={{ color: theme.textSub, fontSize: 14, lineHeight: 1.7, marginBottom: 16 }}>
+          Le leghe ti permettono di sfidare i tuoi amici in una classifica privata! 
+          Crea una lega, condividi la password con chi vuoi e segui la classifica solo tra di voi. 
+          Puoi partecipare a più leghe contemporaneamente.
+        </p>
+        <button className="btn btn-primary" onClick={() => setVista("crea")}>➕ Crea Lega</button>
       </div>
 
       {mieLeghe.length > 0 && (

@@ -312,45 +312,32 @@ def debug_impostazioni(db=Depends(get_db)):
 
 @app.get("/classifica/")
 def classifica(evento: str = None, db=Depends(get_db)):
-    utenti = db.query(User).all()
-    risultati = []
-    for utente in utenti:
-        squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
-        if squadra and len(squadra.atleti) == 16:
-            if evento:
-                punti_totali = 0
-                for atleta in squadra.atleti:
-                    pe = db.query(PuntiEvento).filter(
-                        PuntiEvento.atleta_id == atleta.id,
-                        PuntiEvento.evento == evento
-                    ).first()
-                    if pe:
-                        punti_totali += pe.punti
-            else:
-                punti_totali = sum(a.punti for a in squadra.atleti)
-            risultati.append({
-                "username": utente.username,
-                "squadra": squadra.nome,
-                "punti": punti_totali,
-                "n_atleti": len(squadra.atleti)
-            })
-    risultati.sort(key=lambda x: x["punti"], reverse=True)
-    if risultati:
-        return risultati
-    # Se non ci sono ancora punti per questo evento, mostra tutte le squadre complete a 0
-    risultati_vuoti = []
-    for utente in utenti:
-        squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
-        if squadra and len(squadra.atleti) == 16:
-            risultati_vuoti.append({
-                "username": utente.username,
-                "squadra": squadra.nome,
-                "punti": 0,
-                "n_atleti": 16
-            })
-    if evento and risultati_vuoti:
-        return risultati_vuoti
-    return risultati
+    from sqlalchemy import text
+    
+    if evento:
+        rows = db.execute(text("""
+            SELECT u.username, s.nome, COALESCE(SUM(pe.punti), 0) as punti
+            FROM users u
+            JOIN squadre s ON s.user_id = u.id
+            JOIN squadra_atleti sa ON sa.squadra_id = s.id
+            LEFT JOIN punti_evento pe ON pe.atleta_id = sa.atleta_id AND pe.evento = :evento
+            GROUP BY u.username, s.nome, s.id
+            HAVING COUNT(sa.atleta_id) = 16
+            ORDER BY punti DESC
+        """), {"evento": evento}).fetchall()
+    else:
+        rows = db.execute(text("""
+            SELECT u.username, s.nome, COALESCE(SUM(a.punti), 0) as punti
+            FROM users u
+            JOIN squadre s ON s.user_id = u.id
+            JOIN squadra_atleti sa ON sa.squadra_id = s.id
+            JOIN athletes a ON a.id = sa.atleta_id
+            GROUP BY u.username, s.nome, s.id
+            HAVING COUNT(sa.atleta_id) = 16
+            ORDER BY punti DESC
+        """)).fetchall()
+    
+    return [{"username": r[0], "squadra": r[1], "punti": r[2], "n_atleti": 16} for r in rows]
 
 @app.get("/classifica/eventi")
 def lista_eventi(db=Depends(get_db)):

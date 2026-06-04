@@ -5,7 +5,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy import create_engine, text
-from models import Base, User, Athlete, Squadra, Impostazioni, Gara, PuntiEvento, League
+from models import Base, User, Athlete, Squadra, Impostazioni, Gara, PuntiEvento, League, Messaggio
 from schemas import UserCreate, UserLogin, Token
 from passlib.context import CryptContext
 from jose import JWTError, jwt
@@ -898,6 +898,26 @@ def atleti_piu_acquistati(db=Depends(get_db)):
         LIMIT 10
     """)).fetchall()
     return [{"id": r[0], "name": r[1], "categoria": r[2], "prezzo": r[3], "in_squadre": r[4]} for r in risultati]
+
+@app.post("/league/messaggio")
+def invia_messaggio(testo: str, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.league_id:
+        raise HTTPException(status_code=404, detail="Non sei in nessuna lega")
+    if len(testo.strip()) == 0:
+        raise HTTPException(status_code=400, detail="Messaggio vuoto")
+    if len(testo) > 300:
+        raise HTTPException(status_code=400, detail="Messaggio troppo lungo (max 300 caratteri)")
+    msg = Messaggio(testo=testo, user_id=utente.id, league_id=utente.league_id)
+    db.add(msg)
+    db.commit()
+    return {"message": "Messaggio inviato"}
+
+@app.get("/league/messaggi")
+def get_messaggi(utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.league_id:
+        raise HTTPException(status_code=404, detail="Non sei in nessuna lega")
+    messaggi = db.query(Messaggio).filter(Messaggio.league_id == utente.league_id).order_by(Messaggio.id.desc()).limit(50).all()
+    return [{"id": m.id, "testo": m.testo, "username": db.query(User).filter(User.id == m.user_id).first().username} for m in reversed(messaggi)]
 
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):

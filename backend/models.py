@@ -69,6 +69,13 @@ class Gara(Base):
     evento = Column(String)
     completata = Column(Integer, default=0)
 
+class Messaggio(Base):
+    __tablename__ = "messaggi"
+    id = Column(Integer, primary_key=True, index=True)
+    testo = Column(String)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    league_id = Column(Integer, ForeignKey("leagues.id"))
+
 class PuntiEvento(Base):
     __tablename__ = "punti_evento"
     id = Column(Integer, primary_key=True, index=True)

@@ -774,7 +774,7 @@ function Mercato({ token }) {
   const [ordinePrezzo, setOrdinePrezzo] = useState("");
   const [atletaDettagli, setAtletaDettagli] = useState(null);
   const [atletaAperto, setAtletaAperto] = useState(null);
-
+  const [categoriaAperta, setCategoriaAperta] = useState(null);
   const apriDettagli = async (id) => {
     if (atletaAperto === id) { setAtletaAperto(null); return; }
     setAtletaAperto(id);
@@ -846,18 +846,32 @@ function Mercato({ token }) {
       </div>
     </div>
 
-      <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-        <table className="table">
-          <thead>
-            <tr>
-              <th style={{ paddingLeft: 20 }}>Nome</th>
-              <th>Categoria</th>
-              <th>Prezzo</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {atletiFiltrati.map(a => (
+      {categorie.map(cat => {
+        const atletiCategoria = atletiFiltrati.filter(a => a.categoria === cat);
+        if (atletiCategoria.length === 0) return null;
+        return (
+          <div key={cat} className="card" style={{ padding: 0, overflow: "hidden" }}>
+            <div
+              style={{ padding: "14px 20px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", background: categoriaAperta === cat ? "#1a2235" : theme.bgCard }}
+              onClick={() => setCategoriaAperta(categoriaAperta === cat ? null : cat)}
+            >
+              <span style={{ fontWeight: 600, fontSize: 15 }}>{cat}</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <span className="badge badge-blue">{atletiCategoria.length} atleti</span>
+                <span style={{ color: theme.textMuted }}>{categoriaAperta === cat ? "▲" : "▼"}</span>
+              </div>
+            </div>
+            {categoriaAperta === cat && (
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th style={{ paddingLeft: 20 }}>Nome</th>
+                    <th>Prezzo</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {atletiCategoria.map(a => (
               <>
                 <tr key={a.id}>
                   <td style={{ paddingLeft: 20 }}>
@@ -907,9 +921,12 @@ function Mercato({ token }) {
                 )}
               </>
             ))}
-          </tbody>
-        </table>
-      </div>
+                </tbody>
+              </table>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

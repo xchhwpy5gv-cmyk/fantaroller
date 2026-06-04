@@ -1463,6 +1463,79 @@ useState(() => {
   );
 }
 
+function SquadreLega({ token }) {
+  const [squadre, setSquadre] = useState([]);
+  const [errore, setErrore] = useState("");
+  const [aperta, setAperta] = useState(null);
+
+  useState(() => {
+    fetch(`${API}/league/squadre`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(r => {
+        if (!r.ok) throw new Error("mercato aperto");
+        return r.json();
+      })
+      .then(setSquadre)
+      .catch(() => setErrore("Le squadre saranno visibili quando il mercato chiuderà"));
+  }, []);
+
+  if (errore) return (
+    <div className="card">
+      <div className="card-title">👥 Squadre della Lega</div>
+      <p style={{ color: theme.textMuted }}>{errore}</p>
+    </div>
+  );
+
+  if (squadre.length === 0) return null;
+
+  return (
+    <div>
+      <div className="card">
+        <div className="card-title">👥 Squadre della Lega</div>
+        <p style={{ color: theme.textSub, fontSize: 13 }}>Il mercato è chiuso — puoi vedere le squadre di tutti!</p>
+      </div>
+      {squadre.map(s => (
+        <div key={s.username} className="card" style={{ padding: 0, overflow: "hidden" }}>
+          <div
+            style={{ padding: "14px 20px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}
+            onClick={() => setAperta(aperta === s.username ? null : s.username)}
+          >
+            <div>
+              <span style={{ fontWeight: 600, fontSize: 15 }}>{s.squadra}</span>
+              <span style={{ color: theme.textMuted, fontSize: 12, marginLeft: 10 }}>di {s.username}</span>
+            </div>
+            <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+              <span className="badge badge-blue">{s.atleti.length} atleti</span>
+              <span style={{ color: theme.textMuted }}>{aperta === s.username ? "▲" : "▼"}</span>
+            </div>
+          </div>
+          {aperta === s.username && (
+            <table className="table">
+              <thead>
+                <tr>
+                  <th style={{ paddingLeft: 20 }}>Nome</th>
+                  <th>Categoria</th>
+                  <th>Prezzo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {s.atleti.map(a => (
+                  <tr key={a.name + a.categoria}>
+                    <td style={{ paddingLeft: 20, fontWeight: 600 }}>{a.name}</td>
+                    <td><span className="badge badge-blue">{a.categoria}</span></td>
+                    <td style={{ color: theme.accent, fontWeight: 700 }}>{a.prezzo}cr</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function Lega({ token }) {
   const [vista, setVista] = useState("home");
   const [nomeLega, setNomeLega] = useState("");
@@ -1618,6 +1691,7 @@ function Lega({ token }) {
 
       <div className="card">
         <div className="card-title">👥 Partecipanti</div>
+        <SquadreLega token={token} />
         <div className="card">
         <div className="card-title">💬 Chat Lega</div>
         <div style={{ maxHeight: 300, overflowY: "auto", marginBottom: 12, display: "flex", flexDirection: "column", gap: 8 }}>

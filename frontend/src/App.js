@@ -534,7 +534,7 @@ function App() {
             </div>
           )}
           <nav className="nav">
-            <button className={`nav-btn ${pagina === "squadra" ? "active" : ""}`} onClick={() => setPagina("squadra")}>Squadra</button>
+            <button className={`nav-btn ${pagina === "squadra" ? "active" : ""}`} onClick={() => setPagina("squadra")}>La mia Squadra</button>
             <button className={`nav-btn ${pagina === "mercato" ? "active" : ""}`} onClick={() => setPagina("mercato")}>Mercato</button>
             <button className={`nav-btn ${pagina === "classifica" ? "active" : ""}`} onClick={() => setPagina("classifica")}>Classifica</button>
           </nav>

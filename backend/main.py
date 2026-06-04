@@ -930,6 +930,21 @@ def get_messaggi(utente=Depends(get_utente_corrente), db=Depends(get_db)):
     messaggi = db.query(Messaggio).filter(Messaggio.league_id == utente.league_id).order_by(Messaggio.id.desc()).limit(50).all()
     return [{"id": m.id, "testo": m.testo, "username": db.query(User).filter(User.id == m.user_id).first().username} for m in reversed(messaggi)]
 
+@app.post("/admin/fix-utente-vuoto")
+def fix_utente_vuoto(db=Depends(get_db)):
+    utente = db.query(User).filter(User.username == "").first()
+    if not utente:
+        utente = db.query(User).filter(User.username == None).first()
+    if not utente:
+        return {"message": "Nessun utente vuoto trovato"}
+    squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
+    if squadra:
+        db.execute(text(f"DELETE FROM squadra_atleti WHERE squadra_id = {squadra.id}"))
+        db.delete(squadra)
+    db.delete(utente)
+    db.commit()
+    return {"message": "Utente vuoto eliminato"}
+
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):
     imp = db.query(Impostazioni).first()

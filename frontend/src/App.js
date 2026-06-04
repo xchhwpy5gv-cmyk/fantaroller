@@ -804,6 +804,7 @@ function Mercato({ token }) {
   const [budget, setBudget] = useState(999);
   const [atletiPerCategoria, setAtletiPerCategoria] = useState({});
   const [piuAcquistati, setPiuAcquistati] = useState([]);
+  const [piuAcquistatiAperto, setPiuAcquistatiAperto] = useState(false);
   const apriDettagli = async (id) => {
     if (atletaAperto === id) { setAtletaAperto(null); return; }
     setAtletaAperto(id);
@@ -875,8 +876,15 @@ function Mercato({ token }) {
     {messaggio && <div className="msg-box">{messaggio}</div>}
     
     {piuAcquistati.length > 0 && (
-      <div className="card">
-        <div className="card-title">🔥 Atleti più acquistati</div>
+      <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+        <div
+          style={{ padding: "14px 20px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", background: piuAcquistatiAperto ? "#1a2235" : theme.bgCard }}
+          onClick={() => setPiuAcquistatiAperto(!piuAcquistatiAperto)}
+        >
+          <span style={{ fontWeight: 600, fontSize: 15 }}>🔥 Atleti più acquistati</span>
+          <span style={{ color: theme.textMuted }}>{piuAcquistatiAperto ? "▲" : "▼"}</span>
+        </div>
+        {piuAcquistatiAperto && (
         <table className="table">
           <thead>
             <tr>
@@ -898,6 +906,7 @@ function Mercato({ token }) {
             ))}
           </tbody>
         </table>
+        )}
       </div>
     )}
 

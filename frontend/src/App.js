@@ -1038,7 +1038,7 @@ function Classifica({ username }) {
   const [eventi, setEventi] = useState([]);
   const [eventoSelezionato, setEventoSelezionato] = useState("");
   const [loading, setLoading] = useState(true);
-
+  const [archivioAperto, setArchivioAperto] = useState(false);
   const EVENTO_PRINCIPALE = "Campionati Italiani Pista 2026";
 
   const caricaEventi = async () => {
@@ -1054,55 +1054,99 @@ function Classifica({ username }) {
     setLoading(false);
   };
 
-  useState(() => { 
-    caricaEventi(); 
-    caricaClassifica(EVENTO_PRINCIPALE); 
+  useState(() => {
+    caricaEventi();
+    caricaClassifica(EVENTO_PRINCIPALE);
     setEventoSelezionato(EVENTO_PRINCIPALE);
   }, []);
 
-  const handleEvento = (e) => { setEventoSelezionato(e.target.value); caricaClassifica(e.target.value); };
-
   const rankEmoji = (i) => i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : "";
   const rankColor = (i) => i === 0 ? theme.yellow : i === 1 ? "#94a3b8" : i === 2 ? "#b45309" : theme.textSub;
+  const eventiArchivio = eventi.filter(e => e !== EVENTO_PRINCIPALE);
 
   return (
     <div>
-      <div className="card">
+      {/* HEADER EVENTO PRINCIPALE */}
+      <div className="card" style={{ background: "linear-gradient(135deg, #1a1f35, #111827)", border: `1px solid ${theme.accent}30` }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
-          <div className="card-title" style={{ marginBottom: 0 }}>🏅 Classifica</div>
-          <select className="select" value={eventoSelezionato} onChange={handleEvento}>
-            <option value="">🌍 Generale</option>
-            <option value={EVENTO_PRINCIPALE} style={{ fontWeight: 700 }}>🏆 {EVENTO_PRINCIPALE}</option>
-            {eventi.filter(e => e !== EVENTO_PRINCIPALE).map(e => <option key={e} value={e}>{e}</option>)}
-          </select>
+          <div>
+            <div style={{ fontSize: 11, color: theme.accent, fontWeight: 700, textTransform: "uppercase", letterSpacing: 2, marginBottom: 4 }}>Evento in corso</div>
+            <div className="card-title" style={{ marginBottom: 0 }}>🏆 {EVENTO_PRINCIPALE}</div>
+          </div>
+          {eventiArchivio.length > 0 && (
+            <button
+              className="btn btn-blue"
+              style={{ fontSize: 12, padding: "6px 12px" }}
+              onClick={() => setArchivioAperto(!archivioAperto)}
+            >
+              📂 {archivioAperto ? "Chiudi archivio" : "Archivio gare"}
+            </button>
+          )}
         </div>
+
+        {/* ARCHIVIO */}
+        {archivioAperto && (
+          <div style={{ marginTop: 16, borderTop: `1px solid ${theme.border}`, paddingTop: 16 }}>
+            <div style={{ fontSize: 11, color: theme.textMuted, textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>Gare precedenti</div>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <button
+                className={`btn ${eventoSelezionato === EVENTO_PRINCIPALE ? "btn-primary" : "btn-blue"}`}
+                style={{ fontSize: 12, padding: "5px 12px" }}
+                onClick={() => { setEventoSelezionato(EVENTO_PRINCIPALE); caricaClassifica(EVENTO_PRINCIPALE); setArchivioAperto(false); }}
+              >
+                🏆 {EVENTO_PRINCIPALE}
+              </button>
+              {eventiArchivio.map(e => (
+                <button
+                  key={e}
+                  className={`btn ${eventoSelezionato === e ? "btn-primary" : "btn-blue"}`}
+                  style={{ fontSize: 12, padding: "5px 12px" }}
+                  onClick={() => { setEventoSelezionato(e); caricaClassifica(e); setArchivioAperto(false); }}
+                >
+                  {e}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
+      {/* TITOLO CLASSIFICA ATTIVA */}
+      {eventoSelezionato !== EVENTO_PRINCIPALE && (
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 4px", marginBottom: 4 }}>
+          <span style={{ color: theme.textMuted, fontSize: 13 }}>📂 {eventoSelezionato || "Generale"}</span>
+          <button className="btn btn-blue" style={{ fontSize: 11, padding: "4px 10px" }} onClick={() => { setEventoSelezionato(EVENTO_PRINCIPALE); caricaClassifica(EVENTO_PRINCIPALE); }}>
+            ← Torna ai Campionati
+          </button>
+        </div>
+      )}
+
+      {/* CLASSIFICA */}
       <div className="card" style={{ padding: 0, overflow: "hidden" }}>
         {loading
           ? <p style={{ textAlign: "center", color: theme.textMuted, padding: 24 }}>⏳ Caricamento...</p>
           : classifica.length === 0
             ? <p style={{ textAlign: "center", color: theme.textMuted, padding: 24 }}>Nessuna squadra completa in classifica</p>
             : classifica.map((u, i) => (
-                <div key={u.username} style={{
-                  display: "flex", alignItems: "center", gap: 12, padding: "12px 16px",
-                  borderBottom: `1px solid ${theme.border}22`,
-                  background: u.username === username ? "#f9731610" : "",
-                  borderLeft: u.username === username ? `3px solid ${theme.accent}` : "3px solid transparent"
-                }}>
-                  <span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "1.3rem", color: rankColor(i), minWidth: 28 }}>
-                    {rankEmoji(i) || i + 1}
-                  </span>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: 600, fontSize: 14, color: theme.white }}>
-                      {u.squadra}
-                      {u.username === username && <span className="badge badge-orange" style={{ marginLeft: 8 }}>Tu</span>}
-                    </div>
-                    <div style={{ fontSize: 11, color: theme.textMuted }}>@{u.username}</div>
+              <div key={u.username} style={{
+                display: "flex", alignItems: "center", gap: 12, padding: "12px 16px",
+                borderBottom: `1px solid ${theme.border}22`,
+                background: u.username === username ? "#f9731610" : "",
+                borderLeft: u.username === username ? `3px solid ${theme.accent}` : "3px solid transparent"
+              }}>
+                <span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "1.3rem", color: rankColor(i), minWidth: 28 }}>
+                  {rankEmoji(i) || i + 1}
+                </span>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontWeight: 600, fontSize: 14, color: theme.text }}>
+                    {u.squadra}
+                    {u.username === username && <span className="badge badge-orange" style={{ marginLeft: 8 }}>Tu</span>}
                   </div>
-                  <span style={{ color: theme.accent, fontWeight: 700, fontFamily: "'Bebas Neue', cursive", fontSize: "1.2rem" }}>{u.punti}</span>
+                  <div style={{ fontSize: 11, color: theme.textMuted }}>@{u.username}</div>
                 </div>
-              ))
+                <span style={{ color: theme.accent, fontWeight: 700, fontFamily: "'Bebas Neue', cursive", fontSize: "1.2rem" }}>{u.punti}</span>
+              </div>
+            ))
         }
       </div>
     </div>

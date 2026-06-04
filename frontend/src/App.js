@@ -775,6 +775,8 @@ function Mercato({ token }) {
   const [atletaDettagli, setAtletaDettagli] = useState(null);
   const [atletaAperto, setAtletaAperto] = useState(null);
   const [categoriaAperta, setCategoriaAperta] = useState(null);
+  const [budget, setBudget] = useState(999);
+  const [atletiPerCategoria, setAtletiPerCategoria] = useState({});
   const apriDettagli = async (id) => {
     if (atletaAperto === id) { setAtletaAperto(null); return; }
     setAtletaAperto(id);
@@ -786,14 +788,31 @@ function Mercato({ token }) {
   useState(() => {
     fetch(`${API}/athletes/`).then(r => r.json()).then(setAtleti);
     fetch(`${API}/squadra/`, { headers: { Authorization: `Bearer ${token}` } })
-      .then(r => r.json()).then(data => { if (data.atleti) setSquadra(data.atleti.map(a => a.id)); });
+      .then(r => r.json()).then(data => {
+        if (data.atleti) {
+          setSquadra(data.atleti.map(a => a.id));
+          setBudget(data.budget);
+          const perCat = {};
+          data.atleti.forEach(a => {
+            perCat[a.categoria] = (perCat[a.categoria] || 0) + 1;
+          });
+          setAtletiPerCategoria(perCat);
+        }
+      });
   }, []);
 
   const acquista = async (id) => {
     const res = await fetch(`${API}/squadra/acquista/${id}`, { method: "POST", headers: { Authorization: `Bearer ${token}` } });
     const data = await res.json();
     setMessaggio(data.message || data.detail);
-    if (res.ok) setSquadra([...squadra, id]);
+    if (res.ok) {
+      setSquadra([...squadra, id]);
+      const atleta = atleti.find(a => a.id === id);
+      if (atleta) {
+        setBudget(b => b - atleta.prezzo);
+        setAtletiPerCategoria(prev => ({ ...prev, [atleta.categoria]: (prev[atleta.categoria] || 0) + 1 }));
+      }
+    }
   };
 
   const categorie = [...new Set(atleti.map(a => a.categoria))].sort();
@@ -871,9 +890,13 @@ function Mercato({ token }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {atletiCategoria.map(a => (
+                  {atletiCategoria.map(a => {
+                    const categoriapiena = (atletiPerCategoria[a.categoria] || 0) >= 2;
+                    const troppoCostate = a.prezzo > budget;
+                    const sbiadito = !squadra.includes(a.id) && (categoriapiena || troppoCostate);
+                    return (
               <>
-                <tr key={a.id}>
+                <tr key={a.id} style={{ opacity: sbiadito ? 0.4 : 1 }}>
                   <td style={{ paddingLeft: 20 }}>
                     <div style={{ fontWeight: 600 }}>{a.name}</div>
                     <div className="mobile-category">{a.categoria}</div>
@@ -920,7 +943,8 @@ function Mercato({ token }) {
                   </tr>
                 )}
               </>
-            ))}
+            );
+          })}
                 </tbody>
               </table>
             )}

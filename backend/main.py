@@ -416,7 +416,7 @@ def elimina_gara(gara_id: int, utente=Depends(get_utente_corrente), db=Depends(g
     return {"message": "Gara eliminata"}
 
 @app.post("/admin/calcola-punti")
-def calcola_punti(utente=Depends(get_utente_corrente), db=Depends(get_db)):
+def calcola_punti(evento: str = None, utente=Depends(get_utente_corrente), db=Depends(get_db)):
     if not utente.is_admin:
         raise HTTPException(status_code=403, detail="Non sei admin")
     import requests
@@ -436,10 +436,21 @@ def calcola_punti(utente=Depends(get_utente_corrente), db=Depends(get_db)):
     def normalizza_nome(nome):
         return nome.lower().replace("ò", "o").replace("ó", "o").replace("'", "").replace("?", "").strip()
 
-    gare = db.query(Gara).all()
-    db.query(Athlete).update({"punti": 0, "gare": 0})
-    db.query(PuntiEvento).delete()
-    db.commit()
+    if evento:
+        gare = db.query(Gara).filter(Gara.evento == evento).all()
+        db.query(PuntiEvento).filter(PuntiEvento.evento == evento).delete()
+        # Ricalcola punti totali sottraendo i punti dell'evento
+        atleti_da_aggiornare = db.query(Athlete).all()
+        for atleta in atleti_da_aggiornare:
+            punti_altri_eventi = db.query(PuntiEvento).filter(PuntiEvento.atleta_id == atleta.id).all()
+            atleta.punti = sum(p.punti for p in punti_altri_eventi)
+            atleta.gare = len(punti_altri_eventi)
+        db.commit()
+    else:
+        gare = db.query(Gara).all()
+        db.query(Athlete).update({"punti": 0, "gare": 0})
+        db.query(PuntiEvento).delete()
+        db.commit()
 
     for gara in gare:
         try:

@@ -953,6 +953,20 @@ def aggiungi_atleta_manuale(name: str, categoria: str, prezzo: int, db=Depends(g
     db.commit()
     return {"message": f"{name} aggiunto!"}
 
+@app.post("/admin/fix-budget")
+def fix_budget(db=Depends(get_db)):
+    utenti = db.query(User).all()
+    aggiornati = 0
+    for utente in utenti:
+        squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
+        speso = sum(a.prezzo for a in squadra.atleti) if squadra else 0
+        totale = utente.budget + speso
+        if totale < 200:
+            utente.budget += 200 - totale
+            aggiornati += 1
+    db.commit()
+    return {"message": f"Budget corretto per {aggiornati} utenti"}
+
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):
     imp = db.query(Impostazioni).first()

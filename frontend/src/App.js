@@ -816,7 +816,13 @@ function Mercato({ token }) {
   };
 
   const ordineCategorie = ["Ragazzi Maschi", "Ragazze Femminile", "Allievi Maschi", "Allieve Femminile", "Junior Maschi", "Junior Femminile", "Senior Maschi", "Senior Femminile"];
-  const categorie = ordineCategorie.filter(c => atleti.some(a => a.categoria === c));
+  const categorie = ordineCategorie
+    .filter(c => atleti.some(a => a.categoria === c))
+    .sort((a, b) => {
+      const pienaA = (atletiPerCategoria[a] || 0) >= 2 ? 1 : 0;
+      const pienaB = (atletiPerCategoria[b] || 0) >= 2 ? 1 : 0;
+      return pienaA - pienaB;
+    });
   
   const isDisponibile = (a) => {
     const categoriapiena = (atletiPerCategoria[a.categoria] || 0) >= 2;
@@ -880,8 +886,9 @@ function Mercato({ token }) {
       {categorie.map(cat => {
         const atletiCategoria = atletiFiltrati.filter(a => a.categoria === cat);
         if (atletiCategoria.length === 0) return null;
+        const categoriaDisponibile = (atletiPerCategoria[cat] || 0) < 2;
         return (
-          <div key={cat} className="card" style={{ padding: 0, overflow: "hidden" }}>
+          <div key={cat} className="card" style={{ padding: 0, overflow: "hidden", opacity: categoriaDisponibile ? 1 : 0.4 }}>
             <div
               style={{ padding: "14px 20px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", background: categoriaAperta === cat ? "#1a2235" : theme.bgCard }}
               onClick={() => setCategoriaAperta(categoriaAperta === cat ? null : cat)}

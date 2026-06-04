@@ -969,6 +969,25 @@ def fix_budget(db=Depends(get_db)):
     db.commit()
     return {"message": f"Budget corretto per {aggiornati} utenti"}
 
+@app.get("/league/squadre")
+def squadre_lega(utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.league_id:
+        raise HTTPException(status_code=404, detail="Non sei in nessuna lega")
+    imp = db.query(Impostazioni).first()
+    if imp and imp.mercato_aperto:
+        raise HTTPException(status_code=403, detail="Il mercato è ancora aperto")
+    membri = db.query(User).filter(User.league_id == utente.league_id).all()
+    risultato = []
+    for m in membri:
+        squadra = db.query(Squadra).filter(Squadra.user_id == m.id).first()
+        if squadra and len(squadra.atleti) == 16:
+            risultato.append({
+                "username": m.username,
+                "squadra": squadra.nome,
+                "atleti": [{"name": a.name, "categoria": a.categoria, "prezzo": a.prezzo} for a in squadra.atleti]
+            })
+    return risultato
+
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):
     imp = db.query(Impostazioni).first()

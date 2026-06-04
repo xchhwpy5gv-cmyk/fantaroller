@@ -1595,7 +1595,18 @@ function Lega({ token }) {
           Crea una lega, condividi la password con chi vuoi e segui la classifica solo tra di voi. 
           Puoi partecipare a più leghe contemporaneamente.
         </p>
-        <button className="btn btn-primary" onClick={() => setVista("crea")}>➕ Crea Lega</button>
+        <button className="btn btn-primary" onClick={() => setVista(vista === "crea" ? "home" : "crea")}>➕ Crea Lega</button>
+        {vista === "crea" && (
+          <div style={{ marginTop: 16 }}>
+            <input className="input" placeholder="Nome lega" value={nomeLega} onChange={e => setNomeLega(e.target.value)} />
+            <input className="input" placeholder="Password lega" type="password" value={password} onChange={e => setPassword(e.target.value)} />
+            {messaggio && <div className="msg-box">{messaggio}</div>}
+            <div style={{ display: "flex", gap: 10 }}>
+              <button className="btn btn-primary" onClick={creaLega}>Crea</button>
+              <button className="btn btn-danger" onClick={() => { setVista("home"); setMessaggio(""); }}>Annulla</button>
+            </div>
+          </div>
+        )}
       </div>
 
       {mieLeghe.length > 0 && (
@@ -1655,18 +1666,6 @@ function Lega({ token }) {
           }
         </div>
       </div>
-
-      {vista === "crea" && (
-        <div className="card">
-          <div className="card-title">➕ Crea Lega</div>
-          <input className="input" placeholder="Nome lega" value={nomeLega} onChange={e => setNomeLega(e.target.value)} />
-          <input className="input" placeholder="Password lega" type="password" value={password} onChange={e => setPassword(e.target.value)} />
-          <div style={{ display: "flex", gap: 10 }}>
-            <button className="btn btn-primary" onClick={creaLega}>Crea</button>
-            <button className="btn btn-danger" onClick={() => { setVista("home"); setMessaggio(""); }}>Annulla</button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -337,7 +337,7 @@ def classifica(evento: str = None, db=Depends(get_db)):
     risultati.sort(key=lambda x: x["punti"], reverse=True)
     if risultati:
         return risultati
-    # Se non ci sono ancora punti, mostra tutte le squadre complete a 0
+    # Se non ci sono ancora punti per questo evento, mostra tutte le squadre complete a 0
     risultati_vuoti = []
     for utente in utenti:
         squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
@@ -348,7 +348,9 @@ def classifica(evento: str = None, db=Depends(get_db)):
                 "punti": 0,
                 "n_atleti": 16
             })
-    return risultati_vuoti
+    if evento and risultati_vuoti:
+        return risultati_vuoti
+    return risultati
 
 @app.get("/classifica/eventi")
 def lista_eventi(db=Depends(get_db)):

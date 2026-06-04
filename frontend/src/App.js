@@ -599,6 +599,9 @@ function Login({ setToken }) {
         <div className="login-card">
           <div className="login-logo">⚡ Fanta<span style={{ color: theme.accent }}>Roller</span></div>
           <div className="login-sub">Fantasy Pattinaggio Corsa</div>
+          <div style={{ background: "#38bdf815", border: "1px solid #38bdf830", borderRadius: 8, padding: "10px 14px", color: theme.blue, fontSize: 13, marginBottom: 16, textAlign: "center" }}>
+            Prima volta? Clicca su <strong>"Registrati"</strong> in fondo per creare il tuo account!
+          </div>
           {successo && <div className="success-box">{successo}</div>}
           {loading && (
             <div className="success-box">

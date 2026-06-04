@@ -885,6 +885,20 @@ def elimina_atleta(atleta_id: int, utente=Depends(get_utente_corrente), db=Depen
     db.commit()
     return {"message": f"{atleta.name} eliminato"}
 
+@app.get("/atleti/piu-acquistati")
+def atleti_piu_acquistati(db=Depends(get_db)):
+    from sqlalchemy import text
+    risultati = db.execute(text("""
+        SELECT a.id, a.name, a.categoria, a.prezzo, COUNT(sa.atleta_id) as count
+        FROM athletes a
+        LEFT JOIN squadra_atleti sa ON a.id = sa.atleta_id
+        WHERE a.visibile = 1
+        GROUP BY a.id, a.name, a.categoria, a.prezzo
+        ORDER BY count DESC
+        LIMIT 10
+    """)).fetchall()
+    return [{"id": r[0], "name": r[1], "categoria": r[2], "prezzo": r[3], "in_squadre": r[4]} for r in risultati]
+
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):
     imp = db.query(Impostazioni).first()

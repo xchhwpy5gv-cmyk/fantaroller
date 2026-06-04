@@ -415,7 +415,7 @@ const styles = `
   `;
 
 function App() {
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(() => localStorage.getItem("token") || null);
   const [pagina, setPagina] = useState("squadra");
   const [isAdmin, setIsAdmin] = useState(false);
   const [username, setUsername] = useState("");
@@ -442,6 +442,7 @@ function App() {
 
   const dopoLogin = async (t) => {
     setToken(t);
+    localStorage.setItem("token", t);
     const res = await fetch(`${API}/me/`, {
       headers: { Authorization: `Bearer ${t}` },
     });
@@ -509,7 +510,7 @@ function App() {
         </>}
 
         <div style={{ marginTop: "auto", padding: "0 16px 8px" }}>
-          <button className="btn btn-danger" style={{ width: "100%", fontSize: 13 }} onClick={() => { setToken(null); setPagina("squadra"); setMenuAperto(false); }}>
+          <button className="btn btn-danger" style={{ width: "100%", fontSize: 13 }} onClick={() => { setToken(null); localStorage.removeItem("token"); setPagina("squadra"); setMenuAperto(false); }}>
             Esci
           </button>
         </div>

@@ -1010,6 +1010,33 @@ def reset_password_temp(db=Depends(get_db)):
     db.commit()
     return {"message": "Password resettata a: fantaroller2026"}
 
+@app.get("/league/atleti-squadra")
+def atleti_squadra(username: str, evento: str = None, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    utente_target = db.query(User).filter(User.username == username).first()
+    if not utente_target:
+        raise HTTPException(status_code=404, detail="Utente non trovato")
+    squadra = db.query(Squadra).filter(Squadra.user_id == utente_target.id).first()
+    if not squadra:
+        raise HTTPException(status_code=404, detail="Squadra non trovata")
+    risultato = []
+    for a in squadra.atleti:
+        if evento:
+            pe = db.query(PuntiEvento).filter(
+                PuntiEvento.atleta_id == a.id,
+                PuntiEvento.evento == evento
+            ).first()
+            punti = pe.punti if pe else 0
+        else:
+            punti = a.punti
+        risultato.append({
+            "id": a.id,
+            "name": a.name,
+            "categoria": a.categoria,
+            "punti": punti
+        })
+    risultato.sort(key=lambda x: x["punti"], reverse=True)
+    return risultato
+
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):
     imp = db.query(Impostazioni).first()

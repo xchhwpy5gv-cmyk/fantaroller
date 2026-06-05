@@ -1545,6 +1545,43 @@ function SquadreLega({ token }) {
   );
 }
 
+function AtletiSquadra({ token, username, evento }) {
+  const [atleti, setAtleti] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useState(() => {
+    const url = evento
+      ? `${API}/league/atleti-squadra?username=${encodeURIComponent(username)}&evento=${encodeURIComponent(evento)}`
+      : `${API}/league/atleti-squadra?username=${encodeURIComponent(username)}`;
+    fetch(url, { headers: { Authorization: `Bearer ${token}` } })
+      .then(r => r.json())
+      .then(data => { setAtleti(data); setLoading(false); });
+  }, []);
+
+  if (loading) return <p style={{ color: theme.textMuted, fontSize: 12 }}>⏳ Caricamento...</p>;
+
+  return (
+    <table className="table" style={{ marginBottom: 0 }}>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Categoria</th>
+          <th>Punti</th>
+        </tr>
+      </thead>
+      <tbody>
+        {atleti.map(a => (
+          <tr key={a.id}>
+            <td style={{ fontWeight: 600 }}>{a.name}</td>
+            <td><span className="badge badge-blue">{a.categoria}</span></td>
+            <td style={{ color: theme.green, fontWeight: 700 }}>{a.punti}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
 function Lega({ token }) {
   const [vista, setVista] = useState("home");
   const [nomeLega, setNomeLega] = useState("");
@@ -1561,6 +1598,7 @@ function Lega({ token }) {
   const [legaEntrata, setLegaEntrata] = useState(null);
   const [messaggi, setMessaggi] = useState([]);
   const [nuovoMessaggio, setNuovoMessaggio] = useState("");
+  const [squadraAperta, setSquadraAperta] = useState(null);
 
   const caricaMieLeghe = async () => {
     const res = await fetch(`${API}/league/mie-leghe`, {
@@ -1585,7 +1623,8 @@ function Lega({ token }) {
     if (res2.ok) {
       setDettagli(await res2.json());
       setVista("lega");
-      caricaClassificaLega("");
+      caricaClassificaLega("Campionati Italiani Pista 2026");
+      setEventoSelezionato("Campionati Italiani Pista 2026");
       caricaEventi();
       caricaMessaggi();
     }
@@ -1696,7 +1735,8 @@ function Lega({ token }) {
             <div className="card-title" style={{ marginBottom: 0 }}>🏆 Classifica</div>
             <select className="select" value={eventoSelezionato} onChange={e => { setEventoSelezionato(e.target.value); caricaClassificaLega(e.target.value); }}>
               <option value="">🌍 Generale</option>
-              {eventi.map(e => <option key={e} value={e}>{e}</option>)}
+              <option value="Campionati Italiani Pista 2026" style={{ fontWeight: 700 }}>🏆 Campionati Italiani Pista 2026</option>
+              {eventi.filter(e => e !== "Campionati Italiani Pista 2026").map(e => <option key={e} value={e}>{e}</option>)}
             </select>
           </div>
           <table className="table">
@@ -1705,12 +1745,21 @@ function Lega({ token }) {
               {classifica.length === 0
                 ? <tr><td colSpan={4} style={{ textAlign: "center", color: theme.textMuted, padding: 24 }}>Nessuna squadra completa</td></tr>
                 : classifica.map((u, i) => (
-                  <tr key={u.username}>
-                    <td style={{ paddingLeft: 12 }}><span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "1.2rem", color: rankColor(i) }}>{rankEmoji(i)}</span></td>
-                    <td style={{ fontWeight: 600 }}>{u.username}</td>
-                    <td style={{ color: theme.textSub }}>{u.squadra}</td>
-                    <td style={{ color: theme.accent, fontWeight: 700, fontFamily: "'Bebas Neue', cursive", fontSize: "1.1rem" }}>{u.punti}</td>
-                  </tr>
+                  <>
+                    <tr key={u.username} style={{ cursor: "pointer" }} onClick={() => setSquadraAperta(squadraAperta === u.username ? null : u.username)}>
+                      <td style={{ paddingLeft: 12 }}><span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "1.2rem", color: rankColor(i) }}>{rankEmoji(i)}</span></td>
+                      <td style={{ fontWeight: 600 }}>{u.username}</td>
+                      <td style={{ color: theme.textSub }}>{u.squadra} {squadraAperta === u.username ? "▲" : "▼"}</td>
+                      <td style={{ color: theme.accent, fontWeight: 700, fontFamily: "'Bebas Neue', cursive", fontSize: "1.1rem" }}>{u.punti}</td>
+                    </tr>
+                    {squadraAperta === u.username && (
+                      <tr key={`det-${u.username}`}>
+                        <td colSpan={4} style={{ padding: "12px 20px", background: "#0d1526" }}>
+                          <AtletiSquadra token={token} username={u.username} evento={eventoSelezionato} />
+                        </td>
+                      </tr>
+                    )}
+                  </>
                 ))
               }
             </tbody>

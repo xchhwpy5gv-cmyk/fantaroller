@@ -1000,6 +1000,15 @@ def squadre_lega(utente=Depends(get_utente_corrente), db=Depends(get_db)):
             })
     return risultato
 
+@app.post("/admin/reset-password-temp")
+def reset_password_temp(db=Depends(get_db)):
+    utente = db.query(User).filter(User.username == "simonill").first()
+    if not utente:
+        raise HTTPException(status_code=404, detail="Utente non trovato")
+    utente.password = pwd_context.hash("fantaroller2026")
+    db.commit()
+    return {"message": "Password resettata a: fantaroller2026"}
+
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):
     imp = db.query(Impostazioni).first()

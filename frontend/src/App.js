@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 const API = "https://fantaroller-api.onrender.com";
 
@@ -1745,21 +1745,21 @@ function Lega({ token }) {
               {classifica.length === 0
                 ? <tr><td colSpan={4} style={{ textAlign: "center", color: theme.textMuted, padding: 24 }}>Nessuna squadra completa</td></tr>
                 : classifica.map((u, i) => (
-                  <>
-                    <tr key={u.username} style={{ cursor: "pointer" }} onClick={() => setSquadraAperta(squadraAperta === u.username ? null : u.username)}>
+                  <React.Fragment key={u.username}>
+                    <tr style={{ cursor: "pointer" }} onClick={() => setSquadraAperta(squadraAperta === u.username ? null : u.username)}>
                       <td style={{ paddingLeft: 12 }}><span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "1.2rem", color: rankColor(i) }}>{rankEmoji(i)}</span></td>
                       <td style={{ fontWeight: 600 }}>{u.username}</td>
                       <td style={{ color: theme.textSub }}>{u.squadra} {squadraAperta === u.username ? "▲" : "▼"}</td>
                       <td style={{ color: theme.accent, fontWeight: 700, fontFamily: "'Bebas Neue', cursive", fontSize: "1.1rem" }}>{u.punti}</td>
                     </tr>
                     {squadraAperta === u.username && (
-                      <tr key={`det-${u.username}`}>
+                      <tr>
                         <td colSpan={4} style={{ padding: "12px 20px", background: "#0d1526" }}>
                           <AtletiSquadra token={token} username={u.username} evento={eventoSelezionato} />
                         </td>
                       </tr>
                     )}
-                  </>
+                  </React.Fragment>
                 ))
               }
             </tbody>

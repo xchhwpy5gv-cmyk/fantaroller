@@ -868,6 +868,7 @@ def statistiche(utente=Depends(get_utente_corrente), db=Depends(get_db)):
         lista_utenti.append({
             "username": u.username,
             "ha_squadra": squadra is not None,
+            "nome_squadra": squadra.nome if squadra else None,
             "n_atleti": n_atleti,
             "completa": n_atleti == 16
         })

@@ -1359,7 +1359,7 @@ useState(() => {
                   {stats.lista.map(u => (
                     <tr key={u.username}>
                       <td style={{ fontWeight: 600 }}>{u.username}</td>
-                      <td style={{ color: theme.textSub }}>{u.ha_squadra ? "✅" : "❌"}</td>
+                      <td style={{ color: theme.textSub }}>{u.nome_squadra || "—"}</td>
                       <td style={{ textAlign: "center" }}>{u.n_atleti}/16</td>
                       <td>
                         <span className={`badge ${u.completa ? "badge-green" : u.ha_squadra ? "badge-orange" : "badge-red"}`}>

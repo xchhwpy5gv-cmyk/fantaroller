@@ -558,7 +558,7 @@ function App() {
 
         {pagina === "squadra" && <Squadra token={token} />}
         {pagina === "mercato" && <Mercato token={token} />}
-        {pagina === "classifica" && <Classifica username={username} />}
+        {pagina === "classifica" && <Classifica username={username} token={token} />}
         {pagina === "lega" && <Lega token={token} />}
         {pagina === "gare" && <Gare token={token} />}
         {pagina === "squadre" && <SquadrePubbliche />}
@@ -1042,12 +1042,13 @@ function Mercato({ token }) {
   );
 }
 
-function Classifica({ username }) {
+function Classifica({ username, token }) {
   const [classifica, setClassifica] = useState([]);
   const [eventi, setEventi] = useState([]);
   const [eventoSelezionato, setEventoSelezionato] = useState("");
   const [loading, setLoading] = useState(true);
   const [archivioAperto, setArchivioAperto] = useState(false);
+  const [squadraAperta, setSquadraAperta] = useState(null);
   const EVENTO_PRINCIPALE = "Campionati Italiani Pista 2026";
 
   const caricaEventi = async () => {
@@ -1137,23 +1138,34 @@ function Classifica({ username }) {
           : classifica.length === 0
             ? <p style={{ textAlign: "center", color: theme.textMuted, padding: 24 }}>Nessuna squadra completa in classifica</p>
             : classifica.map((u, i) => (
-              <div key={u.username} style={{
-                display: "flex", alignItems: "center", gap: 12, padding: "12px 16px",
-                borderBottom: `1px solid ${theme.border}22`,
-                background: u.username === username ? "#f9731610" : "",
-                borderLeft: u.username === username ? `3px solid ${theme.accent}` : "3px solid transparent"
-              }}>
-                <span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "1.3rem", color: rankColor(i), minWidth: 28 }}>
-                  {rankEmoji(i) || i + 1}
-                </span>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 600, fontSize: 14, color: theme.text }}>
-                    {u.squadra}
-                    {u.username === username && <span className="badge badge-orange" style={{ marginLeft: 8 }}>Tu</span>}
+              <div key={u.username}>
+                <div
+                  style={{
+                    display: "flex", alignItems: "center", gap: 12, padding: "12px 16px",
+                    borderBottom: squadraAperta === u.username ? "none" : `1px solid ${theme.border}22`,
+                    background: u.username === username ? "#f9731610" : "",
+                    borderLeft: u.username === username ? `3px solid ${theme.accent}` : "3px solid transparent",
+                    cursor: "pointer"
+                  }}
+                  onClick={() => setSquadraAperta(squadraAperta === u.username ? null : u.username)}
+                >
+                  <span style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "1.3rem", color: rankColor(i), minWidth: 28 }}>
+                    {rankEmoji(i) || i + 1}
+                  </span>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontWeight: 600, fontSize: 14, color: theme.text }}>
+                      {u.squadra}
+                      {u.username === username && <span className="badge badge-orange" style={{ marginLeft: 8 }}>Tu</span>}
+                    </div>
+                    <div style={{ fontSize: 11, color: theme.textMuted }}>@{u.username} {squadraAperta === u.username ? "▲" : "▼"}</div>
                   </div>
-                  <div style={{ fontSize: 11, color: theme.textMuted }}>@{u.username}</div>
+                  <span style={{ color: theme.accent, fontWeight: 700, fontFamily: "'Bebas Neue', cursive", fontSize: "1.2rem" }}>{u.punti}</span>
                 </div>
-                <span style={{ color: theme.accent, fontWeight: 700, fontFamily: "'Bebas Neue', cursive", fontSize: "1.2rem" }}>{u.punti}</span>
+                {squadraAperta === u.username && (
+                  <div style={{ padding: "12px 16px", background: "#0d1526", borderBottom: `1px solid ${theme.border}22` }}>
+                    <AtletiSquadra token={token} username={u.username} evento={eventoSelezionato} />
+                  </div>
+                )}
               </div>
             ))
         }

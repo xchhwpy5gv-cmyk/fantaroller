@@ -251,6 +251,9 @@ def vedi_squadra(utente=Depends(get_utente_corrente), db=Depends(get_db)):
 
 @app.post("/squadra/vendi/{atleta_id}")
 def vendi_atleta(atleta_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    imp = db.query(Impostazioni).first()
+    if not imp.mercato_aperto:
+        raise HTTPException(status_code=400, detail="Il mercato è chiuso, non puoi vendere atleti!")
     squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
     if not squadra:
         raise HTTPException(status_code=400, detail="Nessuna squadra trovata")

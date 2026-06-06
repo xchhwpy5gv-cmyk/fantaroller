@@ -336,6 +336,7 @@ def classifica(evento: str = None, db=Depends(get_db)):
             GROUP BY u.username, s.nome, s.id
             HAVING COUNT(sa.atleta_id) = 16
             ORDER BY punti DESC
+            LIMIT 1000
         """), {"evento": evento}).fetchall()
     else:
         rows = db.execute(text("""
@@ -347,6 +348,7 @@ def classifica(evento: str = None, db=Depends(get_db)):
             GROUP BY u.username, s.nome, s.id
             HAVING COUNT(sa.atleta_id) = 16
             ORDER BY punti DESC
+            LIMIT 1000
         """)).fetchall()
     
     return [{"username": r[0], "squadra": r[1], "punti": r[2], "n_atleti": 16} for r in rows]

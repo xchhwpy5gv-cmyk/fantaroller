@@ -1131,13 +1131,26 @@ function Classifica({ username, token }) {
         </div>
       )}
 
+      {/* RICERCA */}
+      <div className="card">
+        <input
+          className="input"
+          style={{ marginBottom: 0 }}
+          placeholder="🔍 Cerca squadra o utente..."
+          value={ricerca}
+          onChange={e => setRicerca(e.target.value)}
+        />
+      </div>
+
       {/* CLASSIFICA */}
       <div className="card" style={{ padding: 0, overflow: "hidden" }}>
         {loading
           ? <p style={{ textAlign: "center", color: theme.textMuted, padding: 24 }}>⏳ Caricamento...</p>
           : classifica.length === 0
             ? <p style={{ textAlign: "center", color: theme.textMuted, padding: 24 }}>Nessuna squadra completa in classifica</p>
-            : classifica.map((u, i) => (
+            : classifica
+              .filter(u => ricerca ? u.squadra.toLowerCase().includes(ricerca.toLowerCase()) || u.username.toLowerCase().includes(ricerca.toLowerCase()) : true)
+              .map((u, i) => (
               <div key={u.username}>
                 <div
                   style={{
@@ -1611,6 +1624,7 @@ function Lega({ token }) {
   const [messaggi, setMessaggi] = useState([]);
   const [nuovoMessaggio, setNuovoMessaggio] = useState("");
   const [squadraAperta, setSquadraAperta] = useState(null);
+  const [ricerca, setRicerca] = useState("");
 
   const caricaMieLeghe = async () => {
     const res = await fetch(`${API}/league/mie-leghe`, {

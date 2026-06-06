@@ -676,7 +676,8 @@ function Squadra({ token }) {
   const caricaSquadra = async () => {
     const res = await fetch(`${API}/squadra/`, { headers: { Authorization: `Bearer ${token}` } });
     if (res.ok) { setSquadra(await res.json()); setErrore(""); }
-    else setErrore("crea");
+    else if (res.status === 404) setErrore("crea");
+    // altri errori (401, 500) non mostrano "crea squadra"
   };
 
   const creaSquadra = async () => {

@@ -1057,6 +1057,28 @@ def debug_squadre(db=Depends(get_db)):
         "distribuzione": sorted(set(r[1] for r in atleti_per_squadra))
     }
 
+@app.post("/admin/fix-squadre-eccesso")
+def fix_squadre_eccesso(db=Depends(get_db)):
+    from sqlalchemy import text
+    squadre = db.execute(text("""
+        SELECT squadra_id, COUNT(*) as n
+        FROM squadra_atleti
+        GROUP BY squadra_id
+        HAVING COUNT(*) > 16
+    """)).fetchall()
+    sistemate = 0
+    for s in squadre:
+        squadra_id = s[0]
+        atleti = db.execute(text(f"SELECT atleta_id FROM squadra_atleti WHERE squadra_id = {squadra_id}")).fetchall()
+        eccesso = len(atleti) - 16
+        # Rimuovi gli ultimi atleti in eccesso
+        for i in range(eccesso):
+            atleta_id = atleti[-(i+1)][0]
+            db.execute(text(f"DELETE FROM squadra_atleti WHERE squadra_id = {squadra_id} AND atleta_id = {atleta_id}"))
+        sistemate += 1
+    db.commit()
+    return {"message": f"{sistemate} squadre sistemate"}
+
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):
     imp = db.query(Impostazioni).first()

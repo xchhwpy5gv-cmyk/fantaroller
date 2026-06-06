@@ -1050,6 +1050,7 @@ function Classifica({ username, token }) {
   const [loading, setLoading] = useState(true);
   const [archivioAperto, setArchivioAperto] = useState(false);
   const [squadraAperta, setSquadraAperta] = useState(null);
+  const [ricerca, setRicerca] = useState("");
   const EVENTO_PRINCIPALE = "Campionati Italiani Pista 2026";
 
   const caricaEventi = async () => {

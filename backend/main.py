@@ -1044,14 +1044,18 @@ def atleti_squadra(username: str, evento: str = None, utente=Depends(get_utente_
 @app.get("/admin/debug-squadre")
 def debug_squadre(db=Depends(get_db)):
     from sqlalchemy import text
-    totale = db.execute(text("""
-        SELECT COUNT(DISTINCT s.id)
-        FROM squadre s
-        JOIN squadra_atleti sa ON sa.squadra_id = s.id
-        GROUP BY s.id
-        HAVING COUNT(sa.atleta_id) = 16
-    """)).scalar()
-    return {"squadre_con_16_atleti": totale}
+    totale_squadre = db.execute(text("SELECT COUNT(*) FROM squadre")).scalar()
+    atleti_per_squadra = db.execute(text("""
+        SELECT squadra_id, COUNT(*) as n
+        FROM squadra_atleti
+        GROUP BY squadra_id
+    """)).fetchall()
+    complete = sum(1 for r in atleti_per_squadra if r[1] == 16)
+    return {
+        "totale_squadre": totale_squadre,
+        "squadre_complete": complete,
+        "distribuzione": sorted(set(r[1] for r in atleti_per_squadra))
+    }
 
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):

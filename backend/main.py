@@ -334,7 +334,7 @@ def classifica(evento: str = None, db=Depends(get_db)):
             JOIN squadra_atleti sa ON sa.squadra_id = s.id
             LEFT JOIN punti_evento pe ON pe.atleta_id = sa.atleta_id AND pe.evento = :evento
             GROUP BY u.username, s.nome, s.id
-            HAVING COUNT(sa.atleta_id) = 16
+            HAVING COUNT(sa.atleta_id) >= 16
             ORDER BY punti DESC
             LIMIT 1000
         """), {"evento": evento}).fetchall()
@@ -346,7 +346,7 @@ def classifica(evento: str = None, db=Depends(get_db)):
             JOIN squadra_atleti sa ON sa.squadra_id = s.id
             JOIN athletes a ON a.id = sa.atleta_id
             GROUP BY u.username, s.nome, s.id
-            HAVING COUNT(sa.atleta_id) = 16
+            HAVING COUNT(sa.atleta_id) >= 16
             ORDER BY punti DESC
             LIMIT 1000
         """)).fetchall()

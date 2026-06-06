@@ -1079,6 +1079,22 @@ def fix_squadre_eccesso(db=Depends(get_db)):
     db.commit()
     return {"message": f"{sistemate} squadre sistemate"}
 
+@app.get("/admin/debug-utente/{username}")
+def debug_utente(username: str, db=Depends(get_db)):
+    utente = db.query(User).filter(User.username == username).first()
+    if not utente:
+        raise HTTPException(status_code=404, detail="Utente non trovato")
+    squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
+    if not squadra:
+        raise HTTPException(status_code=404, detail="Squadra non trovata")
+    righe = db.execute(text(f"SELECT atleta_id, COUNT(*) as n FROM squadra_atleti WHERE squadra_id = {squadra.id} GROUP BY atleta_id HAVING COUNT(*) > 1")).fetchall()
+    tutti = db.execute(text(f"SELECT atleta_id FROM squadra_atleti WHERE squadra_id = {squadra.id}")).fetchall()
+    return {
+        "squadra_id": squadra.id,
+        "totale_righe": len(tutti),
+        "duplicati": [{"atleta_id": r[0], "count": r[1]} for r in righe]
+    }
+
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):
     imp = db.query(Impostazioni).first()

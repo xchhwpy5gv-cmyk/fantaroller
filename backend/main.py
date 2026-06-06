@@ -1116,6 +1116,43 @@ def debug_tutte_squadre(db=Depends(get_db)):
     """)).fetchall()
     return [{"squadra_id": r[0], "username": r[1], "squadra": r[2], "n_righe": r[3]} for r in righe]
 
+@app.post("/admin/fix-tutti-duplicati")
+def fix_tutti_duplicati(db=Depends(get_db)):
+    squadre = db.execute(text("""
+        SELECT squadra_id, COUNT(*) as n
+        FROM squadra_atleti
+        GROUP BY squadra_id
+        HAVING COUNT(*) > 16
+    """)).fetchall()
+    
+    sistemate = 0
+    for s in squadre:
+        squadra_id = s[0]
+        # Trova atleti duplicati
+        duplicati = db.execute(text(f"""
+            SELECT atleta_id, COUNT(*) as n
+            FROM squadra_atleti
+            WHERE squadra_id = {squadra_id}
+            GROUP BY atleta_id
+            HAVING COUNT(*) > 1
+        """)).fetchall()
+        
+        for d in duplicati:
+            atleta_id = d[0]
+            # Elimina una riga duplicata tenendo la prima
+            db.execute(text(f"""
+                DELETE FROM squadra_atleti
+                WHERE ctid IN (
+                    SELECT ctid FROM squadra_atleti
+                    WHERE squadra_id = {squadra_id} AND atleta_id = {atleta_id}
+                    OFFSET 1
+                )
+            """))
+        sistemate += 1
+    
+    db.commit()
+    return {"message": f"{sistemate} squadre sistemate"}
+
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):
     imp = db.query(Impostazioni).first()

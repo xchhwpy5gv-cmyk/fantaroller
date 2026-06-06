@@ -353,6 +353,8 @@ def classifica(evento: str = None, db=Depends(get_db)):
     
     return [{"username": r[0], "squadra": r[1], "punti": r[2], "n_atleti": 16} for r in rows]
 
+
+
 @app.get("/classifica/eventi")
 def lista_eventi(db=Depends(get_db)):
     eventi = db.query(PuntiEvento.evento).distinct().all()
@@ -1038,6 +1040,18 @@ def atleti_squadra(username: str, evento: str = None, utente=Depends(get_utente_
         })
     risultato.sort(key=lambda x: x["punti"], reverse=True)
     return risultato
+
+@app.get("/admin/debug-squadre")
+def debug_squadre(db=Depends(get_db)):
+    from sqlalchemy import text
+    totale = db.execute(text("""
+        SELECT COUNT(DISTINCT s.id)
+        FROM squadre s
+        JOIN squadra_atleti sa ON sa.squadra_id = s.id
+        GROUP BY s.id
+        HAVING COUNT(sa.atleta_id) = 16
+    """)).scalar()
+    return {"squadre_con_16_atleti": totale}
 
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):

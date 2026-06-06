@@ -1079,6 +1079,8 @@ def fix_squadre_eccesso(db=Depends(get_db)):
     db.commit()
     return {"message": f"{sistemate} squadre sistemate"}
 
+
+
 @app.get("/admin/debug-utente/{username}")
 def debug_utente(username: str, db=Depends(get_db)):
     utente = db.query(User).filter(User.username == username).first()
@@ -1094,6 +1096,12 @@ def debug_utente(username: str, db=Depends(get_db)):
         "totale_righe": len(tutti),
         "duplicati": [{"atleta_id": r[0], "count": r[1]} for r in righe]
     }
+
+@app.post("/admin/fix-duplicato")
+def fix_duplicato(squadra_id: int, atleta_id: int, db=Depends(get_db)):
+    db.execute(text(f"DELETE FROM squadra_atleti WHERE squadra_id = {squadra_id} AND atleta_id = {atleta_id} AND ctid = (SELECT ctid FROM squadra_atleti WHERE squadra_id = {squadra_id} AND atleta_id = {atleta_id} LIMIT 1)"))
+    db.commit()
+    return {"message": "Duplicato eliminato"}
 
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):

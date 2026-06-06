@@ -1625,6 +1625,7 @@ function Lega({ token }) {
   const [messaggi, setMessaggi] = useState([]);
   const [nuovoMessaggio, setNuovoMessaggio] = useState("");
   const [squadraAperta, setSquadraAperta] = useState(null);
+  const [ricerca, setRicerca] = useState("");
   
 
   const caricaMieLeghe = async () => {

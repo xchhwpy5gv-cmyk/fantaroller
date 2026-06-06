@@ -1103,6 +1103,19 @@ def fix_duplicato(squadra_id: int, atleta_id: int, db=Depends(get_db)):
     db.commit()
     return {"message": "Duplicato eliminato"}
 
+@app.get("/admin/debug-tutte-squadre")
+def debug_tutte_squadre(db=Depends(get_db)):
+    righe = db.execute(text("""
+        SELECT s.id, u.username, s.nome, COUNT(sa.atleta_id) as n_righe
+        FROM squadre s
+        JOIN users u ON u.id = s.user_id
+        JOIN squadra_atleti sa ON sa.squadra_id = s.id
+        GROUP BY s.id, u.username, s.nome
+        HAVING COUNT(sa.atleta_id) > 16
+        ORDER BY n_righe DESC
+    """)).fetchall()
+    return [{"squadra_id": r[0], "username": r[1], "squadra": r[2], "n_righe": r[3]} for r in righe]
+
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):
     imp = db.query(Impostazioni).first()

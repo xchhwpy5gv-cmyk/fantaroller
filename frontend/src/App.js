@@ -1575,17 +1575,23 @@ function SquadreLega({ token }) {
 function AtletiSquadra({ token, username, evento }) {
   const [atleti, setAtleti] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [errore, setErrore] = useState(false);
 
   useState(() => {
     const url = evento
       ? `${API}/league/atleti-squadra?username=${encodeURIComponent(username)}&evento=${encodeURIComponent(evento)}`
       : `${API}/league/atleti-squadra?username=${encodeURIComponent(username)}`;
     fetch(url, { headers: { Authorization: `Bearer ${token}` } })
-      .then(r => r.json())
-      .then(data => { setAtleti(data); setLoading(false); });
+      .then(r => {
+        if (!r.ok) { setErrore(true); setLoading(false); return null; }
+        return r.json();
+      })
+      .then(data => { if (data) { setAtleti(data); setLoading(false); } })
+      .catch(() => { setErrore(true); setLoading(false); });
   }, []);
 
-  if (loading) return <p style={{ color: theme.textMuted, fontSize: 12 }}>⏳ Caricamento...</p>;
+  if (loading) return <p style={{ color: theme.textMuted, fontSize: 12 }}>⏳ Caricamento...</p>
+  if (errore) return <p style={{ color: theme.textMuted, fontSize: 13, padding: "8px 4px" }}>⚠️ Sessione scaduta — esci e rifai il login.</p>
 
   return (
     <table className="table" style={{ marginBottom: 0 }}>

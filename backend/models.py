@@ -51,6 +51,7 @@ class Athlete(Base):
     categoria = Column(String)
     punti = Column(Integer)
     prezzo = Column(Integer)
+    prezzo_precedente = Column(Integer, default=0)
     gare = Column(Integer)
     malus = Column(Integer, default=0)
     visibile = Column(Integer, default=1)

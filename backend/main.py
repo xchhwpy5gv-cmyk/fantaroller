@@ -1191,6 +1191,17 @@ def fix_tutti_duplicati(db=Depends(get_db)):
     db.commit()
     return {"message": f"{sistemate} squadre sistemate"}
 
+@app.post("/admin/migrazione-prezzo-precedente")
+def migrazione_prezzo_precedente(db=Depends(get_db)):
+    try:
+        db.execute(text("ALTER TABLE athletes ADD COLUMN prezzo_precedente INTEGER DEFAULT 0"))
+        db.commit()
+    except:
+        pass
+    db.execute(text("UPDATE athletes SET prezzo_precedente = prezzo WHERE prezzo_precedente = 0"))
+    db.commit()
+    return {"message": "Migrazione completata"}
+
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):
     imp = db.query(Impostazioni).first()

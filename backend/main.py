@@ -476,6 +476,16 @@ def calcola_punti(evento: str = None, utente=Depends(get_utente_corrente), db=De
             soup = BeautifulSoup(response.text, "html.parser")
             rows = soup.find_all("tr")
 
+            # Mappa pettorale -> nome dalla classifica
+            pettorale_nome = {}
+            for row in rows:
+                cols = row.find_all("td")
+                if len(cols) > 3:
+                    pettorale = cols[1].text.strip()
+                    nome = cols[2].text.strip()
+                    if pettorale and pettorale.isdigit():
+                        pettorale_nome[pettorale] = nome
+
             for row in rows:
                 cols = row.find_all("td")
                 if len(cols) > 3:
@@ -507,6 +517,34 @@ def calcola_punti(evento: str = None, utente=Depends(get_utente_corrente), db=De
                                     categoria=gara.categoria,
                                     punti=punti
                                 ))
+
+            # Leggi note per malus
+            testo_pagina = soup.get_text()
+            import re
+            diffide = re.findall(r'Diffida al n\.\s*(\d+)\s+([A-Z\s\']+?)(?=Diffida|Ammonizione|Espulsione|$)', testo_pagina)
+            ammonizioni = re.findall(r'Ammonizione al n\.\s*(\d+)\s+([A-Z\s\']+?)(?=Diffida|Ammonizione|Espulsione|$)', testo_pagina)
+            espulsioni = re.findall(r'Espulsione al n\.\s*(\d+)\s+([A-Z\s\']+?)(?=Diffida|Ammonizione|Espulsione|$)', testo_pagina)
+
+            def applica_malus(sanzioni, malus_punti):
+                for pettorale, _ in sanzioni:
+                    pettorale = pettorale.strip()
+                    nome = pettorale_nome.get(pettorale)
+                    if nome:
+                        nome_norm = normalizza_nome(nome)
+                        athletes = db.query(Athlete).filter(Athlete.categoria == gara.categoria).all()
+                        atleta = next((a for a in athletes if normalizza_nome(a.name) == nome_norm), None)
+                        if atleta:
+                            atleta.punti -= malus_punti
+                            evento_esistente = db.query(PuntiEvento).filter(
+                                PuntiEvento.atleta_id == atleta.id,
+                                PuntiEvento.evento == gara.evento
+                            ).first()
+                            if evento_esistente:
+                                evento_esistente.punti -= malus_punti
+
+            applica_malus(diffide, 20)
+            applica_malus(ammonizioni, 10)
+            applica_malus(espulsioni, 50)
             db.commit()
         except Exception as e:
             print(f"Errore gara {gara.url}: {e}")

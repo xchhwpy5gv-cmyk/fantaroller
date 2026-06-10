@@ -1202,6 +1202,20 @@ def migrazione_prezzo_precedente(db=Depends(get_db)):
     db.commit()
     return {"message": "Migrazione completata"}
 
+@app.post("/admin/ripristina-prezzi")
+def ripristina_prezzi(db=Depends(get_db)):
+    atleti = db.query(Athlete).filter(
+        Athlete.categoria.in_(["Ragazzi Maschi", "Ragazze Femminile"]),
+        Athlete.prezzo_precedente > 0
+    ).all()
+    ripristinati = 0
+    for atleta in atleti:
+        atleta.prezzo = atleta.prezzo_precedente
+        atleta.prezzo_precedente = 0
+        ripristinati += 1
+    db.commit()
+    return {"message": f"Prezzi ripristinati per {ripristinati} atleti"}
+
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):
     imp = db.query(Impostazioni).first()

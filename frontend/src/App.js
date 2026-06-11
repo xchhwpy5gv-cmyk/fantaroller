@@ -701,9 +701,12 @@ function Squadra({ token }) {
 
   useState(() => { caricaSquadra(); }, []);
 
-  const categorie = ["Ragazzi Maschi", "Ragazze Femminile", "Allievi Maschi", "Allieve Femminile", "Junior Maschi", "Junior Femminile", "Senior Maschi", "Senior Femminile"];
+  const isNew = squadra && squadra.is_new === 1;
+  const categorie = isNew
+    ? ["Allievi Maschi", "Allieve Femminile", "Junior Maschi", "Junior Femminile", "Senior Maschi", "Senior Femminile"]
+    : ["Ragazzi Maschi", "Ragazze Femminile", "Allievi Maschi", "Allieve Femminile", "Junior Maschi", "Junior Femminile", "Senior Maschi", "Senior Femminile"];
   const atletiPerCategoria = (cat) => squadra ? squadra.atleti.filter(a => a.categoria === cat).length : 0;
-  const squadraCompleta = squadra ? squadra.atleti.length === 16 : false;
+  const squadraCompleta = squadra ? (isNew ? squadra.atleti.length === 12 : squadra.atleti.length === 16) : false;
 
   if (errore === "crea") return (
     <div className="card">

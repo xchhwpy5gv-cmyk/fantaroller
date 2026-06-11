@@ -247,6 +247,7 @@ def vedi_squadra(utente=Depends(get_utente_corrente), db=Depends(get_db)):
     return {
         "nome": squadra.nome,
         "budget": utente.budget,
+        "is_new": squadra.is_new or 0,
        "atleti": [{
             "id": a.id,
             "name": a.name,

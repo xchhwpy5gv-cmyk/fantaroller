@@ -1030,7 +1030,8 @@ function Mercato({ token }) {
                 </thead>
                 <tbody>
                   {atletiCategoria.map(a => {
-                    const sbiadito = !isDisponibile(a);
+                    const bloccato = ["Ragazzi Maschi", "Ragazze Femminile"].includes(a.categoria) && !squadra.includes(a.id);
+                    const sbiadito = !isDisponibile(a) || bloccato;
                     return (
               <>
                 <tr key={a.id} style={{ opacity: sbiadito ? 0.4 : 1 }}>
@@ -1045,8 +1046,10 @@ function Mercato({ token }) {
                         {atletaAperto === a.id ? "▲" : "📊"}
                       </button>
                       {squadra.includes(a.id)
-                        ? <span style={{ color: theme.green, fontSize: 12, fontWeight: 600 }}>✓</span>
-                        : <button className="btn btn-success" style={{ padding: "5px 12px", fontSize: 12 }} onClick={() => acquista(a.id)}>Acquista</button>
+                          ? <span style={{ color: theme.green, fontSize: 12, fontWeight: 600 }}>✓</span>
+                          : bloccato
+                          ? <span style={{ fontSize: 16 }}>🔒</span>
+                          : <button className="btn btn-success" style={{ padding: "5px 12px", fontSize: 12 }} onClick={() => acquista(a.id)}>Acquista</button>
                       }
                     </div>
                   </td>

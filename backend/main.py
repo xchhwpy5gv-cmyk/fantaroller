@@ -347,7 +347,7 @@ def classifica(evento: str = None, db=Depends(get_db)):
             JOIN squadra_atleti sa ON sa.squadra_id = s.id
             LEFT JOIN punti_evento pe ON pe.atleta_id = sa.atleta_id AND pe.evento = :evento
             GROUP BY u.username, s.nome, s.id, s.punti_bonus, s.is_new
-            HAVING COUNT(sa.atleta_id) >= 16
+            HAVING (COUNT(sa.atleta_id) >= 16 OR (s.is_new = 1 AND COUNT(sa.atleta_id) >= 12))
             ORDER BY punti DESC
             LIMIT 1000
         """), {"evento": evento}).fetchall()
@@ -1384,6 +1384,25 @@ def prepara_nuovi_utenti(db=Depends(get_db)):
     
     db.commit()
     return {"message": f"{processati} utenti preparati"}
+
+@app.get("/admin/debug-new-user/{username}")
+def debug_new_user(username: str, db=Depends(get_db)):
+    from sqlalchemy import text
+    utente = db.query(User).filter(User.username == username).first()
+    if not utente:
+        raise HTTPException(status_code=404, detail="Utente non trovato")
+    squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
+    if not squadra:
+        raise HTTPException(status_code=404, detail="Squadra non trovata")
+    n_atleti = db.execute(text(f"SELECT COUNT(*) FROM squadra_atleti WHERE squadra_id = {squadra.id}")).scalar()
+    return {
+        "username": utente.username,
+        "squadra_id": squadra.id,
+        "is_new": squadra.is_new,
+        "punti_bonus": squadra.punti_bonus,
+        "n_atleti_db": n_atleti,
+        "n_atleti_orm": len(squadra.atleti)
+    }
 
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):

@@ -210,14 +210,17 @@ def acquista_atleta(atleta_id: int, utente=Depends(get_utente_corrente), db=Depe
 
     if not squadra:
         raise HTTPException(status_code=400, detail="Crea prima una squadra")
-    atleta = db.query(Athlete).filter(Athlete.id == atleta_id).first()
+atleta = db.query(Athlete).filter(Athlete.id == atleta_id).first()
     if not atleta:
         raise HTTPException(status_code=404, detail="Atleta non trovato")
     if atleta in squadra.atleti:
         raise HTTPException(status_code=400, detail="Atleta già in squadra")
     if len(squadra.atleti) >= 16:
         raise HTTPException(status_code=400, detail="Squadra completa! Massimo 16 atleti")
-
+    # Blocca acquisto Ragazzi/Ragazze se squadra già completa con quelle categorie
+    categorie_bloccate = ["Ragazzi Maschi", "Ragazze Femminile"]
+    if atleta.categoria in categorie_bloccate:
+        raise HTTPException(status_code=400, detail="Non puoi più acquistare atleti di questa categoria")
     atleti_stessa_categoria = [a for a in squadra.atleti if a.categoria == atleta.categoria]
     if len(atleti_stessa_categoria) >= 2:
         raise HTTPException(status_code=400, detail=f"Hai già 2 atleti in {atleta.categoria}")
@@ -257,6 +260,9 @@ def vendi_atleta(atleta_id: int, utente=Depends(get_utente_corrente), db=Depends
     squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
     if not squadra:
         raise HTTPException(status_code=400, detail="Nessuna squadra trovata")
+    atleta = db.query(Athlete).filter(Athlete.id == atleta_id).first()
+    if atleta and atleta.categoria in ["Ragazzi Maschi", "Ragazze Femminile"]:
+        raise HTTPException(status_code=400, detail="Non puoi vendere atleti di Ragazzi/Ragazze")
     atleta = db.query(Athlete).filter(Athlete.id == atleta_id).first()
     if not atleta:
         raise HTTPException(status_code=404, detail="Atleta non trovato")

@@ -1328,6 +1328,7 @@ function Admin({ token }) {
   const [listaAperta, setListaAperta] = useState(false);
   const [eventoCalcolo, setEventoCalcolo] = useState("");
   const [eventiAperti, setEventiAperti] = useState({});
+  const [usernameBonus, setUsernameBonus] = useState("");
 
 useState(() => {
   fetch(`${API}/admin/statistiche`, {
@@ -1383,6 +1384,17 @@ useState(() => {
     const data = await res.json(); setMessaggio(data.message); setUrlIndex(""); setNomeEventoIndex(""); caricaGare();
   };
 
+  const assegnaBonus = async () => {
+    if (!usernameBonus.trim()) return;
+    const res = await fetch(`${API}/admin/assegna-bonus-new?username=${encodeURIComponent(usernameBonus)}`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    setMessaggio(data.message || data.detail);
+    setUsernameBonus("");
+  };
+
   const calcolaPunti = async () => {
     setMessaggio("⏳ Calcolo punti in corso...");
     const url = eventoCalcolo ? `${API}/admin/calcola-punti?evento=${encodeURIComponent(eventoCalcolo)}` : `${API}/admin/calcola-punti`;
@@ -1395,6 +1407,21 @@ useState(() => {
       <div className="card">
         <div className="card-title">🔧 Pannello Admin</div>
         {messaggio && <div className="msg-box">{messaggio}</div>}
+        <div className="card">
+          <div className="card-title">🆕 Assegna Bonus Nuovo Utente</div>
+          <p style={{ color: theme.textSub, fontSize: 13, marginBottom: 12 }}>
+            Assegna 358 punti bonus e budget corretto a chi entra in corsa d'opera.
+          </p>
+          <input
+            className="input"
+            placeholder="Username utente"
+            value={usernameBonus}
+            onChange={e => setUsernameBonus(e.target.value)}
+          />
+          <button className="btn btn-primary" onClick={assegnaBonus}>
+            🆕 Assegna Bonus
+          </button>
+        </div>
         {stats && (
           <div className="card">
             <div className="card-title">📊 Statistiche</div>

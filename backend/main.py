@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy import create_engine, text
 from models import Base, User, Athlete, Squadra, Impostazioni, Gara, PuntiEvento, League, Messaggio
-from schemas import UserCreate, UserLogin, Token
+from schemas import UserCreate, UserLogin, Token, AggiornaPrezzoRequest
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
@@ -1239,15 +1239,14 @@ def atleti_plusvalenze(db=Depends(get_db)):
     return risultati[:5]
 
 @app.post("/admin/aggiorna-prezzo-atleta")
-def aggiorna_prezzo_atleta(atleta_id: int, nuovo_prezzo: int, db=Depends(get_db)):
-    atleta = db.query(Athlete).filter(Athlete.id == atleta_id).first()
+def aggiorna_prezzo_atleta(req: AggiornaPrezzoRequest, db=Depends(get_db)):
+    atleta = db.query(Athlete).filter(Athlete.id == req.atleta_id).first()
     if not atleta:
         raise HTTPException(status_code=404, detail="Atleta non trovato")
-    # Salva il prezzo attuale come precedente prima di aggiornare
     atleta.prezzo_precedente = atleta.prezzo
-    atleta.prezzo = nuovo_prezzo
+    atleta.prezzo = req.nuovo_prezzo
     db.commit()
-    return {"message": f"{atleta.name}: {atleta.prezzo_precedente}cr → {nuovo_prezzo}cr"}
+    return {"message": f"{atleta.name}: {atleta.prezzo_precedente}cr → {req.nuovo_prezzo}cr"}
 
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):

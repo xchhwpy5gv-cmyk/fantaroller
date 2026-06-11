@@ -196,8 +196,14 @@ def crea_squadra(nome: str, utente=Depends(get_utente_corrente), db=Depends(get_
     esistente = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
     if esistente:
         raise HTTPException(status_code=400, detail="Hai già una squadra")
-    nuova = Squadra(nome=nome, user_id=utente.id)
-    db.add(nuova)
+    imp = db.query(Impostazioni).first()
+    # Se il mercato è aperto ma le gare sono già iniziate, assegna bonus automaticamente
+    punti_bonus = 358 if imp and imp.mercato_aperto else 0
+    is_new = 1 if punti_bonus > 0 else 0
+    budget_iniziale = max(0, utente.budget - 50) if is_new else utente.budget
+    utente.budget = budget_iniziale
+    squadra = Squadra(user_id=utente.id, nome=nome, punti_bonus=punti_bonus, is_new=is_new)
+    db.add(squadra)
     db.commit()
     return {"message": f"Squadra '{nome}' creata!"}
 
@@ -1335,6 +1341,45 @@ def assegna_bonus_new(username: str, db=Depends(get_db)):
         "budget_assegnato": nuovo_budget,
         "crediti_gia_spesi": crediti_gia_spesi
     }
+
+@app.post("/admin/prepara-nuovi-utenti")
+def prepara_nuovi_utenti(db=Depends(get_db)):
+    MEDIA_CREDITI_RAGAZZI = 50
+    PUNTI_BONUS = 358
+    CATEGORIE_BLOCCATE = ["Ragazzi Maschi", "Ragazze Femminile"]
+    
+    utenti = db.query(User).all()
+    processati = 0
+    
+    for utente in utenti:
+        squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
+        
+        # Salta chi ha squadra completa
+        if squadra and len(squadra.atleti) >= 16:
+            continue
+        
+        # Rimuovi Ragazzi/Ragazze dalla squadra e restituisci crediti
+        if squadra:
+            atleti_da_rimuovere = [a for a in squadra.atleti if a.categoria in CATEGORIE_BLOCCATE]
+            for atleta in atleti_da_rimuovere:
+                squadra.atleti.remove(atleta)
+                utente.budget += atleta.prezzo
+        
+        # Calcola crediti già spesi per le altre categorie
+        crediti_spesi = sum(a.prezzo for a in squadra.atleti) if squadra else 0
+        
+        # Imposta budget corretto
+        utente.budget = max(0, 200 - MEDIA_CREDITI_RAGAZZI - crediti_spesi)
+        
+        # Assegna punti bonus
+        if squadra:
+            squadra.punti_bonus = PUNTI_BONUS
+            squadra.is_new = 1
+        
+        processati += 1
+    
+    db.commit()
+    return {"message": f"{processati} utenti preparati"}
 
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):

@@ -1219,6 +1219,7 @@ function Classifica({ username, token }) {
                     <div style={{ fontWeight: 600, fontSize: 14, color: theme.text }}>
                       {u.squadra}
                       {u.username === username && <span className="badge badge-orange" style={{ marginLeft: 8 }}>Tu</span>}
+                      {u.is_new === 1 && <span className="badge badge-blue" style={{ marginLeft: 6, fontSize: 10 }}>NEW</span>}
                     </div>
                     <div style={{ fontSize: 11, color: theme.textMuted }}>@{u.username} {squadraAperta === u.username ? "▲" : "▼"}</div>
                   </div>

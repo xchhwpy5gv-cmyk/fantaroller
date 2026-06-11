@@ -1248,6 +1248,43 @@ def aggiorna_prezzo_atleta(req: AggiornaPrezzoRequest, db=Depends(get_db)):
     db.commit()
     return {"message": f"{atleta.name}: {atleta.prezzo_precedente}cr → {req.nuovo_prezzo}cr"}
 
+@app.get("/admin/media-campionato")
+def media_campionato(db=Depends(get_db)):
+    utenti = db.query(User).all()
+    punti_totali = []
+    crediti_ragazzi = []
+
+    for utente in utenti:
+        squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
+        if not squadra or len(squadra.atleti) < 16:
+            continue
+
+        # Media punti squadra
+        punti = sum(
+            (db.query(PuntiEvento).filter(
+                PuntiEvento.atleta_id == a.id,
+                PuntiEvento.evento == "Campionati Italiani Pista 2026"
+            ).first() or type('', (), {'punti': 0})()).punti
+            for a in squadra.atleti
+        )
+        punti_totali.append(punti)
+
+        # Crediti spesi su Ragazzi/Ragazze
+        speso_ragazzi = sum(
+            a.prezzo for a in squadra.atleti
+            if a.categoria in ["Ragazzi Maschi", "Ragazze Femminile"]
+        )
+        crediti_ragazzi.append(speso_ragazzi)
+
+    if not punti_totali:
+        return {"media_punti": 0, "media_crediti_ragazzi": 0, "squadre_complete": 0}
+
+    return {
+        "media_punti": round(sum(punti_totali) / len(punti_totali)),
+        "media_crediti_ragazzi": round(sum(crediti_ragazzi) / len(crediti_ragazzi)),
+        "squadre_complete": len(punti_totali)
+    }
+
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):
     imp = db.query(Impostazioni).first()

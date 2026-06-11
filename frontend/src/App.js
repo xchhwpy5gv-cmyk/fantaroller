@@ -912,44 +912,44 @@ function Mercato({ token }) {
       </div>
     )}
     {plusvalenze.length > 0 && (
-                <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-                    <div
-                        style={{ padding: "14px 20px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}
-                        onClick={() => setPlusvalenzeAperto(!plusvalenzeAperto)}
-                    >
-                        <span style={{ fontWeight: 600, fontSize: 15 }}>🚀 Migliori Plusvalenze</span>
-                        <span style={{ color: theme.textMuted }}>{plusvalenzeAperto ? "▲" : "▼"}</span>
-                    </div>
-                    {plusvalenzeAperto && (
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th style={{ paddingLeft: 20 }}>#</th>
-                                    <th>Nome</th>
-                                    <th>Valore</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {plusvalenze.map((a, i) => (
-                                    <tr key={a.id}>
-                                        <td style={{ paddingLeft: 20, fontFamily: "'Bebas Neue', cursive", fontSize: "1.1rem", color: theme.accent }}>{i + 1}</td>
-                                        <td>
-                                            <div style={{ fontWeight: 600 }}>{a.name}</div>
-                                            <div style={{ fontSize: 11, color: theme.textMuted }}>{a.categoria}</div>
-                                        </td>
-                                        <td>
-                                            <span style={{ color: theme.textMuted, fontSize: 12 }}>{a.prezzo_precedente}cr</span>
-                                            <span style={{ color: theme.textMuted, fontSize: 12 }}> → </span>
-                                            <span style={{ color: theme.green, fontWeight: 700 }}>{a.prezzo}cr</span>
-                                            <span style={{ color: theme.green, fontSize: 11, marginLeft: 4 }}>+{a.diff}</span>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    )}
-                </div>
+        <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+            <div
+                style={{ padding: "14px 20px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}
+                onClick={() => setPlusvalenzeAperto(!plusvalenzeAperto)}
+            >
+                <span style={{ fontWeight: 600, fontSize: 15 }}>🚀 Migliori Plusvalenze</span>
+                <span style={{ color: theme.textMuted }}>{plusvalenzeAperto ? "▲" : "▼"}</span>
+            </div>
+            {plusvalenzeAperto && (
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th style={{ paddingLeft: 20 }}>#</th>
+                            <th>Nome</th>
+                            <th>Valore</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {plusvalenze.map((a, i) => (
+                            <tr key={a.id}>
+                                <td style={{ paddingLeft: 20, fontFamily: "'Bebas Neue', cursive", fontSize: "1.1rem", color: theme.accent }}>{i + 1}</td>
+                                <td>
+                                    <div style={{ fontWeight: 600 }}>{a.name}</div>
+                                    <div style={{ fontSize: 11, color: theme.textMuted }}>{a.categoria}</div>
+                                </td>
+                                <td>
+                                    <span style={{ color: theme.textMuted, fontSize: 12 }}>{a.prezzo_precedente}cr</span>
+                                    <span style={{ color: theme.textMuted, fontSize: 12 }}> → </span>
+                                    <span style={{ color: theme.green, fontWeight: 700 }}>{a.prezzo}cr</span>
+                                    <span style={{ color: theme.green, fontSize: 11, marginLeft: 4 }}>+{a.diff}</span>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             )}
+        </div>
+    )}
 
     <div className="card">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>

@@ -221,12 +221,13 @@ def acquista_atleta(atleta_id: int, utente=Depends(get_utente_corrente), db=Depe
         raise HTTPException(status_code=404, detail="Atleta non trovato")
     if atleta in squadra.atleti:
         raise HTTPException(status_code=400, detail="Atleta già in squadra")
-    if len(squadra.atleti) >= 16:
-        raise HTTPException(status_code=400, detail="Squadra completa! Massimo 16 atleti")
-    # Blocca acquisto Ragazzi/Ragazze se squadra già completa con quelle categorie
+    limite = 12 if squadra.is_new else 16
+    if len(squadra.atleti) >= limite:
+        raise HTTPException(status_code=400, detail="Squadra completa!")
+    # Blocca acquisto Ragazzi/Ragazze per tutti
     categorie_bloccate = ["Ragazzi Maschi", "Ragazze Femminile"]
     if atleta.categoria in categorie_bloccate:
-        raise HTTPException(status_code=400, detail="Non puoi più acquistare atleti di questa categoria")
+        raise HTTPException(status_code=400, detail="Non puoi acquistare atleti di questa categoria")
     atleti_stessa_categoria = [a for a in squadra.atleti if a.categoria == atleta.categoria]
     if len(atleti_stessa_categoria) >= 2:
         raise HTTPException(status_code=400, detail=f"Hai già 2 atleti in {atleta.categoria}")
@@ -357,7 +358,7 @@ def classifica(evento: str = None, db=Depends(get_db)):
             JOIN squadra_atleti sa ON sa.squadra_id = s.id
             JOIN athletes a ON a.id = sa.atleta_id
             GROUP BY u.username, s.nome, s.id, s.punti_bonus, s.is_new
-            HAVING COUNT(sa.atleta_id) >= 16
+            HAVING (COUNT(sa.atleta_id) >= 16) OR (s.is_new = 1 AND COUNT(sa.atleta_id) >= 12)
             ORDER BY punti DESC
             LIMIT 1000
         """)).fetchall()

@@ -325,33 +325,31 @@ def debug_impostazioni(db=Depends(get_db)):
 @app.get("/classifica/")
 def classifica(evento: str = None, db=Depends(get_db)):
     from sqlalchemy import text
-    
     if evento:
         rows = db.execute(text("""
-            SELECT u.username, s.nome, COALESCE(SUM(pe.punti), 0) as punti
+            SELECT u.username, s.nome, COALESCE(SUM(pe.punti), 0) + COALESCE(s.punti_bonus, 0) as punti, COALESCE(s.is_new, 0) as is_new
             FROM users u
             JOIN squadre s ON s.user_id = u.id
             JOIN squadra_atleti sa ON sa.squadra_id = s.id
             LEFT JOIN punti_evento pe ON pe.atleta_id = sa.atleta_id AND pe.evento = :evento
-            GROUP BY u.username, s.nome, s.id
+            GROUP BY u.username, s.nome, s.id, s.punti_bonus, s.is_new
             HAVING COUNT(sa.atleta_id) >= 16
             ORDER BY punti DESC
             LIMIT 1000
         """), {"evento": evento}).fetchall()
     else:
         rows = db.execute(text("""
-            SELECT u.username, s.nome, COALESCE(SUM(a.punti), 0) as punti
+            SELECT u.username, s.nome, COALESCE(SUM(a.punti), 0) + COALESCE(s.punti_bonus, 0) as punti, COALESCE(s.is_new, 0) as is_new
             FROM users u
             JOIN squadre s ON s.user_id = u.id
             JOIN squadra_atleti sa ON sa.squadra_id = s.id
             JOIN athletes a ON a.id = sa.atleta_id
-            GROUP BY u.username, s.nome, s.id
+            GROUP BY u.username, s.nome, s.id, s.punti_bonus, s.is_new
             HAVING COUNT(sa.atleta_id) >= 16
             ORDER BY punti DESC
             LIMIT 1000
         """)).fetchall()
-    
-    return [{"username": r[0], "squadra": r[1], "punti": r[2], "n_atleti": 16} for r in rows]
+    return [{"username": r[0], "squadra": r[1], "punti": r[2], "n_atleti": 16, "is_new": r[3]} for r in rows]
 
 
 
@@ -745,12 +743,11 @@ def dettagli_lega(utente=Depends(get_utente_corrente), db=Depends(get_db)):
 def classifica_lega(evento: str = None, utente=Depends(get_utente_corrente), db=Depends(get_db)):
     if not utente.league_id:
         raise HTTPException(status_code=404, detail="Non sei in nessuna lega")
-    
     utenti_lega = db.query(User).filter(User.league_id == utente.league_id).all()
     risultati = []
     for u in utenti_lega:
         squadra = db.query(Squadra).filter(Squadra.user_id == u.id).first()
-        if squadra and len(squadra.atleti) == 16:
+        if squadra and len(squadra.atleti) >= 16:
             if evento:
                 punti_totali = 0
                 for atleta in squadra.atleti:
@@ -762,11 +759,13 @@ def classifica_lega(evento: str = None, utente=Depends(get_utente_corrente), db=
                         punti_totali += pe.punti
             else:
                 punti_totali = sum(a.punti for a in squadra.atleti)
+            punti_totali += squadra.punti_bonus or 0
             risultati.append({
                 "username": u.username,
                 "squadra": squadra.nome,
                 "punti": punti_totali,
-                "n_atleti": len(squadra.atleti)
+                "n_atleti": len(squadra.atleti),
+                "is_new": squadra.is_new or 0
             })
     risultati.sort(key=lambda x: x["punti"], reverse=True)
     return risultati

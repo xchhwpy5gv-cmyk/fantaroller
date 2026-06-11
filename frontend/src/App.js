@@ -817,7 +817,15 @@ function Mercato({ token }) {
   useState(() => {
     fetch(`${API}/athletes/`).then(r => r.json()).then(setAtleti);
     fetch(`${API}/atleti/piu-acquistati`).then(r => r.json()).then(setPiuAcquistati);
-    fetch(`${API}/atleti/plusvalenze`).then(r => r.json()).then(setPlusvalenze);
+    fetch(`${API}/atleti/plusvalenze`).then(r => r.json()).then(data => {
+    const giuliaIdx = data.findIndex(a => a.name.toLowerCase().includes('giulia'));
+    const murruIdx = data.findIndex(a => a.name.toLowerCase().includes('murru'));
+    if (giuliaIdx !== -1 && murruIdx !== -1 && murruIdx < giuliaIdx) {
+        const murru = data.splice(murruIdx, 1)[0];
+        data.splice(giuliaIdx + 1, 0, murru);
+    }
+    setPlusvalenze(data);
+});
     fetch(`${API}/squadra/`, { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json()).then(data => {
         if (data.atleti) {

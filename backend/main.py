@@ -1362,8 +1362,10 @@ def prepara_nuovi_utenti(db=Depends(get_db)):
         if squadra:
             atleti_da_rimuovere = [a for a in squadra.atleti if a.categoria in CATEGORIE_BLOCCATE]
             for atleta in atleti_da_rimuovere:
-                squadra.atleti.remove(atleta)
-                utente.budget += atleta.prezzo
+                crediti = db.execute(text(f"SELECT COUNT(*) FROM squadra_atleti WHERE squadra_id = {squadra.id} AND atleta_id = {atleta.id}")).scalar()
+                db.execute(text(f"DELETE FROM squadra_atleti WHERE squadra_id = {squadra.id} AND atleta_id = {atleta.id}"))
+                utente.budget += atleta.prezzo * crediti
+            db.flush()
         
         # Calcola crediti già spesi per le altre categorie
         crediti_spesi = sum(a.prezzo for a in squadra.atleti) if squadra else 0

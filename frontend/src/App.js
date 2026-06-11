@@ -720,7 +720,6 @@ function Squadra({ token }) {
       <div className="card">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
           <div>
-            <div className="card-title">🏆 {squadra.nome}</div>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
               <div className="card-title" style={{ marginBottom: 0 }}>🏆 {squadra.nome}</div>
               <button className="btn btn-blue" style={{ padding: "4px 10px", fontSize: 11 }} onClick={() => setRinominaAperto(!rinominaAperto)}>✏️ Rinomina</button>
@@ -1684,6 +1683,7 @@ function Lega({ token }) {
   const [messaggi, setMessaggi] = useState([]);
   const [nuovoMessaggio, setNuovoMessaggio] = useState("");
   const [squadraAperta, setSquadraAperta] = useState(null);
+  const [sezioneAperta, setSezioneAperta] = useState("classifica");
   
 
   const caricaMieLeghe = async () => {
@@ -1778,8 +1778,6 @@ function Lega({ token }) {
 
   const sonoMembro = (id) => mieLeghe.some(l => l.id === id);
   const legheFiltrate = tutteLeghe.filter(l => l.nome.toLowerCase().includes(ricerca.toLowerCase()));
-
-  const [sezioneAperta, setSezioneAperta] = useState("classifica");
 
   // PAGINA LEGA APERTA
   if (vista === "lega" && dettagli) return (

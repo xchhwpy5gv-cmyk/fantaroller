@@ -1238,6 +1238,17 @@ def atleti_plusvalenze(db=Depends(get_db)):
     risultati.sort(key=lambda x: x["diff"], reverse=True)
     return risultati[:5]
 
+@app.post("/admin/aggiorna-prezzo-atleta")
+def aggiorna_prezzo_atleta(atleta_id: int, nuovo_prezzo: int, db=Depends(get_db)):
+    atleta = db.query(Athlete).filter(Athlete.id == atleta_id).first()
+    if not atleta:
+        raise HTTPException(status_code=404, detail="Atleta non trovato")
+    # Salva il prezzo attuale come precedente prima di aggiornare
+    atleta.prezzo_precedente = atleta.prezzo
+    atleta.prezzo = nuovo_prezzo
+    db.commit()
+    return {"message": f"{atleta.name}: {atleta.prezzo_precedente}cr → {nuovo_prezzo}cr"}
+
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):
     imp = db.query(Impostazioni).first()

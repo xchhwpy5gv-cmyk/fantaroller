@@ -26,7 +26,7 @@ Base.metadata.create_all(bind=engine)
 
 SECRET_KEY = "fantaroller2026"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 365
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/")
@@ -1045,7 +1045,7 @@ def squadre_lega(utente=Depends(get_utente_corrente), db=Depends(get_db)):
 
 @app.post("/admin/reset-password-temp")
 def reset_password_temp(db=Depends(get_db)):
-    utente = db.query(User).filter(User.username == "Ilaria").first()
+    utente = db.query(User).filter(User.username == "Asja").first()
     if not utente:
         raise HTTPException(status_code=404, detail="Utente non trovato")
     utente.password = pwd_context.hash("fantaroller2026")
@@ -1215,6 +1215,28 @@ def ripristina_prezzi(db=Depends(get_db)):
         ripristinati += 1
     db.commit()
     return {"message": f"Prezzi ripristinati per {ripristinati} atleti"}
+
+@app.get("/atleti/plusvalenze")
+def atleti_plusvalenze(db=Depends(get_db)):
+    atleti = db.query(Athlete).filter(
+        Athlete.categoria.in_(["Ragazzi Maschi", "Ragazze Femminile"]),
+        Athlete.prezzo_precedente > 0,
+        Athlete.visibile == 1
+    ).all()
+    risultati = []
+    for a in atleti:
+        diff = a.prezzo - a.prezzo_precedente
+        if diff > 0:
+            risultati.append({
+                "id": a.id,
+                "name": a.name,
+                "categoria": a.categoria,
+                "prezzo_precedente": a.prezzo_precedente,
+                "prezzo": a.prezzo,
+                "diff": diff
+            })
+    risultati.sort(key=lambda x: x["diff"], reverse=True)
+    return risultati[:5]
 
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):

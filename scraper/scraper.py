@@ -368,56 +368,56 @@ def parse_gara(url, moltiplicatore, categoria, anno=2026):
 
 gare_pista2026_ragazzi = [
     {
-        "url": "https://attivita.rollergames.it/corsa/rrunn/2026/197997/RW00088.1/RAM_6.htm",
+        "url": "https://attivita.rollergames.it/corsa/rrunn/2026/630840/RW00010.1/RAM_6.htm",
         "moltiplicatore": 1.2,
         "categoria": "Ragazzi Maschi",
         "anno": 2026,
         "tipo": "pista"
     },
     {
-        "url": "https://attivita.rollergames.it/corsa/rrunn/2026/197997/RW00088.1/RAM_7.htm",
+        "url": "https://attivita.rollergames.it/corsa/rrunn/2026/630840/RW00010.1/RAM_7.htm",
         "moltiplicatore": 1.2,
         "categoria": "Ragazzi Maschi",
         "anno": 2026,
         "tipo": "pista"
     },
     {
-        "url": "https://attivita.rollergames.it/corsa/rrunn/2026/197997/RW00088.1/RAM_8.htm",
+        "url": "https://attivita.rollergames.it/corsa/rrunn/2026/630840/RW00010.1/RAM_8.htm",
         "moltiplicatore": 1.2,
         "categoria": "Ragazzi Maschi",
         "anno": 2026,
         "tipo": "pista"
     },
     {
-        "url": "https://attivita.rollergames.it/corsa/rrunn/2026/197997/RW00088.1/RAM_9.htm",
+        "url": "https://attivita.rollergames.it/corsa/rrunn/2026/630840/RW00010.1/RAM_9.htm",
         "moltiplicatore": 1.2,
         "categoria": "Ragazzi Maschi",
         "anno": 2026,
         "tipo": "pista"
     },
     {
-        "url": "https://attivita.rollergames.it/corsa/rrunn/2026/197997/RW00088.1/RAF_1.htm",
+        "url": "https://attivita.rollergames.it/corsa/rrunn/2026/630840/RW00010.1/RAF_1.htm",
         "moltiplicatore": 1.2,
         "categoria": "Ragazze Femminile",
         "anno": 2026,
         "tipo": "pista"
     },
     {
-        "url": "https://attivita.rollergames.it/corsa/rrunn/2026/197997/RW00088.1/RAF_2.htm",
+        "url": "https://attivita.rollergames.it/corsa/rrunn/2026/630840/RW00010.1/RAF_2.htm",
         "moltiplicatore": 1.2,
         "categoria": "Ragazze Femminile",
         "anno": 2026,
         "tipo": "pista"
     },
     {
-        "url": "https://attivita.rollergames.it/corsa/rrunn/2026/197997/RW00088.1/RAF_3.htm",
+        "url": "https://attivita.rollergames.it/corsa/rrunn/2026/630840/RW00010.1/RAF_3.htm",
         "moltiplicatore": 1.2,
         "categoria": "Ragazze Femminile",
         "anno": 2026,
         "tipo": "pista"
     },
     {
-        "url": "https://attivita.rollergames.it/corsa/rrunn/2026/197997/RW00088.1/RAF_4.htm",
+        "url": "https://attivita.rollergames.it/corsa/rrunn/2026/630840/RW00010.1/RAF_4.htm",
         "moltiplicatore": 1.2,
         "categoria": "Ragazze Femminile",
         "anno": 2026,
@@ -716,16 +716,19 @@ import requests as req
 API_URL = "https://fantaroller-api.onrender.com"
 CATEGORIE_AGGIORNAMENTO = ["Ragazzi Maschi", "Ragazze Femminile"]
 
-# Calcola risultati pista 2026
+# Calcola risultati pista 2026 - solo RAM e RAF
 risultati_pista = {}
 for gara in gare_pista2026_ragazzi:
-    risultati = parse_gara(gara["url"], gara["moltiplicatore"], gara["categoria"], gara["anno"])
-    for r in risultati:
-        chiave = r["nome"] + " – " + r["categoria"]
+    res = parse_gara(gara["url"], gara["moltiplicatore"], gara["categoria"], gara["anno"])
+    for r in res:
+        chiave = r["nome"].upper().strip() + "|" + gara["categoria"]
         if chiave not in risultati_pista:
             risultati_pista[chiave] = {"punti": 0, "gare": 0}
         risultati_pista[chiave]["punti"] += r["punti"]
         risultati_pista[chiave]["gare"] += 1
+
+print(f"Atleti unici in pista: {len(risultati_pista)}")
+print("Esempio chiavi:", list(risultati_pista.keys())[:10])
 
 # Carica atleti dal DB
 risposta = req.get(f"{API_URL}/athletes/")
@@ -736,22 +739,28 @@ for atleta in atleti_db:
     if atleta["categoria"] not in CATEGORIE_AGGIORNAMENTO:
         continue
 
-    nome_chiave = atleta["name"] + " – " + atleta["categoria"]
-    dati_pista = risultati_pista.get(nome_chiave)
-    dati_output = next((o for o in output if o["nome"] == nome_chiave), None)
+    chiave_db = atleta["name"].upper().strip() + "|" + atleta["categoria"]
+    dati_pista = risultati_pista.get(chiave_db)
 
-    if dati_pista and dati_output:
-        media_pista = dati_pista["punti"] / dati_pista["gare"]
-        prezzo_pista = round((media_pista / 100) * 20 + dati_pista["gare"] * 2)
+    if not dati_pista:
+        continue
+
+    # Cerca prezzo indoor nel listone
+    nome_chiave_output = atleta["name"] + " \u2013 " + atleta["categoria"]
+    dati_output = next((o for o in output if o["nome"] == nome_chiave_output), None)
+
+    media_pista = dati_pista["punti"] / dati_pista["gare"]
+    prezzo_pista = round((media_pista / 100) * 20 + dati_pista["gare"] * 2)
+
+    if dati_output:
         prezzo_indoor = dati_output["prezzo"]
         nuovo_prezzo = round(prezzo_pista * 0.5 + prezzo_indoor * 0.5)
-    elif dati_pista:
-        media_pista = dati_pista["punti"] / dati_pista["gare"]
-        nuovo_prezzo = round((media_pista / 100) * 20 + dati_pista["gare"] * 2)
     else:
-        continue  # nessuna gara di pista → non toccare il prezzo
+        nuovo_prezzo = prezzo_pista
 
     nuovo_prezzo = max(1, min(30, nuovo_prezzo + bonus_ranking(atleta["name"])))
+    # Nessun atleta può perdere più di 5cr
+    nuovo_prezzo = max(nuovo_prezzo, atleta["prezzo"] - 5)
 
     if nuovo_prezzo != atleta["prezzo"]:
         req.post(f"{API_URL}/admin/aggiorna-prezzo-atleta", json={

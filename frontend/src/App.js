@@ -524,11 +524,9 @@ function App() {
           <div className={`drawer-item ${pagina === "admin" ? "active" : ""}`} onClick={() => vaiA("admin")}>🔧 Pannello Admin</div>
         </>}
 
-        <div style={{ marginTop: "auto", padding: "0 16px 8px" }}>
-          <button className="btn btn-danger" style={{ width: "100%", fontSize: 13 }} onClick={() => { setToken(null); localStorage.removeItem("token"); setPagina("squadra"); setMenuAperto(false); }}>
+        <button className="btn btn-danger" style={{ width: "100%", fontSize: 13, margin: "8px 0" }} onClick={() => { setToken(null); localStorage.removeItem("token"); setPagina("squadra"); setMenuAperto(false); }}>
             Esci
-          </button>
-        </div>
+        </button>
       </div>
 
       {/* MAIN */}
@@ -806,6 +804,8 @@ function Mercato({ token }) {
   const [atletiPerCategoria, setAtletiPerCategoria] = useState({});
   const [piuAcquistati, setPiuAcquistati] = useState([]);
   const [piuAcquistatiAperto, setPiuAcquistatiAperto] = useState(false);
+  const [plusvalenze, setPlusvalenze] = useState([]);
+  const [plusvalenzeAperto, setPlusvalenzeAperto] = useState(false);
   const apriDettagli = async (id) => {
     if (atletaAperto === id) { setAtletaAperto(null); return; }
     setAtletaAperto(id);
@@ -817,6 +817,7 @@ function Mercato({ token }) {
   useState(() => {
     fetch(`${API}/athletes/`).then(r => r.json()).then(setAtleti);
     fetch(`${API}/atleti/piu-acquistati`).then(r => r.json()).then(setPiuAcquistati);
+    fetch(`${API}/atleti/plusvalenze`).then(r => r.json()).then(setPlusvalenze);
     fetch(`${API}/squadra/`, { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json()).then(data => {
         if (data.atleti) {
@@ -910,6 +911,45 @@ function Mercato({ token }) {
         )}
       </div>
     )}
+    {plusvalenze.length > 0 && (
+                <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+                    <div
+                        style={{ padding: "14px 20px", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}
+                        onClick={() => setPlusvalenzeAperto(!plusvalenzeAperto)}
+                    >
+                        <span style={{ fontWeight: 600, fontSize: 15 }}>🚀 Migliori Plusvalenze</span>
+                        <span style={{ color: theme.textMuted }}>{plusvalenzeAperto ? "▲" : "▼"}</span>
+                    </div>
+                    {plusvalenzeAperto && (
+                        <table className="table">
+                            <thead>
+                                <tr>
+                                    <th style={{ paddingLeft: 20 }}>#</th>
+                                    <th>Nome</th>
+                                    <th>Valore</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {plusvalenze.map((a, i) => (
+                                    <tr key={a.id}>
+                                        <td style={{ paddingLeft: 20, fontFamily: "'Bebas Neue', cursive", fontSize: "1.1rem", color: theme.accent }}>{i + 1}</td>
+                                        <td>
+                                            <div style={{ fontWeight: 600 }}>{a.name}</div>
+                                            <div style={{ fontSize: 11, color: theme.textMuted }}>{a.categoria}</div>
+                                        </td>
+                                        <td>
+                                            <span style={{ color: theme.textMuted, fontSize: 12 }}>{a.prezzo_precedente}cr</span>
+                                            <span style={{ color: theme.textMuted, fontSize: 12 }}> → </span>
+                                            <span style={{ color: theme.green, fontWeight: 700 }}>{a.prezzo}cr</span>
+                                            <span style={{ color: theme.green, fontSize: 11, marginLeft: 4 }}>+{a.diff}</span>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
+                </div>
+            )}
 
     <div className="card">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>

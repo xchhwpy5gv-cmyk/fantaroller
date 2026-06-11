@@ -234,6 +234,10 @@ def acquista_atleta(atleta_id: int, utente=Depends(get_utente_corrente), db=Depe
 
     if utente.budget < atleta.prezzo:
         raise HTTPException(status_code=400, detail="Budget insufficiente")
+    if squadra.is_new:
+        speso = sum(a.prezzo for a in squadra.atleti)
+        if speso + atleta.prezzo > 150:
+            raise HTTPException(status_code=400, detail="Budget massimo per nuovi utenti è 150 crediti")
     squadra.atleti.append(atleta)
     utente.budget -= atleta.prezzo
     db.commit()

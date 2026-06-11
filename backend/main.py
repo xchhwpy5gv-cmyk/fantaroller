@@ -210,7 +210,7 @@ def acquista_atleta(atleta_id: int, utente=Depends(get_utente_corrente), db=Depe
 
     if not squadra:
         raise HTTPException(status_code=400, detail="Crea prima una squadra")
-atleta = db.query(Athlete).filter(Athlete.id == atleta_id).first()
+    atleta = db.query(Athlete).filter(Athlete.id == atleta_id).first()
     if not atleta:
         raise HTTPException(status_code=404, detail="Atleta non trovato")
     if atleta in squadra.atleti:

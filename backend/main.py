@@ -1298,6 +1298,38 @@ def migrazione_squadre_new(db=Depends(get_db)):
         pass
     return {"message": "Migrazione completata"}
 
+@app.post("/admin/assegna-bonus-new")
+def assegna_bonus_new(username: str, db=Depends(get_db)):
+    utente = db.query(User).filter(User.username == username).first()
+    if not utente:
+        raise HTTPException(status_code=404, detail="Utente non trovato")
+    squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
+    
+    # Calcola budget: 200 - media crediti ragazzi - crediti già spesi
+    media_crediti_ragazzi = 50  # dal nostro calcolo precedente
+    crediti_gia_spesi = sum(
+        a.prezzo for a in squadra.atleti
+    ) if squadra else 0
+    nuovo_budget = 200 - media_crediti_ragazzi - crediti_gia_spesi
+    nuovo_budget = max(0, nuovo_budget)
+
+    # Assegna punti bonus e segna come new
+    if not squadra:
+        squadra = Squadra(user_id=utente.id, nome="Squadra", punti_bonus=358, is_new=1)
+        db.add(squadra)
+    else:
+        squadra.punti_bonus = 358
+        squadra.is_new = 1
+
+    utente.budget = nuovo_budget
+    db.commit()
+    return {
+        "message": f"Bonus assegnato a {username}",
+        "punti_bonus": 358,
+        "budget_assegnato": nuovo_budget,
+        "crediti_gia_spesi": crediti_gia_spesi
+    }
+
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):
     imp = db.query(Impostazioni).first()

@@ -41,6 +41,8 @@ class Squadra(Base):
     id = Column(Integer, primary_key=True, index=True)
     nome = Column(String)
     user_id = Column(Integer, ForeignKey("users.id"))
+    punti_bonus = Column(Integer, default=0)
+    is_new = Column(Integer, default=0)
     utente = relationship("User", back_populates="squadra")
     atleti = relationship("Athlete", secondary=squadra_atleti)
 

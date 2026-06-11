@@ -1285,6 +1285,20 @@ def media_campionato(db=Depends(get_db)):
         "squadre_complete": len(punti_totali)
     }
 
+@app.post("/admin/migrazione-squadre-new")
+def migrazione_squadre_new(db=Depends(get_db)):
+    try:
+        db.execute(text("ALTER TABLE squadre ADD COLUMN punti_bonus INTEGER DEFAULT 0"))
+        db.commit()
+    except:
+        pass
+    try:
+        db.execute(text("ALTER TABLE squadre ADD COLUMN is_new INTEGER DEFAULT 0"))
+        db.commit()
+    except:
+        pass
+    return {"message": "Migrazione completata"}
+
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):
     imp = db.query(Impostazioni).first()

@@ -1408,6 +1408,21 @@ def debug_new_user(username: str, db=Depends(get_db)):
         "n_atleti_orm": len(squadra.atleti)
     }
 
+@app.post("/admin/reset-squadre-new")
+def reset_squadre_new(db=Depends(get_db)):
+    squadre_new = db.query(Squadra).filter(Squadra.is_new == 1).all()
+    resettate = 0
+    for squadra in squadre_new:
+        utente = db.query(User).filter(User.id == squadra.user_id).first()
+        # Restituisci i crediti spesi
+        speso = sum(a.prezzo for a in squadra.atleti)
+        utente.budget = 150
+        # Rimuovi tutti gli atleti
+        db.execute(text(f"DELETE FROM squadra_atleti WHERE squadra_id = {squadra.id}"))
+        resettate += 1
+    db.commit()
+    return {"message": f"Squadre resettate: {resettate}"}
+
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):
     imp = db.query(Impostazioni).first()

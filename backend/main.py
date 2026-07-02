@@ -88,14 +88,7 @@ def statistiche_atleta(atleta_id: int, db=Depends(get_db)):
     
     # Punti per evento
     punti_eventi = db.query(PuntiEvento).filter(PuntiEvento.atleta_id == atleta_id).all()
-    eventi_dict = {}
-    for p in punti_eventi:
-        if p.evento not in eventi_dict:
-            eventi_dict[p.evento] = {"totale": 0, "gare": []}
-        eventi_dict[p.evento]["totale"] += p.punti
-        if p.gara_tipo:
-            eventi_dict[p.evento]["gare"].append({"tipo": p.gara_tipo, "punti": p.punti})
-    eventi = [{"evento": k, "punti": v["totale"], "gare": v["gare"]} for k, v in eventi_dict.items()]
+    eventi = [{"evento": p.evento, "punti": p.punti} for p in punti_eventi]
     
     # Quante squadre lo hanno
     from sqlalchemy import text
@@ -527,22 +520,18 @@ def calcola_punti(evento: str = None, utente=Depends(get_utente_corrente), db=De
                         if atleta:
                             atleta.punti += punti
                             atleta.gare += 1
-                            gara_tipo = gara.url.split("/")[-1].replace(".htm", "").replace(".php", "")
-                            record_gara = db.query(PuntiEvento).filter(
+                            evento_esistente = db.query(PuntiEvento).filter(
                                 PuntiEvento.atleta_id == atleta.id,
-                                PuntiEvento.evento == gara.evento,
-                                PuntiEvento.gara_url == gara.url
+                                PuntiEvento.evento == gara.evento
                             ).first()
-                            if record_gara:
-                                record_gara.punti = punti
+                            if evento_esistente:
+                                evento_esistente.punti += punti
                             else:
                                 db.add(PuntiEvento(
                                     atleta_id=atleta.id,
                                     evento=gara.evento,
                                     categoria=gara.categoria,
-                                    punti=punti,
-                                    gara_url=gara.url,
-                                    gara_tipo=gara_tipo
+                                    punti=punti
                                 ))
 
             # Leggi note per malus
@@ -1091,21 +1080,18 @@ def atleti_squadra(username: str, evento: str = None, utente=Depends(get_utente_
     risultato = []
     for a in squadra.atleti:
         if evento:
-            records = db.query(PuntiEvento).filter(
+            pe = db.query(PuntiEvento).filter(
                 PuntiEvento.atleta_id == a.id,
                 PuntiEvento.evento == evento
-            ).all()
-            punti = sum(r.punti for r in records)
-            gare_dettaglio = [{"tipo": r.gara_tipo, "punti": r.punti} for r in records if r.gara_tipo]
+            ).first()
+            punti = pe.punti if pe else 0
         else:
             punti = a.punti
-            gare_dettaglio = []
         risultato.append({
             "id": a.id,
             "name": a.name,
             "categoria": a.categoria,
-            "punti": punti,
-            "gare_dettaglio": gare_dettaglio
+            "punti": punti
         })
     risultato.sort(key=lambda x: x["punti"], reverse=True)
     return risultato

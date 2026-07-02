@@ -648,20 +648,6 @@ function Squadra({ token }) {
   const [nomeSquadra, setNomeSquadra] = useState("");
   const [nuovoNome, setNuovoNome] = useState("");
   const [rinominaAperto, setRinominaAperto] = useState(false);
-  const [atletaAperto, setAtletaAperto] = useState(null);
-  const [atletaDettagli, setAtletaDettagli] = useState({});
-
-  const caricaDettagliAtleta = async (id) => {
-    if (atletaAperto === id) { setAtletaAperto(null); return; }
-    setAtletaAperto(id);
-    if (!atletaDettagli[id]) {
-      const res = await fetch(`${API}/atleta/${id}/statistiche`);
-      if (res.ok) {
-        const data = await res.json();
-        setAtletaDettagli(prev => ({ ...prev, [id]: data }));
-      }
-    }
-  };
 
   const rinomina = async () => {
       if (nuovoNome.length > 25) {
@@ -788,40 +774,15 @@ function Squadra({ token }) {
               </thead>
               <tbody>
                 {squadra.atleti.map(a => (
-                  <>
-                    <tr key={a.id}>
-                      <td>
-                        <div style={{ fontWeight: 600 }}>{a.name}</div>
-                        <div style={{ fontSize: 11, color: theme.textMuted }}>{a.categoria}</div>
-                      </td>
-                      <td style={{ color: theme.green, fontWeight: 700 }}>{a.punti || 0}</td>
-                      <td style={{ color: theme.accent, fontWeight: 700 }}>{a.prezzo}cr</td>
-                      <td>
-                        <div style={{ display: "flex", gap: 6 }}>
-                          <button className="btn btn-blue" style={{ padding: "3px 8px", fontSize: 11 }} onClick={() => caricaDettagliAtleta(a.id)}>
-                            {atletaAperto === a.id ? "▲" : "📊"}
-                          </button>
-                          <button className="btn btn-danger" style={{ padding: "5px 10px", fontSize: 12 }} onClick={() => vendi(a.id)}>Vendi</button>
-                        </div>
-                      </td>
-                    </tr>
-                    {atletaAperto === a.id && atletaDettagli[a.id] && (
-                      <tr key={`det-${a.id}`}>
-                        <td colSpan={4} style={{ padding: "8px 16px", background: "#070c18" }}>
-                          {atletaDettagli[a.id].eventi.map(e => (
-                            <div key={e.evento} style={{ marginBottom: 8 }}>
-                              <div style={{ fontSize: 11, color: theme.accent, fontWeight: 700, marginBottom: 4 }}>{e.evento} — {e.punti} pt totali</div>
-                              {e.gare.map(g => (
-                                <div key={g.tipo} style={{ fontSize: 11, color: theme.textSub, paddingLeft: 12, marginBottom: 2 }}>
-                                  <span style={{ color: theme.blue, fontWeight: 600 }}>{g.punti} pt</span> — {g.tipo}
-                                </div>
-                              ))}
-                            </div>
-                          ))}
-                        </td>
-                      </tr>
-                    )}
-                  </>
+                  <tr key={a.id}>
+                    <td>
+                      <div style={{ fontWeight: 600 }}>{a.name}</div>
+                      <div style={{ fontSize: 11, color: theme.textMuted }}>{a.categoria}</div>
+                    </td>
+                    <td style={{ color: theme.green, fontWeight: 700 }}>{a.punti || 0}</td>
+                    <td style={{ color: theme.accent, fontWeight: 700 }}>{a.prezzo}cr</td>
+                    <td><button className="btn btn-danger" style={{ padding: "5px 10px", fontSize: 12 }} onClick={() => vendi(a.id)}>Vendi</button></td>
+                  </tr>
                 ))}
               </tbody>
             </table>
@@ -1695,18 +1656,23 @@ function SquadreLega({ token }) {
 function AtletiSquadra({ token, username, evento }) {
   const [atleti, setAtleti] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [aperto, setAperto] = useState(null);
+  const [errore, setErrore] = useState(false);
 
   useState(() => {
     const url = evento
       ? `${API}/league/atleti-squadra?username=${encodeURIComponent(username)}&evento=${encodeURIComponent(evento)}`
       : `${API}/league/atleti-squadra?username=${encodeURIComponent(username)}`;
     fetch(url, { headers: { Authorization: `Bearer ${token}` } })
-      .then(r => r.json())
-      .then(data => { setAtleti(data); setLoading(false); });
+      .then(r => {
+        if (!r.ok) { setErrore(true); setLoading(false); return null; }
+        return r.json();
+      })
+      .then(data => { if (data) { setAtleti(data); setLoading(false); } })
+      .catch(() => { setErrore(true); setLoading(false); });
   }, []);
 
-  if (loading) return <p style={{ color: theme.textMuted, fontSize: 12 }}>⏳ Caricamento...</p>;
+  if (loading) return <p style={{ color: theme.textMuted, fontSize: 12 }}>⏳ Caricamento...</p>
+  if (errore) return <p style={{ color: theme.textMuted, fontSize: 13, padding: "8px 4px" }}>⚠️ Sessione scaduta — esci e rifai il login.</p>
 
   return (
     <table className="table" style={{ marginBottom: 0 }}>
@@ -1715,36 +1681,15 @@ function AtletiSquadra({ token, username, evento }) {
           <th>Nome</th>
           <th>Categoria</th>
           <th>Punti</th>
-          <th></th>
         </tr>
       </thead>
       <tbody>
         {atleti.map(a => (
-          <>
-            <tr key={a.id}>
-              <td style={{ fontWeight: 600 }}>{a.name}</td>
-              <td><span className="badge badge-blue">{a.categoria}</span></td>
-              <td style={{ color: theme.green, fontWeight: 700 }}>{a.punti}</td>
-              <td>
-                {a.gare_dettaglio && a.gare_dettaglio.length > 0 && (
-                  <button className="btn btn-blue" style={{ padding: "3px 8px", fontSize: 11 }} onClick={() => setAperto(aperto === a.id ? null : a.id)}>
-                    {aperto === a.id ? "▲" : "📊"}
-                  </button>
-                )}
-              </td>
-            </tr>
-            {aperto === a.id && (
-              <tr key={`det-${a.id}`}>
-                <td colSpan={4} style={{ padding: "8px 16px", background: "#070c18" }}>
-                  {a.gare_dettaglio.map(g => (
-                    <div key={g.tipo} style={{ fontSize: 12, color: theme.textSub, marginBottom: 3 }}>
-                      <span style={{ color: theme.blue, fontWeight: 700 }}>{g.punti} pt</span> — {g.tipo}
-                    </div>
-                  ))}
-                </td>
-              </tr>
-            )}
-          </>
+          <tr key={a.id}>
+            <td style={{ fontWeight: 600 }}>{a.name}</td>
+            <td><span className="badge badge-blue">{a.categoria}</span></td>
+            <td style={{ color: theme.green, fontWeight: 700 }}>{a.punti}</td>
+          </tr>
         ))}
       </tbody>
     </table>

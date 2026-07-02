@@ -778,22 +778,24 @@ def classifica_lega(evento: str = None, utente=Depends(get_utente_corrente), db=
         squadra = db.query(Squadra).filter(Squadra.user_id == u.id).first()
         if squadra and len(squadra.atleti) >= 16:
             if evento:
-            records = db.query(PuntiEvento).filter(
-                PuntiEvento.atleta_id == a.id,
-                PuntiEvento.evento == evento
-            ).all()
-            punti = sum(r.punti for r in records)
-            gare_dettaglio = [{"tipo": r.gara_tipo, "punti": r.punti} for r in records if r.gara_tipo]
-        else:
-            punti = a.punti
-            gare_dettaglio = []
-        risultato.append({
-            "id": a.id,
-            "name": a.name,
-            "categoria": a.categoria,
-            "punti": punti,
-            "gare_dettaglio": gare_dettaglio
-        })
+                punti_totali = 0
+                for atleta in squadra.atleti:
+                    pe = db.query(PuntiEvento).filter(
+                        PuntiEvento.atleta_id == atleta.id,
+                        PuntiEvento.evento == evento
+                    ).first()
+                    if pe:
+                        punti_totali += pe.punti
+            else:
+                punti_totali = sum(a.punti for a in squadra.atleti)
+            punti_totali += squadra.punti_bonus or 0
+            risultati.append({
+                "username": u.username,
+                "squadra": squadra.nome,
+                "punti": punti_totali,
+                "n_atleti": len(squadra.atleti),
+                "is_new": squadra.is_new or 0
+            })
     risultati.sort(key=lambda x: x["punti"], reverse=True)
     return risultati
 
@@ -1089,18 +1091,21 @@ def atleti_squadra(username: str, evento: str = None, utente=Depends(get_utente_
     risultato = []
     for a in squadra.atleti:
         if evento:
-            pe = db.query(PuntiEvento).filter(
+            records = db.query(PuntiEvento).filter(
                 PuntiEvento.atleta_id == a.id,
                 PuntiEvento.evento == evento
-            ).first()
-            punti = pe.punti if pe else 0
+            ).all()
+            punti = sum(r.punti for r in records)
+            gare_dettaglio = [{"tipo": r.gara_tipo, "punti": r.punti} for r in records if r.gara_tipo]
         else:
             punti = a.punti
+            gare_dettaglio = []
         risultato.append({
             "id": a.id,
             "name": a.name,
             "categoria": a.categoria,
-            "punti": punti
+            "punti": punti,
+            "gare_dettaglio": gare_dettaglio
         })
     risultato.sort(key=lambda x: x["punti"], reverse=True)
     return risultato

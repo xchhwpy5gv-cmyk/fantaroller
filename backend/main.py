@@ -88,7 +88,14 @@ def statistiche_atleta(atleta_id: int, db=Depends(get_db)):
     
     # Punti per evento
     punti_eventi = db.query(PuntiEvento).filter(PuntiEvento.atleta_id == atleta_id).all()
-    eventi = [{"evento": p.evento, "punti": p.punti} for p in punti_eventi]
+    eventi_dict = {}
+    for p in punti_eventi:
+        if p.evento not in eventi_dict:
+            eventi_dict[p.evento] = {"totale": 0, "gare": []}
+        eventi_dict[p.evento]["totale"] += p.punti
+        if p.gara_tipo:
+            eventi_dict[p.evento]["gare"].append({"tipo": p.gara_tipo, "punti": p.punti})
+    eventi = [{"evento": k, "punti": v["totale"], "gare": v["gare"]} for k, v in eventi_dict.items()]
     
     # Quante squadre lo hanno
     from sqlalchemy import text
@@ -520,18 +527,22 @@ def calcola_punti(evento: str = None, utente=Depends(get_utente_corrente), db=De
                         if atleta:
                             atleta.punti += punti
                             atleta.gare += 1
-                            evento_esistente = db.query(PuntiEvento).filter(
+                            gara_tipo = gara.url.split("/")[-1].replace(".htm", "").replace(".php", "")
+                            record_gara = db.query(PuntiEvento).filter(
                                 PuntiEvento.atleta_id == atleta.id,
-                                PuntiEvento.evento == gara.evento
+                                PuntiEvento.evento == gara.evento,
+                                PuntiEvento.gara_url == gara.url
                             ).first()
-                            if evento_esistente:
-                                evento_esistente.punti += punti
+                            if record_gara:
+                                record_gara.punti = punti
                             else:
                                 db.add(PuntiEvento(
                                     atleta_id=atleta.id,
                                     evento=gara.evento,
                                     categoria=gara.categoria,
-                                    punti=punti
+                                    punti=punti,
+                                    gara_url=gara.url,
+                                    gara_tipo=gara_tipo
                                 ))
 
             # Leggi note per malus
@@ -767,24 +778,22 @@ def classifica_lega(evento: str = None, utente=Depends(get_utente_corrente), db=
         squadra = db.query(Squadra).filter(Squadra.user_id == u.id).first()
         if squadra and len(squadra.atleti) >= 16:
             if evento:
-                punti_totali = 0
-                for atleta in squadra.atleti:
-                    pe = db.query(PuntiEvento).filter(
-                        PuntiEvento.atleta_id == atleta.id,
-                        PuntiEvento.evento == evento
-                    ).first()
-                    if pe:
-                        punti_totali += pe.punti
-            else:
-                punti_totali = sum(a.punti for a in squadra.atleti)
-            punti_totali += squadra.punti_bonus or 0
-            risultati.append({
-                "username": u.username,
-                "squadra": squadra.nome,
-                "punti": punti_totali,
-                "n_atleti": len(squadra.atleti),
-                "is_new": squadra.is_new or 0
-            })
+            records = db.query(PuntiEvento).filter(
+                PuntiEvento.atleta_id == a.id,
+                PuntiEvento.evento == evento
+            ).all()
+            punti = sum(r.punti for r in records)
+            gare_dettaglio = [{"tipo": r.gara_tipo, "punti": r.punti} for r in records if r.gara_tipo]
+        else:
+            punti = a.punti
+            gare_dettaglio = []
+        risultato.append({
+            "id": a.id,
+            "name": a.name,
+            "categoria": a.categoria,
+            "punti": punti,
+            "gare_dettaglio": gare_dettaglio
+        })
     risultati.sort(key=lambda x: x["punti"], reverse=True)
     return risultati
 
@@ -1422,6 +1431,16 @@ def reset_squadre_new(db=Depends(get_db)):
         resettate += 1
     db.commit()
     return {"message": f"Squadre resettate: {resettate}"}
+
+@app.post("/admin/migrate-punti-gara")
+def migrate_punti_gara(db=Depends(get_db)):
+    try:
+        db.execute(text("ALTER TABLE punti_evento ADD COLUMN IF NOT EXISTS gara_url VARCHAR"))
+        db.execute(text("ALTER TABLE punti_evento ADD COLUMN IF NOT EXISTS gara_tipo VARCHAR"))
+        db.commit()
+        return {"message": "Migrazione completata"}
+    except Exception as e:
+        return {"message": f"Errore: {str(e)}"}
 
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):

@@ -537,9 +537,9 @@ def calcola_punti(evento: str = None, utente=Depends(get_utente_corrente), db=De
             # Leggi note per malus
             testo_pagina = soup.get_text()
             import re
-            diffide = re.findall(r'Diffida al n\.\s*(\d+)\s+([A-Z\s\']+?)(?=Diffida|Ammonizione|Espulsione|$)', testo_pagina)
-            ammonizioni = re.findall(r'Ammonizione al n\.\s*(\d+)\s+([A-Z\s\']+?)(?=Diffida|Ammonizione|Espulsione|$)', testo_pagina)
-            espulsioni = re.findall(r'Espulsione al n\.\s*(\d+)\s+([A-Z\s\']+?)(?=Diffida|Ammonizione|Espulsione|$)', testo_pagina)
+            diffide = re.findall(r'Diffida al n\.\s*(\d+)\s+([A-Z\s\']+?)(?=Diffida|Ammonizione|Espulsione|Squalifica|$)', testo_pagina)
+            ammonizioni = re.findall(r'Ammonizione al n\.\s*(\d+)\s+([A-Z\s\']+?)(?=Diffida|Ammonizione|Espulsione|Squalifica|$)', testo_pagina)
+            espulsioni = re.findall(r'(?:Espulsione|Squalifica) al n\.\s*(\d+)\s+([A-Z\s\']+?)(?=Diffida|Ammonizione|Espulsione|Squalifica|$)', testo_pagina)
 
             def applica_malus(sanzioni, malus_punti):
                 for pettorale, _ in sanzioni:

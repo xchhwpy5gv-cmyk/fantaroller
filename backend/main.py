@@ -1433,6 +1433,27 @@ def migrate_punti_gara(db=Depends(get_db)):
     except Exception as e:
         return {"message": f"Errore: {str(e)}"}
 
+@app.get("/classifica/posizione")
+def posizione_classifica(utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    from sqlalchemy import text
+    rows = db.execute(text("""
+        SELECT u.username, s.nome, COALESCE(SUM(a.punti), 0) + COALESCE(s.punti_bonus, 0) as punti
+        FROM users u
+        JOIN squadre s ON s.user_id = u.id
+        JOIN squadra_atleti sa ON sa.squadra_id = s.id
+        JOIN athletes a ON a.id = sa.atleta_id
+        GROUP BY u.username, s.nome, s.id, s.punti_bonus, s.is_new
+        HAVING (COUNT(sa.atleta_id) >= 16) OR (s.is_new = 1 AND COUNT(sa.atleta_id) >= 12)
+        ORDER BY punti DESC
+        LIMIT 1000
+    """)).fetchall()
+    
+    for i, r in enumerate(rows):
+        if r[0] == utente.username:
+            return {"posizione": i + 1, "totale": len(rows), "punti": r[2], "vincitore": i == 0}
+    
+    return {"posizione": None, "totale": len(rows), "punti": 0, "vincitore": False}
+
 @app.get("/squadre/pubbliche")
 def squadre_pubbliche(db=Depends(get_db)):
     imp = db.query(Impostazioni).first()

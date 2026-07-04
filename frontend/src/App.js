@@ -648,6 +648,7 @@ function Squadra({ token }) {
   const [nomeSquadra, setNomeSquadra] = useState("");
   const [nuovoNome, setNuovoNome] = useState("");
   const [rinominaAperto, setRinominaAperto] = useState(false);
+  const [posizione, setPosizione] = useState(null);
 
   const rinomina = async () => {
       if (nuovoNome.length > 25) {
@@ -678,6 +679,13 @@ function Squadra({ token }) {
     // altri errori (401, 500) non mostrano "crea squadra"
   };
 
+  const caricaPosizione = async () => {
+    const res = await fetch(`${API}/classifica/posizione`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (res.ok) setPosizione(await res.json());
+  };
+
   const creaSquadra = async () => {
     if (nomeSquadra.length > 25) {
       setMessaggio("❌ Nome squadra troppo lungo (max 25 caratteri)");
@@ -699,7 +707,7 @@ function Squadra({ token }) {
     caricaSquadra();
   };
 
-  useState(() => { caricaSquadra(); }, []);
+  useState(() => { caricaSquadra(); caricaPosizione(); }, []);
 
   const isNew = squadra && squadra.is_new === 1;
   const categorie = isNew
@@ -720,6 +728,44 @@ function Squadra({ token }) {
 
   return (
     <div>
+      {posizione && posizione.vincitore && (
+        <div style={{
+          background: "linear-gradient(135deg, #f59e0b, #f97316)",
+          borderRadius: 12,
+          padding: "24px 20px",
+          marginBottom: 16,
+          textAlign: "center"
+        }}>
+          <div style={{ fontSize: 40, marginBottom: 8 }}>🏆</div>
+          <div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "2rem", color: "white", letterSpacing: 2 }}>
+            CAMPIONE!
+          </div>
+          <div style={{ color: "white", fontSize: 14, marginTop: 8, fontWeight: 600 }}>
+            Sei il vincitore della 1ª edizione di FantaRoller!
+          </div>
+        </div>
+      )}
+
+      {posizione && !posizione.vincitore && posizione.posizione && (
+        <div style={{
+          background: "linear-gradient(135deg, #1a1f35, #111827)",
+          border: `1px solid ${theme.accent}30`,
+          borderRadius: 12,
+          padding: "16px 20px",
+          marginBottom: 16,
+          textAlign: "center"
+        }}>
+          <div style={{ fontSize: 28, marginBottom: 6 }}>
+            {posizione.posizione <= 3 ? "🥈🥉"[posizione.posizione - 2] || "🎖️" : "🎖️"}
+          </div>
+          <div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: "1.6rem", color: theme.accent }}>
+            {posizione.posizione}° posto
+          </div>
+          <div style={{ color: theme.textSub, fontSize: 13, marginTop: 4 }}>
+            Complimenti! Hai chiuso la 1ª edizione di FantaRoller al {posizione.posizione}° posto su {posizione.totale} partecipanti con {posizione.punti} punti!
+          </div>
+        </div>
+      )}
       <div className="card">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
           <div>

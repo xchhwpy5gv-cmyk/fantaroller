@@ -1437,11 +1437,11 @@ def migrate_punti_gara(db=Depends(get_db)):
 def posizione_classifica(utente=Depends(get_utente_corrente), db=Depends(get_db)):
     from sqlalchemy import text
     rows = db.execute(text("""
-        SELECT u.username, s.nome, COALESCE(SUM(a.punti), 0) + COALESCE(s.punti_bonus, 0) as punti
+        SELECT u.username, s.nome, COALESCE(SUM(pe.punti), 0) + COALESCE(s.punti_bonus, 0) as punti
         FROM users u
         JOIN squadre s ON s.user_id = u.id
         JOIN squadra_atleti sa ON sa.squadra_id = s.id
-        JOIN athletes a ON a.id = sa.atleta_id
+        LEFT JOIN punti_evento pe ON pe.atleta_id = sa.atleta_id AND pe.evento = 'Campionati Italiani Pista 2026'
         GROUP BY u.username, s.nome, s.id, s.punti_bonus, s.is_new
         HAVING (COUNT(sa.atleta_id) >= 16) OR (s.is_new = 1 AND COUNT(sa.atleta_id) >= 12)
         ORDER BY punti DESC

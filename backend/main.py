@@ -468,7 +468,7 @@ def calcola_punti(evento: str = None, utente=Depends(get_utente_corrente), db=De
         else: return 5
 
     def normalizza_nome(nome):
-        return nome.lower().replace("ò", "o").replace("ó", "o").replace("'", "").replace("?", "").strip()
+        return nome.lower().replace("ò", "o").replace("ó", "o").replace("'", "").replace("?", "").replace("frige", "frigo").strip()
 
     if evento:
         gare = db.query(Gara).filter(Gara.evento == evento).all()

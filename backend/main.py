@@ -6,10 +6,30 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy import create_engine, text
 from models import Base, User, Athlete, Squadra, Impostazioni, Gara, PuntiEvento, League, Messaggio
-from schemas import UserCreate, UserLogin, Token, AggiornaPrezzoRequest
+from schemas import UserCreate, UserLogin, Token, AggiornaPrezzoRequest, AggiungiEmailRequest
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
+
+import requests as http_requests
+import secrets as secrets_lib
+import os
+
+def invia_email_verifica(destinatario: str, username: str, token: str):
+    url_verifica = f"https://fantaroller-api.onrender.com/verifica-email?token={token}"
+    try:
+        http_requests.post(
+            "https://api.resend.com/emails",
+            headers={"Authorization": f"Bearer {os.environ.get('RESEND_API_KEY')}"},
+            json={
+                "from": "FantaRoller <onboarding@resend.dev>",
+                "to": [destinatario],
+                "subject": "Conferma la tua email su FantaRoller",
+                "html": f"<p>Ciao {username}!</p><p>Clicca qui per confermare la tua email:</p><p><a href='{url_verifica}'>Conferma Email</a></p>"
+            }
+        )
+    except Exception as e:
+        print(f"Errore invio email: {e}")
 
 app = FastAPI()
 
@@ -74,11 +94,16 @@ def register_user(user: UserCreate, db=Depends(get_db)):
     esistente = db.query(User).filter(User.username == user.username).first()
     if esistente:
         raise HTTPException(status_code=400, detail="Username già esistente")
+    email_esistente = db.query(User).filter(User.email == user.email).first()
+    if email_esistente:
+        raise HTTPException(status_code=400, detail="Email già registrata")
     hashed = pwd_context.hash(user.password)
-    nuovo = User(username=user.username, password=hashed)
+    token = secrets_lib.token_urlsafe(32)
+    nuovo = User(username=user.username, email=user.email, password=hashed, email_verificata=0, token_verifica=token)
     db.add(nuovo)
     db.commit()
-    return {"message": "Utente creato"}
+    invia_email_verifica(user.email, user.username, token)
+    return {"message": "Utente creato! Controlla la tua email per confermare l'account."}
 
 @app.get("/atleta/{atleta_id}/statistiche")
 def statistiche_atleta(atleta_id: int, db=Depends(get_db)):
@@ -110,12 +135,69 @@ def login(user: UserLogin, db=Depends(get_db)):
     utente = db.query(User).filter(User.username == user.username).first()
     if not utente or not pwd_context.verify(user.password, utente.password):
         raise HTTPException(status_code=401, detail="Credenziali errate")
+    if not utente.email:
+        raise HTTPException(status_code=403, detail="email_mancante")
+    if not utente.email_verificata:
+        raise HTTPException(status_code=403, detail="email_non_verificata")
     token = crea_token({"sub": utente.username})
     return {"access_token": token, "token_type": "bearer"}
 
 @app.get("/me/")
 def chi_sono(utente=Depends(get_utente_corrente)):
     return {"username": utente.username, "id": utente.id, "is_admin": utente.is_admin}
+
+from fastapi.responses import HTMLResponse
+
+@app.get("/verifica-email", response_class=HTMLResponse)
+def verifica_email(token: str, db=Depends(get_db)):
+    utente = db.query(User).filter(User.token_verifica == token).first()
+    if not utente:
+        return "<h2>Link non valido o già usato.</h2>"
+    utente.email_verificata = 1
+    utente.token_verifica = None
+    db.commit()
+    return "<h2>✅ Email confermata! Ora puoi fare login su FantaRoller.</h2>"
+
+@app.post("/aggiungi-email")
+def aggiungi_email(req: AggiungiEmailRequest, db=Depends(get_db)):
+    utente = db.query(User).filter(User.username == req.username).first()
+    if not utente or not pwd_context.verify(req.password, utente.password):
+        raise HTTPException(status_code=401, detail="Credenziali errate")
+    email_esistente = db.query(User).filter(User.email == req.email).first()
+    if email_esistente:
+        raise HTTPException(status_code=400, detail="Email già registrata")
+    token = secrets_lib.token_urlsafe(32)
+    utente.email = req.email
+    utente.email_verificata = 0
+    utente.token_verifica = token
+    db.commit()
+    invia_email_verifica(req.email, utente.username, token)
+    return {"message": "Email aggiunta! Controlla la posta per confermare."}
+
+@app.post("/reinvia-verifica")
+def reinvia_verifica(req: UserLogin, db=Depends(get_db)):
+    utente = db.query(User).filter(User.username == req.username).first()
+    if not utente or not pwd_context.verify(req.password, utente.password):
+        raise HTTPException(status_code=401, detail="Credenziali errate")
+    if not utente.email:
+        raise HTTPException(status_code=400, detail="Nessuna email associata")
+    token = secrets_lib.token_urlsafe(32)
+    utente.token_verifica = token
+    db.commit()
+    invia_email_verifica(utente.email, utente.username, token)
+    return {"message": "Email di verifica reinviata"}
+
+@app.post("/admin/migrate-email")
+def migrate_email(db=Depends(get_db)):
+    try:
+        db.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS email VARCHAR UNIQUE"))
+        db.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS email_verificata INTEGER DEFAULT 0"))
+        db.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS token_verifica VARCHAR"))
+        db.commit()
+        return {"message": "Migrazione completata"}
+    except Exception as e:
+        db.rollback()
+        return {"message": f"Errore: {str(e)}"}
 
 @app.post("/import-athletes")
 def import_athletes(db=Depends(get_db)):

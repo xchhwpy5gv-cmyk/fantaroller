@@ -571,29 +571,60 @@ function App() {
 function Login({ setToken }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [errore, setErrore] = useState("");
   const [successo, setSuccesso] = useState("");
   const [registrati, setRegistrati] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [modalitaCompletaProfilo, setModalitaCompletaProfilo] = useState(false);
+
+  const emailValida = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 
   const handleSubmit = async () => {
     if (username.length < 3) { setErrore("❌ Username troppo corto (min 3 caratteri)"); return; }
     if (username.length > 40) { setErrore("❌ Username troppo lungo (max 20 caratteri)"); return; }
     if (password.length < 4) { setErrore("❌ Password troppo corta (min 4 caratteri)"); return; }
     if (password.length > 40) { setErrore("❌ Password troppo lunga (max 30 caratteri)"); return; }
+    if ((registrati || modalitaCompletaProfilo) && !emailValida(email)) {
+      setErrore("❌ Inserisci un'email valida");
+      return;
+    }
     setLoading(true);
     setErrore("");
+
+    if (modalitaCompletaProfilo) {
+      try {
+        const res = await fetch(`${API}/aggiungi-email`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password, email }),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setSuccesso("✅ Email inviata! Controlla la posta e conferma prima di rientrare.");
+          setModalitaCompletaProfilo(false);
+          setErrore("");
+        } else {
+          setErrore(`❌ ${data.detail}`);
+        }
+      } catch {
+        setErrore("❌ Errore di connessione");
+      }
+      setLoading(false);
+      return;
+    }
+
     const url = registrati ? `${API}/register/` : `${API}/login/`;
     try {
       const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify(registrati ? { username, password, email } : { username, password }),
       });
       const data = await res.json();
       if (registrati) {
         if (res.ok) {
-          setSuccesso("✅ Registrato! Ora fai login.");
+          setSuccesso("✅ Registrato! Controlla la tua email per confermare l'account, poi fai login.");
           setErrore("");
           setRegistrati(false);
         } else {
@@ -601,6 +632,12 @@ function Login({ setToken }) {
         }
       } else if (data.access_token) {
         setToken(data.access_token);
+      } else if (data.detail === "email_mancante") {
+        setModalitaCompletaProfilo(true);
+        setErrore("");
+        setSuccesso("");
+      } else if (data.detail === "email_non_verificata") {
+        setErrore("⚠️ Devi confermare la tua email prima di accedere. Controlla la posta.");
       } else {
         setErrore("❌ Credenziali errate");
       }
@@ -617,9 +654,17 @@ function Login({ setToken }) {
         <div className="login-card">
           <div className="login-logo">⚡ Fanta<span style={{ color: theme.accent }}>Roller</span></div>
           <div className="login-sub">Fantasy Pattinaggio Corsa</div>
-          <div style={{ background: "#38bdf815", border: "1px solid #38bdf830", borderRadius: 8, padding: "10px 14px", color: theme.blue, fontSize: 13, marginBottom: 16, textAlign: "center" }}>
-            Prima volta? Clicca su <strong>"Registrati"</strong> in fondo per creare il tuo account!
-          </div>
+
+          {modalitaCompletaProfilo ? (
+            <div style={{ background: "#eab30815", border: "1px solid #eab30830", borderRadius: 8, padding: "10px 14px", color: theme.yellow, fontSize: 13, marginBottom: 16, textAlign: "center" }}>
+              📧 Il tuo account non ha ancora un'email associata. Inseriscila per continuare.
+            </div>
+          ) : (
+            <div style={{ background: "#38bdf815", border: "1px solid #38bdf830", borderRadius: 8, padding: "10px 14px", color: theme.blue, fontSize: 13, marginBottom: 16, textAlign: "center" }}>
+              Prima volta? Clicca su <strong>"Registrati"</strong> in fondo per creare il tuo account!
+            </div>
+          )}
+
           {successo && <div className="success-box">{successo}</div>}
           {loading && (
             <div className="success-box">
@@ -627,14 +672,27 @@ function Login({ setToken }) {
             </div>
           )}
           {errore && <div style={{ background: "#ef444415", border: "1px solid #ef444430", borderRadius: 8, padding: "10px 14px", color: theme.red, fontSize: 13, marginBottom: 12 }}>{errore}</div>}
+
           <input className="input" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSubmit()} />
           <input className="input" placeholder="Password" type="password" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSubmit()} />
+
+          {(registrati || modalitaCompletaProfilo) && (
+            <input className="input" placeholder="Email" type="email" value={email} onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSubmit()} />
+          )}
+
           <button className="btn btn-primary" style={{ width: "100%", padding: "12px", fontSize: 15 }} onClick={handleSubmit} disabled={loading}>
-            {registrati ? "Registrati" : "Entra"}
+            {modalitaCompletaProfilo ? "Invia email di conferma" : registrati ? "Registrati" : "Entra"}
           </button>
-          <div className="login-toggle" onClick={() => { setRegistrati(!registrati); setErrore(""); setSuccesso(""); }}>
-            {registrati ? <>Hai già un account? <span>Login</span></> : <>Non hai un account? <span>Registrati</span></>}
-          </div>
+
+          {modalitaCompletaProfilo ? (
+            <div className="login-toggle" onClick={() => { setModalitaCompletaProfilo(false); setErrore(""); setSuccesso(""); }}>
+              ← Torna al login
+            </div>
+          ) : (
+            <div className="login-toggle" onClick={() => { setRegistrati(!registrati); setErrore(""); setSuccesso(""); }}>
+              {registrati ? <>Hai già un account? <span>Login</span></> : <>Non hai un account? <span>Registrati</span></>}
+            </div>
+          )}
         </div>
       </div>
     </>

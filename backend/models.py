@@ -21,6 +21,9 @@ class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True)
+    email = Column(String, unique=True, nullable=True)
+    email_verificata = Column(Integer, default=0)
+    token_verifica = Column(String, nullable=True)
     password = Column(String)
     budget = Column(Integer, default=200)
     is_admin = Column(Integer, default=0)

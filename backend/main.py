@@ -18,7 +18,7 @@ import os
 def invia_email_verifica(destinatario: str, username: str, token: str):
     url_verifica = f"https://fantaroller-api.onrender.com/verifica-email?token={token}"
     try:
-        http_requests.post(
+        risposta = http_requests.post(
             "https://api.resend.com/emails",
             headers={"Authorization": f"Bearer {os.environ.get('RESEND_API_KEY')}"},
             json={
@@ -28,6 +28,7 @@ def invia_email_verifica(destinatario: str, username: str, token: str):
                 "html": f"<p>Ciao {username}!</p><p>Clicca qui per confermare la tua email:</p><p><a href='{url_verifica}'>Conferma Email</a></p>"
             }
         )
+        print(f"Resend status: {risposta.status_code} - risposta: {risposta.text}")
     except Exception as e:
         print(f"Errore invio email: {e}")
 

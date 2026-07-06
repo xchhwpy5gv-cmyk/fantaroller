@@ -577,6 +577,41 @@ function Login({ setToken }) {
   const [registrati, setRegistrati] = useState(false);
   const [loading, setLoading] = useState(false);
   const [modalitaCompletaProfilo, setModalitaCompletaProfilo] = useState(false);
+  const [mostraOpzioniEmail, setMostraOpzioniEmail] = useState(false);
+  const [nuovaEmail, setNuovaEmail] = useState("");
+  const [messaggioEmail, setMessaggioEmail] = useState("");
+
+  const reinviaVerifica = async () => {
+    setMessaggioEmail("⏳ Invio in corso...");
+    try {
+      const res = await fetch(`${API}/reinvia-verifica`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+      const data = await res.json();
+      setMessaggioEmail(res.ok ? "✅ Email reinviata! Controlla anche lo spam." : `❌ ${data.detail}`);
+    } catch {
+      setMessaggioEmail("❌ Errore di connessione");
+    }
+  };
+
+  const cambiaEmail = async () => {
+    if (!emailValida(nuovaEmail)) { setMessaggioEmail("❌ Inserisci un'email valida"); return; }
+    setMessaggioEmail("⏳ Aggiornamento in corso...");
+    try {
+      const res = await fetch(`${API}/cambia-email`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password, email: nuovaEmail }),
+      });
+      const data = await res.json();
+      setMessaggioEmail(res.ok ? "✅ Email aggiornata! Controlla la posta per confermare." : `❌ ${data.detail}`);
+      if (res.ok) setNuovaEmail("");
+    } catch {
+      setMessaggioEmail("❌ Errore di connessione");
+    }
+  };
 
   const emailValida = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 
@@ -638,6 +673,7 @@ function Login({ setToken }) {
         setSuccesso("");
       } else if (data.detail === "email_non_verificata") {
         setErrore("⚠️ Devi confermare la tua email prima di accedere. Controlla la posta.");
+        setMostraOpzioniEmail(true);
       } else {
         setErrore("❌ Credenziali errate");
       }
@@ -691,6 +727,19 @@ function Login({ setToken }) {
           ) : (
             <div className="login-toggle" onClick={() => { setRegistrati(!registrati); setErrore(""); setSuccesso(""); }}>
               {registrati ? <>Hai già un account? <span>Login</span></> : <>Non hai un account? <span>Registrati</span></>}
+            </div>
+          )}
+
+          {mostraOpzioniEmail && (
+            <div style={{ marginTop: 16, paddingTop: 16, borderTop: `1px solid ${theme.border}` }}>
+              {messaggioEmail && <div className="msg-box">{messaggioEmail}</div>}
+              <button className="btn btn-blue" style={{ width: "100%", marginBottom: 10 }} onClick={reinviaVerifica}>
+                📧 Reinvia email di conferma
+              </button>
+              <input className="input" placeholder="Nuova email (se hai sbagliato)" type="email" value={nuovaEmail} onChange={e => setNuovaEmail(e.target.value)} />
+              <button className="btn btn-primary" style={{ width: "100%" }} onClick={cambiaEmail}>
+                ✏️ Cambia email e reinvia
+              </button>
             </div>
           )}
         </div>

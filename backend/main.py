@@ -187,6 +187,22 @@ def reinvia_verifica(req: UserLogin, db=Depends(get_db)):
     invia_email_verifica(utente.email, utente.username, token)
     return {"message": "Email di verifica reinviata"}
 
+@app.post("/cambia-email")
+def cambia_email(req: AggiungiEmailRequest, db=Depends(get_db)):
+    utente = db.query(User).filter(User.username == req.username).first()
+    if not utente or not pwd_context.verify(req.password, utente.password):
+        raise HTTPException(status_code=401, detail="Credenziali errate")
+    email_esistente = db.query(User).filter(User.email == req.email, User.username != req.username).first()
+    if email_esistente:
+        raise HTTPException(status_code=400, detail="Email già registrata da un altro utente")
+    token = secrets_lib.token_urlsafe(32)
+    utente.email = req.email
+    utente.email_verificata = 0
+    utente.token_verifica = token
+    db.commit()
+    invia_email_verifica(req.email, utente.username, token)
+    return {"message": "Email aggiornata! Controlla la posta per confermare."}
+
 @app.post("/admin/migrate-email")
 def migrate_email(db=Depends(get_db)):
     try:

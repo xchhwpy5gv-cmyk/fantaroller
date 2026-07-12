@@ -22,7 +22,7 @@ def invia_email_verifica(destinatario: str, username: str, token: str):
             "https://api.resend.com/emails",
             headers={"Authorization": f"Bearer {os.environ.get('RESEND_API_KEY')}"},
             json={
-                "from": "FantaRoller <onboarding@resend.dev>",
+                "from": "FantaRoller <noreply@fantaroller.it>",
                 "to": [destinatario],
                 "subject": "Conferma la tua email su FantaRoller",
                 "html": f"<p>Ciao {username}!</p><p>Clicca qui per confermare la tua email:</p><p><a href='{url_verifica}'>Conferma Email</a></p>"

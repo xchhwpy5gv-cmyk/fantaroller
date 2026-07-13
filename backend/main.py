@@ -818,9 +818,9 @@ def gare_eventi(db=Depends(get_db)):
     return [e[0] for e in eventi]
 
 @app.get("/gare/risultati")
-def gare_risultati(evento: str, utente=Depends(get_utente_corrente), db=Depends(get_db)):
-    # Prendi atleti della squadra dell'utente
-    squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
+def gare_risultati(evento: str, league_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    # Prendi atleti della squadra dell'utente in questa lega
+    squadra = db.query(Squadra).filter(Squadra.user_id == utente.id, Squadra.league_id == league_id).first()
     atleti_squadra = [a.id for a in squadra.atleti] if squadra else []
     
     # Prendi tutti i risultati dell'evento
@@ -962,8 +962,13 @@ def elimina_utente(username: str, db=Depends(get_db)):
 
 @app.get("/league/tutte")
 def tutte_le_leghe(db=Depends(get_db)):
-    leghe = db.query(League).all()
-    return [{"id": l.id, "nome": l.nome, "membri": len(db.query(User).filter(User.league_id == l.id).all())} for l in leghe]
+    leghe = db.query(League).filter(League.tipo == "aperta").all()
+    return [{
+        "id": l.id,
+        "nome": l.nome,
+        "modalita": l.modalita,
+        "membri": len(l.membri)
+    } for l in leghe]
 
 
 @app.delete("/admin/elimina-atleta/{atleta_id}")

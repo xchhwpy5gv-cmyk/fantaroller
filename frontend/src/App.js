@@ -946,6 +946,7 @@ function AggiungiAtletaManuale({ token, lega, onAggiunto }) {
   const [prezzo, setPrezzo] = useState("");
   const [messaggio, setMessaggio] = useState("");
   const [aperto, setAperto] = useState(false);
+  const [ricercaAtleta, setRicercaAtleta] = useState("");
 
   useState(() => {
     fetch(`${API}/athletes/`).then(r => r.json()).then(setAtleti);
@@ -972,10 +973,29 @@ function AggiungiAtletaManuale({ token, lega, onAggiunto }) {
       {aperto && (
         <div style={{ padding: "0 20px 20px" }}>
           {messaggio && <div className="msg-box">{messaggio}</div>}
-          <select className="select" style={{ width: "100%", marginBottom: 10 }} value={atletaId} onChange={e => setAtletaId(e.target.value)}>
-            <option value="">Seleziona atleta...</option>
-            {atleti.map(a => <option key={a.id} value={a.id}>{a.name} — {a.categoria}</option>)}
-          </select>
+          <input
+            className="input"
+            placeholder="🔍 Cerca atleta..."
+            value={ricercaAtleta}
+            onChange={e => { setRicercaAtleta(e.target.value); setAtletaId(""); }}
+          />
+          {ricercaAtleta.length >= 2 && (
+            <div style={{ background: "#0d1526", border: `1px solid ${theme.border}`, borderRadius: 8, marginBottom: 10, maxHeight: 200, overflowY: "auto" }}>
+              {atleti
+                .filter(a => a.name.toLowerCase().includes(ricercaAtleta.toLowerCase()))
+                .map(a => (
+                  <div
+                    key={a.id}
+                    style={{ padding: "10px 14px", cursor: "pointer", borderBottom: `1px solid ${theme.border}22`, background: atletaId === String(a.id) ? "#f9731615" : "" }}
+                    onClick={() => { setAtletaId(String(a.id)); setRicercaAtleta(a.name + " — " + a.categoria); }}
+                  >
+                    <span style={{ fontWeight: 600 }}>{a.name}</span>
+                    <span style={{ color: theme.textMuted, fontSize: 12, marginLeft: 8 }}>{a.categoria}</span>
+                  </div>
+                ))
+              }
+            </div>
+          )}
           <input className="input" placeholder="Prezzo pagato in asta" type="number" value={prezzo} onChange={e => setPrezzo(e.target.value)} />
           <button className="btn btn-primary" onClick={aggiungi}>Aggiungi alla squadra</button>
         </div>

@@ -719,7 +719,7 @@ def join_league(league_id: int, codice: str = None, db=Depends(get_db), utente=D
         raise HTTPException(status_code=400, detail="Sei già in questa lega")
     utente.leghe.append(lega)
     db.commit()
-    return {"message": f"Sei entrato nella lega '{lega.nome}'!"}
+    return {"message": f"Sei entrato nella lega '{lega.nome}'!", "league_id": lega.id}
 
 @app.get("/league/mie-leghe")
 def mie_leghe(utente=Depends(get_utente_corrente), db=Depends(get_db)):

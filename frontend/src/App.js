@@ -1668,9 +1668,13 @@ function Leghe({ token, onCambioLeghe, mieLeghe, sceltaLega }) {
 
           <div style={{ marginTop: 20, paddingTop: 20, borderTop: `1px solid ${theme.border}` }}>
             <div className="card-title" style={{ fontSize: "1.1rem" }}>🔒 Ho un codice per una lega privata</div>
-            <input className="input" placeholder="ID Lega" value={legaEntrata || ""} onChange={e => setLegaEntrata(e.target.value)} />
+            <input className="input" placeholder="ID Lega (numero)" value={legaEntrata || ""} onChange={e => setLegaEntrata(e.target.value)} />
             <input className="input" placeholder="Codice" value={codiceInserito} onChange={e => setCodiceInserito(e.target.value)} />
-            <button className="btn btn-primary" onClick={() => entraLega(parseInt(legaEntrata), codiceInserito)}>Entra nella lega</button>
+            <button className="btn btn-primary" onClick={() => {
+              const id = parseInt(legaEntrata);
+              if (isNaN(id)) { setMessaggio("❌ Inserisci un ID lega valido"); return; }
+              entraLega(id, codiceInserito);
+            }}>Entra nella lega</button>
           </div>
         </div>
       )}

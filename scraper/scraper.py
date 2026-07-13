@@ -666,8 +666,8 @@ prezzi = {}
 
 for nome, dati in classifica.items():
     punti = dati["punti"]
-    gare = dati["gare"]
-    media = punti / gare
+    n_gare = dati["gare"]
+    media = punti / n_gare
     
     if " \u2013 " in nome:
         nome_atleta = nome.split(" \u2013 ")[0].strip()
@@ -676,7 +676,7 @@ for nome, dati in classifica.items():
         nome_atleta = nome.strip()
         categoria_corrente = ""
     
-    prezzo_base = round((media / 100) * 20 + gare * 2) + bonus_ranking(nome_atleta)
+    prezzo_base = round((media / 100) * 20 + n_gare * 2) + bonus_ranking(nome_atleta)
 
     # Se ha un prezzo override (media tra anni), usalo
     if "prezzo_override" in dati:

@@ -38,6 +38,7 @@ class League(Base):
     tipo = Column(String, default="privata")
     modalita = Column(String, default="listone")
     crediti_iniziali = Column(Integer, default=200)
+    atleti_per_categoria = Column(Integer, default=2)
     mercato_aperto = Column(Integer, default=1)
     membri = relationship("User", secondary=utente_leghe)
 

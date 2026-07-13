@@ -320,15 +320,15 @@ def acquista_atleta(atleta_id: int, league_id: int, utente=Depends(get_utente_co
         raise HTTPException(status_code=404, detail="Atleta non trovato")
     if atleta in squadra.atleti:
         raise HTTPException(status_code=400, detail="Atleta già in squadra")
-    limite = 12 if squadra.is_new else 16
-    if len(squadra.atleti) >= limite:
+    limite_totale = lega.atleti_per_categoria * 8  # 8 categorie totali
+    if len(squadra.atleti) >= limite_totale:
         raise HTTPException(status_code=400, detail="Squadra completa!")
     categorie_bloccate = ["Ragazzi Maschi", "Ragazze Femminile"]
     if atleta.categoria in categorie_bloccate:
         raise HTTPException(status_code=400, detail="Non puoi acquistare atleti di questa categoria")
     atleti_stessa_categoria = [a for a in squadra.atleti if a.categoria == atleta.categoria]
-    if len(atleti_stessa_categoria) >= 2:
-        raise HTTPException(status_code=400, detail=f"Hai già 2 atleti in {atleta.categoria}")
+    if len(atleti_stessa_categoria) >= lega.atleti_per_categoria:
+        raise HTTPException(status_code=400, detail=f"Hai già {lega.atleti_per_categoria} atleti in {atleta.categoria}")
     if squadra.budget < atleta.prezzo:
         raise HTTPException(status_code=400, detail="Budget insufficiente")
     squadra.atleti.append(atleta)
@@ -358,54 +358,53 @@ def vedi_squadra(league_id: int, utente=Depends(get_utente_corrente), db=Depends
     }
 
 @app.post("/squadra/vendi/{atleta_id}")
-def vendi_atleta(atleta_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
-    imp = db.query(Impostazioni).first()
-    if not imp.mercato_aperto:
+def vendi_atleta(atleta_id: int, league_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    lega = db.query(League).filter(League.id == league_id).first()
+    if not lega:
+        raise HTTPException(status_code=404, detail="Lega non trovata")
+    if lega.modalita == "listone" and not lega.mercato_aperto:
         raise HTTPException(status_code=400, detail="Il mercato è chiuso, non puoi vendere atleti!")
-    squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
+    squadra = db.query(Squadra).filter(Squadra.user_id == utente.id, Squadra.league_id == league_id).first()
     if not squadra:
         raise HTTPException(status_code=400, detail="Nessuna squadra trovata")
     atleta = db.query(Athlete).filter(Athlete.id == atleta_id).first()
-    if atleta and atleta.categoria in ["Ragazzi Maschi", "Ragazze Femminile"]:
-        raise HTTPException(status_code=400, detail="Non puoi vendere atleti di Ragazzi/Ragazze")
-    atleta = db.query(Athlete).filter(Athlete.id == atleta_id).first()
     if not atleta:
         raise HTTPException(status_code=404, detail="Atleta non trovato")
+    if atleta.categoria in ["Ragazzi Maschi", "Ragazze Femminile"]:
+        raise HTTPException(status_code=400, detail="Non puoi vendere atleti di Ragazzi/Ragazze")
     if atleta not in squadra.atleti:
         raise HTTPException(status_code=400, detail="Atleta non in squadra")
     squadra.atleti.remove(atleta)
-    utente.budget += atleta.prezzo
+    squadra.budget += atleta.prezzo
     db.commit()
-    return {"message": f"{atleta.name} venduto!", "budget_rimasto": utente.budget}
+    return {"message": f"{atleta.name} venduto!", "budget_rimasto": squadra.budget}
 
-@app.get("/admin/stato-mercato")
-def stato_mercato(db=Depends(get_db)):
-    imp = db.query(Impostazioni).first()
-    return {"mercato_aperto": bool(imp.mercato_aperto)}
+@app.get("/league/stato-mercato")
+def stato_mercato_lega(league_id: int, db=Depends(get_db)):
+    lega = db.query(League).filter(League.id == league_id).first()
+    if not lega:
+        raise HTTPException(status_code=404, detail="Lega non trovata")
+    return {"mercato_aperto": bool(lega.mercato_aperto), "modalita": lega.modalita}
 
-@app.post("/admin/apri-mercato")
-def apri_mercato(utente=Depends(get_utente_corrente), db=Depends(get_db)):
-    if not utente.is_admin:
-        raise HTTPException(status_code=403, detail="Non sei admin")
-    imp = db.query(Impostazioni).first()
-    if not imp:
-        imp = Impostazioni(id=1, mercato_aperto=1)
-        db.add(imp)
-    else:
-        imp.mercato_aperto = 1
+@app.post("/league/apri-mercato")
+def apri_mercato_lega(league_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    lega = db.query(League).filter(League.id == league_id).first()
+    if not lega:
+        raise HTTPException(status_code=404, detail="Lega non trovata")
+    if utente.id != lega.owner_id and not utente.is_admin:
+        raise HTTPException(status_code=403, detail="Solo l'admin della lega può farlo")
+    lega.mercato_aperto = 1
     db.commit()
     return {"message": "Mercato aperto!"}
 
-@app.post("/admin/chiudi-mercato")
-def chiudi_mercato(utente=Depends(get_utente_corrente), db=Depends(get_db)):
-    if not utente.is_admin:
-        raise HTTPException(status_code=403, detail="Non sei admin")
-    imp = db.query(Impostazioni).first()
-    if not imp:
-        imp = Impostazioni(id=1, mercato_aperto=0)
-        db.add(imp)
-    else:
-        imp.mercato_aperto = 0
+@app.post("/league/chiudi-mercato")
+def chiudi_mercato_lega(league_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    lega = db.query(League).filter(League.id == league_id).first()
+    if not lega:
+        raise HTTPException(status_code=404, detail="Lega non trovata")
+    if utente.id != lega.owner_id and not utente.is_admin:
+        raise HTTPException(status_code=403, detail="Solo l'admin della lega può farlo")
+    lega.mercato_aperto = 0
     db.commit()
     return {"message": "Mercato chiuso!"}
 
@@ -433,79 +432,10 @@ def debug_impostazioni(db=Depends(get_db)):
     imp = db.query(Impostazioni).all()
     return [{"id": i.id, "mercato_aperto": i.mercato_aperto} for i in imp]
 
-@app.get("/classifica/")
-def classifica(evento: str = None, db=Depends(get_db)):
-    from sqlalchemy import text
-    if evento:
-        rows = db.execute(text("""
-            SELECT u.username, s.nome, COALESCE(SUM(pe.punti), 0) + COALESCE(s.punti_bonus, 0) as punti, COALESCE(s.is_new, 0) as is_new
-            FROM users u
-            JOIN squadre s ON s.user_id = u.id
-            JOIN squadra_atleti sa ON sa.squadra_id = s.id
-            LEFT JOIN punti_evento pe ON pe.atleta_id = sa.atleta_id AND pe.evento = :evento
-            GROUP BY u.username, s.nome, s.id, s.punti_bonus, s.is_new
-            HAVING (COUNT(sa.atleta_id) >= 16 OR (s.is_new = 1 AND COUNT(sa.atleta_id) >= 12))
-            ORDER BY punti DESC
-            LIMIT 1000
-        """), {"evento": evento}).fetchall()
-    else:
-        rows = db.execute(text("""
-            SELECT u.username, s.nome, COALESCE(SUM(a.punti), 0) + COALESCE(s.punti_bonus, 0) as punti, COALESCE(s.is_new, 0) as is_new
-            FROM users u
-            JOIN squadre s ON s.user_id = u.id
-            JOIN squadra_atleti sa ON sa.squadra_id = s.id
-            JOIN athletes a ON a.id = sa.atleta_id
-            GROUP BY u.username, s.nome, s.id, s.punti_bonus, s.is_new
-            HAVING (COUNT(sa.atleta_id) >= 16) OR (s.is_new = 1 AND COUNT(sa.atleta_id) >= 12)
-            ORDER BY punti DESC
-            LIMIT 1000
-        """)).fetchall()
-    return [{"username": r[0], "squadra": r[1], "punti": r[2], "n_atleti": 16, "is_new": r[3]} for r in rows]
-
-
-
 @app.get("/classifica/eventi")
 def lista_eventi(db=Depends(get_db)):
     eventi = db.query(PuntiEvento.evento).distinct().all()
     return [e[0] for e in eventi]
-
-
-@app.get("/classifica-evento/{evento}")
-def classifica_evento(evento: str, db=Depends(get_db)):
-
-    utenti = db.query(User).all()
-
-    risultati = []
-
-    for utente in utenti:
-
-        squadra = db.query(Squadra).filter(
-            Squadra.user_id == utente.id
-        ).first()
-
-        if squadra:
-
-            punti_totali = 0
-
-            for atleta in squadra.atleti:
-
-                punti_evento = db.query(PuntiEvento).filter(
-                    PuntiEvento.atleta_id == atleta.id,
-                    PuntiEvento.evento == evento
-                ).all()
-
-                punti_totali += sum(p.punti for p in punti_evento)
-
-            risultati.append({
-                "username": utente.username,
-                "squadra": squadra.nome,
-                "punti": punti_totali,
-                "n_atleti": len(squadra.atleti)
-            })
-
-    risultati.sort(key=lambda x: x["punti"], reverse=True)
-
-    return risultati
 
 @app.get("/eventi")
 def lista_eventi(db=Depends(get_db)):
@@ -741,78 +671,65 @@ def reset_completo(db=Depends(get_db)):
     squadre = db.query(Squadra).all()
 
     for squadra in squadre:
-        squadra.budget = 150
+        lega = db.query(League).filter(League.id == squadra.league_id).first()
+        squadra.budget = lega.crediti_iniziali if lega else 200
     db.commit()
     return {"message": "Reset completato"}
 
 @app.post("/league/create")
-def create_league(nome: str, password: str, db=Depends(get_db), utente=Depends(get_utente_corrente)):
-    esistente = db.query(League).filter(League.nome == nome).first()
+def create_league(req: LeagueCreate, db=Depends(get_db), utente=Depends(get_utente_corrente)):
+    if not utente.email_verificata:
+        raise HTTPException(status_code=403, detail="Devi avere l'email verificata per creare una lega")
+    esistente = db.query(League).filter(League.nome == req.nome).first()
     if esistente:
         raise HTTPException(status_code=400, detail="Nome lega già in uso")
-    lega = League(nome=nome, codice=password, owner_id=utente.id)
+    if req.tipo not in ["privata", "aperta"]:
+        raise HTTPException(status_code=400, detail="Tipo lega non valido")
+    if req.modalita not in ["listone", "asta"]:
+        raise HTTPException(status_code=400, detail="Modalità lega non valida")
+    if req.tipo == "privata" and not req.codice:
+        raise HTTPException(status_code=400, detail="Le leghe private richiedono un codice")
+    if req.atleti_per_categoria < 1:
+        raise HTTPException(status_code=400, detail="Atleti per categoria deve essere almeno 1")
+    lega = League(
+        nome=req.nome,
+        codice=req.codice if req.tipo == "privata" else None,
+        owner_id=utente.id,
+        tipo=req.tipo,
+        modalita=req.modalita,
+        crediti_iniziali=req.crediti_iniziali,
+        atleti_per_categoria=req.atleti_per_categoria,
+        mercato_aperto=1
+    )
     db.add(lega)
     db.commit()
     db.refresh(lega)
     utente.leghe.append(lega)
-    utente.league_id = lega.id
     db.commit()
-    return {"message": f"Lega '{nome}' creata!"}
+    return {"message": f"Lega '{req.nome}' creata!", "league_id": lega.id}
 
 @app.post("/league/join")
-def join_league(nome: str, password: str, db=Depends(get_db), utente=Depends(get_utente_corrente)):
-    lega = db.query(League).filter(League.nome == nome, League.codice == password).first()
+def join_league(league_id: int, codice: str = None, db=Depends(get_db), utente=Depends(get_utente_corrente)):
+    lega = db.query(League).filter(League.id == league_id).first()
     if not lega:
-        raise HTTPException(status_code=404, detail="Lega non trovata o password errata")
-    if lega not in utente.leghe:
-        utente.leghe.append(lega)
-    utente.league_id = lega.id
+        raise HTTPException(status_code=404, detail="Lega non trovata")
+    if lega.tipo == "privata" and lega.codice != codice:
+        raise HTTPException(status_code=401, detail="Codice errato")
+    if lega in utente.leghe:
+        raise HTTPException(status_code=400, detail="Sei già in questa lega")
+    utente.leghe.append(lega)
     db.commit()
     return {"message": f"Sei entrato nella lega '{lega.nome}'!"}
 
 @app.get("/league/mie-leghe")
 def mie_leghe(utente=Depends(get_utente_corrente), db=Depends(get_db)):
-    return [{"id": l.id, "nome": l.nome} for l in utente.leghe]
-
-@app.post("/league/cambia/{league_id}")
-def cambia_lega(league_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
-    lega = db.query(League).filter(League.id == league_id).first()
-    if not lega or lega not in utente.leghe:
-        raise HTTPException(status_code=404, detail="Non sei in questa lega")
-    utente.league_id = league_id
-    db.commit()
-    return {"message": f"Sei passato alla lega '{lega.nome}'"}
-
-@app.get("/league/dettagli")
-def dettagli_lega(utente=Depends(get_utente_corrente), db=Depends(get_db)):
-    if not utente.league_id:
-        raise HTTPException(status_code=404, detail="Non sei in nessuna lega")
-    lega = db.query(League).filter(League.id == utente.league_id).first()
-    partecipanti = []
-    for m in lega.membri:
-        squadra = db.query(Squadra).filter(Squadra.user_id == m.id).first()
-        partecipanti.append({
-            "username": m.username,
-            "squadra": squadra.nome if squadra else None,
-            "n_atleti": len(squadra.atleti) if squadra else 0,
-            "is_owner": m.id == lega.owner_id
-        })
-    owner = db.query(User).filter(User.id == lega.owner_id).first()
-    return {
-        "nome": lega.nome,
-        "codice": lega.codice if utente.id == lega.owner_id else None,
-        "owner": owner.username,
-        "partecipanti": partecipanti
-    }
-
-
-
-
-@app.post("/admin/reset-budget")
-def reset_budget(db=Depends(get_db)):
-    db.query(User).update({"budget": 150})
-    db.commit()
-    return {"message": "Budget resettato a 150 per tutti"}
+    return [{
+        "id": l.id,
+        "nome": l.nome,
+        "tipo": l.tipo,
+        "modalita": l.modalita,
+        "is_owner": l.owner_id == utente.id
+    } for l in utente.leghe]
 
 @app.post("/admin/migrate-leagues")
 def migrate_leagues(db=Depends(get_db)):
@@ -826,24 +743,27 @@ def migrate_leagues(db=Depends(get_db)):
         return {"message": f"Errore: {str(e)}"}
 
 @app.get("/league/dettagli")
-def dettagli_lega(utente=Depends(get_utente_corrente), db=Depends(get_db)):
-    if not utente.league_id:
-        raise HTTPException(status_code=404, detail="Non sei in nessuna lega")
-    lega = db.query(League).filter(League.id == utente.league_id).first()
-    membri = db.query(User).filter(User.league_id == utente.league_id).all()
-    
+def dettagli_lega(league_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    lega = db.query(League).filter(League.id == league_id).first()
+    if not lega or lega not in utente.leghe:
+        raise HTTPException(status_code=404, detail="Non sei in questa lega")
+
     partecipanti = []
-    for m in membri:
-        squadra = db.query(Squadra).filter(Squadra.user_id == m.id).first()
+    for m in lega.membri:
+        squadra = db.query(Squadra).filter(Squadra.user_id == m.id, Squadra.league_id == league_id).first()
         partecipanti.append({
             "username": m.username,
             "squadra": squadra.nome if squadra else None,
             "n_atleti": len(squadra.atleti) if squadra else 0,
             "is_owner": m.id == lega.owner_id
         })
-    
+
     return {
+        "id": lega.id,
         "nome": lega.nome,
+        "tipo": lega.tipo,
+        "modalita": lega.modalita,
+        "mercato_aperto": bool(lega.mercato_aperto),
         "codice": lega.codice if utente.id == lega.owner_id else None,
         "owner": db.query(User).filter(User.id == lega.owner_id).first().username,
         "partecipanti": partecipanti
@@ -851,14 +771,14 @@ def dettagli_lega(utente=Depends(get_utente_corrente), db=Depends(get_db)):
 
 
 @app.get("/league/classifica")
-def classifica_lega(evento: str = None, utente=Depends(get_utente_corrente), db=Depends(get_db)):
-    if not utente.league_id:
-        raise HTTPException(status_code=404, detail="Non sei in nessuna lega")
-    utenti_lega = db.query(User).filter(User.league_id == utente.league_id).all()
+def classifica_lega(league_id: int, evento: str = None, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    lega = db.query(League).filter(League.id == league_id).first()
+    if not lega or lega not in utente.leghe:
+        raise HTTPException(status_code=404, detail="Non sei in questa lega")
+    squadre_lega = db.query(Squadra).filter(Squadra.league_id == league_id).all()
     risultati = []
-    for u in utenti_lega:
-        squadra = db.query(Squadra).filter(Squadra.user_id == u.id).first()
-        if squadra and len(squadra.atleti) >= 16:
+    for squadra in squadre_lega:
+        if len(squadra.atleti) >= 16:
             if evento:
                 punti_totali = 0
                 for atleta in squadra.atleti:
@@ -871,6 +791,7 @@ def classifica_lega(evento: str = None, utente=Depends(get_utente_corrente), db=
             else:
                 punti_totali = sum(a.punti for a in squadra.atleti)
             punti_totali += squadra.punti_bonus or 0
+            u = db.query(User).filter(User.id == squadra.user_id).first()
             risultati.append({
                 "username": u.username,
                 "squadra": squadra.nome,
@@ -985,8 +906,8 @@ def reset_totale(db=Depends(get_db)):
         return {"message": f"Errore: {str(e)}"}
 
 @app.post("/squadra/rinomina")
-def rinomina_squadra(nome: str, utente=Depends(get_utente_corrente), db=Depends(get_db)):
-    squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
+def rinomina_squadra(nome: str, league_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    squadra = db.query(Squadra).filter(Squadra.user_id == utente.id, Squadra.league_id == league_id).first()
     if not squadra:
         raise HTTPException(status_code=404, detail="Nessuna squadra trovata")
     squadra.nome = nome
@@ -994,43 +915,36 @@ def rinomina_squadra(nome: str, utente=Depends(get_utente_corrente), db=Depends(
     return {"message": f"Squadra rinominata in '{nome}'"}
 
 
-@app.post("/admin/aggiungi-budget")
-def aggiungi_budget(importo: int, db=Depends(get_db)):
-    db.query(User).update({"budget": User.budget + importo})
-    db.commit()
-    return {"message": f"+{importo} crediti aggiunti a tutti"}
-
-
 @app.get("/admin/statistiche")
-def statistiche(utente=Depends(get_utente_corrente), db=Depends(get_db)):
+def statistiche(league_id: int = None, utente=Depends(get_utente_corrente), db=Depends(get_db)):
     if not utente.is_admin:
         raise HTTPException(status_code=403, detail="Non sei admin")
-    
-    utenti = db.query(User).all()
-    totale_utenti = len(utenti)
-    utenti_con_squadra = db.query(Squadra).count()
-    squadre_complete = 0
-    
-    lista_utenti = []
-    for u in utenti:
-        squadra = db.query(Squadra).filter(Squadra.user_id == u.id).first()
-        n_atleti = len(squadra.atleti) if squadra else 0
-        if n_atleti == 16:
-            squadre_complete += 1
-        lista_utenti.append({
-            "username": u.username,
-            "ha_squadra": squadra is not None,
-            "nome_squadra": squadra.nome if squadra else None,
-            "n_atleti": n_atleti,
-            "completa": n_atleti == 16
+
+    totale_utenti = db.query(User).count()
+
+    query_squadre = db.query(Squadra)
+    if league_id:
+        query_squadre = query_squadre.filter(Squadra.league_id == league_id)
+    squadre = query_squadre.all()
+
+    squadre_complete = sum(1 for s in squadre if len(s.atleti) == 16)
+
+    lista = []
+    for s in squadre:
+        u = db.query(User).filter(User.id == s.user_id).first()
+        lista.append({
+            "username": u.username if u else "?",
+            "league_id": s.league_id,
+            "nome_squadra": s.nome,
+            "n_atleti": len(s.atleti),
+            "completa": len(s.atleti) == 16
         })
-    
+
     return {
         "utenti_registrati": totale_utenti,
-        "utenti_con_squadra": utenti_con_squadra,
+        "squadre_totali": len(squadre),
         "squadre_complete": squadre_complete,
-        "utenti_senza_squadra": totale_utenti - utenti_con_squadra,
-        "lista": lista_utenti
+        "lista": lista
     }
 
 @app.delete("/admin/elimina-utente/{username}")
@@ -1038,8 +952,8 @@ def elimina_utente(username: str, db=Depends(get_db)):
     utente = db.query(User).filter(User.username == username).first()
     if not utente:
         raise HTTPException(status_code=404, detail="Utente non trovato")
-    squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
-    if squadra:
+    squadre = db.query(Squadra).filter(Squadra.user_id == utente.id).all()
+    for squadra in squadre:
         db.execute(text(f"DELETE FROM squadra_atleti WHERE squadra_id = {squadra.id}"))
         db.delete(squadra)
     db.delete(utente)
@@ -1079,23 +993,25 @@ def atleti_piu_acquistati(db=Depends(get_db)):
     return [{"id": r[0], "name": r[1], "categoria": r[2], "prezzo": r[3], "in_squadre": r[4]} for r in risultati]
 
 @app.post("/league/messaggio")
-def invia_messaggio(testo: str, utente=Depends(get_utente_corrente), db=Depends(get_db)):
-    if not utente.league_id:
-        raise HTTPException(status_code=404, detail="Non sei in nessuna lega")
+def invia_messaggio(testo: str, league_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    lega = db.query(League).filter(League.id == league_id).first()
+    if not lega or lega not in utente.leghe:
+        raise HTTPException(status_code=404, detail="Non sei in questa lega")
     if len(testo.strip()) == 0:
         raise HTTPException(status_code=400, detail="Messaggio vuoto")
     if len(testo) > 300:
         raise HTTPException(status_code=400, detail="Messaggio troppo lungo (max 300 caratteri)")
-    msg = Messaggio(testo=testo, user_id=utente.id, league_id=utente.league_id)
+    msg = Messaggio(testo=testo, user_id=utente.id, league_id=league_id)
     db.add(msg)
     db.commit()
     return {"message": "Messaggio inviato"}
 
 @app.get("/league/messaggi")
-def get_messaggi(utente=Depends(get_utente_corrente), db=Depends(get_db)):
-    if not utente.league_id:
-        raise HTTPException(status_code=404, detail="Non sei in nessuna lega")
-    messaggi = db.query(Messaggio).filter(Messaggio.league_id == utente.league_id).order_by(Messaggio.id.desc()).limit(50).all()
+def get_messaggi(league_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    lega = db.query(League).filter(League.id == league_id).first()
+    if not lega or lega not in utente.leghe:
+        raise HTTPException(status_code=404, detail="Non sei in questa lega")
+    messaggi = db.query(Messaggio).filter(Messaggio.league_id == league_id).order_by(Messaggio.id.desc()).limit(50).all()
     return [{"id": m.id, "testo": m.testo, "username": db.query(User).filter(User.id == m.user_id).first().username} for m in reversed(messaggi)]
 
 @app.post("/admin/fix-utente-vuoto")
@@ -1105,8 +1021,8 @@ def fix_utente_vuoto(db=Depends(get_db)):
         utente = db.query(User).filter(User.username == None).first()
     if not utente:
         return {"message": "Nessun utente vuoto trovato"}
-    squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
-    if squadra:
+    squadre = db.query(Squadra).filter(Squadra.user_id == utente.id).all()
+    for squadra in squadre:
         db.execute(text(f"DELETE FROM squadra_atleti WHERE squadra_id = {squadra.id}"))
         db.delete(squadra)
     db.delete(utente)
@@ -1120,34 +1036,20 @@ def aggiungi_atleta_manuale(name: str, categoria: str, prezzo: int, db=Depends(g
     db.commit()
     return {"message": f"{name} aggiunto!"}
 
-@app.post("/admin/fix-budget")
-def fix_budget(db=Depends(get_db)):
-    utenti = db.query(User).all()
-    aggiornati = 0
-    for utente in utenti:
-        squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
-        speso = sum(a.prezzo for a in squadra.atleti) if squadra else 0
-        totale = utente.budget + speso
-        if totale < 200:
-            utente.budget += 200 - totale
-            aggiornati += 1
-    db.commit()
-    return {"message": f"Budget corretto per {aggiornati} utenti"}
-
 @app.get("/league/squadre")
-def squadre_lega(utente=Depends(get_utente_corrente), db=Depends(get_db)):
-    if not utente.league_id:
-        raise HTTPException(status_code=404, detail="Non sei in nessuna lega")
-    imp = db.query(Impostazioni).first()
-    if imp and imp.mercato_aperto:
+def squadre_lega(league_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    lega = db.query(League).filter(League.id == league_id).first()
+    if not lega or lega not in utente.leghe:
+        raise HTTPException(status_code=404, detail="Non sei in questa lega")
+    if lega.mercato_aperto:
         raise HTTPException(status_code=403, detail="Il mercato è ancora aperto")
-    membri = db.query(User).filter(User.league_id == utente.league_id).all()
+    squadre_db = db.query(Squadra).filter(Squadra.league_id == league_id).all()
     risultato = []
-    for m in membri:
-        squadra = db.query(Squadra).filter(Squadra.user_id == m.id).first()
-        if squadra and len(squadra.atleti) == 16:
+    for squadra in squadre_db:
+        if len(squadra.atleti) == 16:
+            u = db.query(User).filter(User.id == squadra.user_id).first()
             risultato.append({
-                "username": m.username,
+                "username": u.username,
                 "squadra": squadra.nome,
                 "atleti": [{"name": a.name, "categoria": a.categoria, "prezzo": a.prezzo} for a in squadra.atleti]
             })
@@ -1163,11 +1065,11 @@ def reset_password_temp(db=Depends(get_db)):
     return {"message": "Password resettata a: fantaroller2026"}
 
 @app.get("/league/atleti-squadra")
-def atleti_squadra(username: str, evento: str = None, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+def atleti_squadra(username: str, league_id: int, evento: str = None, utente=Depends(get_utente_corrente), db=Depends(get_db)):
     utente_target = db.query(User).filter(User.username == username).first()
     if not utente_target:
         raise HTTPException(status_code=404, detail="Utente non trovato")
-    squadra = db.query(Squadra).filter(Squadra.user_id == utente_target.id).first()
+    squadra = db.query(Squadra).filter(Squadra.user_id == utente_target.id, Squadra.league_id == league_id).first()
     if not squadra:
         raise HTTPException(status_code=404, detail="Squadra non trovata")
     risultato = []
@@ -1358,14 +1260,13 @@ def aggiorna_prezzo_atleta(req: AggiornaPrezzoRequest, db=Depends(get_db)):
     return {"message": f"{atleta.name}: {atleta.prezzo_precedente}cr → {req.nuovo_prezzo}cr"}
 
 @app.get("/admin/media-campionato")
-def media_campionato(db=Depends(get_db)):
-    utenti = db.query(User).all()
+def media_campionato(league_id: int, db=Depends(get_db)):
+    squadre = db.query(Squadra).filter(Squadra.league_id == league_id).all()
     punti_totali = []
     crediti_ragazzi = []
 
-    for utente in utenti:
-        squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
-        if not squadra or len(squadra.atleti) < 16:
+    for squadra in squadre:
+        if len(squadra.atleti) < 16:
             continue
 
         # Media punti squadra
@@ -1394,126 +1295,6 @@ def media_campionato(db=Depends(get_db)):
         "squadre_complete": len(punti_totali)
     }
 
-@app.post("/admin/migrazione-squadre-new")
-def migrazione_squadre_new(db=Depends(get_db)):
-    try:
-        db.execute(text("ALTER TABLE squadre ADD COLUMN punti_bonus INTEGER DEFAULT 0"))
-        db.commit()
-    except:
-        pass
-    try:
-        db.execute(text("ALTER TABLE squadre ADD COLUMN is_new INTEGER DEFAULT 0"))
-        db.commit()
-    except:
-        pass
-    return {"message": "Migrazione completata"}
-
-@app.post("/admin/assegna-bonus-new")
-def assegna_bonus_new(username: str, db=Depends(get_db)):
-    utente = db.query(User).filter(User.username == username).first()
-    if not utente:
-        raise HTTPException(status_code=404, detail="Utente non trovato")
-    squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
-    
-    # Calcola budget: 200 - media crediti ragazzi - crediti già spesi
-    media_crediti_ragazzi = 50  # dal nostro calcolo precedente
-    crediti_gia_spesi = sum(
-        a.prezzo for a in squadra.atleti
-    ) if squadra else 0
-    nuovo_budget = 200 - media_crediti_ragazzi - crediti_gia_spesi
-    nuovo_budget = max(0, nuovo_budget)
-
-    # Assegna punti bonus e segna come new
-    if not squadra:
-        squadra = Squadra(user_id=utente.id, nome="Squadra", punti_bonus=358, is_new=1)
-        db.add(squadra)
-    else:
-        squadra.punti_bonus = 358
-        squadra.is_new = 1
-
-    utente.budget = nuovo_budget
-    db.commit()
-    return {
-        "message": f"Bonus assegnato a {username}",
-        "punti_bonus": 358,
-        "budget_assegnato": nuovo_budget,
-        "crediti_gia_spesi": crediti_gia_spesi
-    }
-
-@app.post("/admin/prepara-nuovi-utenti")
-def prepara_nuovi_utenti(db=Depends(get_db)):
-    MEDIA_CREDITI_RAGAZZI = 50
-    PUNTI_BONUS = 358
-    CATEGORIE_BLOCCATE = ["Ragazzi Maschi", "Ragazze Femminile"]
-    
-    utenti = db.query(User).all()
-    processati = 0
-    
-    for utente in utenti:
-        squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
-        
-        # Salta chi ha squadra completa
-        if squadra and len(squadra.atleti) >= 16:
-            continue
-        
-        # Rimuovi Ragazzi/Ragazze dalla squadra e restituisci crediti
-        if squadra:
-            atleti_da_rimuovere = [a for a in squadra.atleti if a.categoria in CATEGORIE_BLOCCATE]
-            for atleta in atleti_da_rimuovere:
-                crediti = db.execute(text(f"SELECT COUNT(*) FROM squadra_atleti WHERE squadra_id = {squadra.id} AND atleta_id = {atleta.id}")).scalar()
-                db.execute(text(f"DELETE FROM squadra_atleti WHERE squadra_id = {squadra.id} AND atleta_id = {atleta.id}"))
-                utente.budget += atleta.prezzo * crediti
-            db.flush()
-        
-        # Calcola crediti già spesi per le altre categorie
-        crediti_spesi = sum(a.prezzo for a in squadra.atleti) if squadra else 0
-        
-        # Imposta budget corretto
-        utente.budget = max(0, 200 - MEDIA_CREDITI_RAGAZZI - crediti_spesi)
-        
-        # Assegna punti bonus
-        if squadra:
-            squadra.punti_bonus = PUNTI_BONUS
-            squadra.is_new = 1
-        
-        processati += 1
-    
-    db.commit()
-    return {"message": f"{processati} utenti preparati"}
-
-@app.get("/admin/debug-new-user/{username}")
-def debug_new_user(username: str, db=Depends(get_db)):
-    from sqlalchemy import text
-    utente = db.query(User).filter(User.username == username).first()
-    if not utente:
-        raise HTTPException(status_code=404, detail="Utente non trovato")
-    squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
-    if not squadra:
-        raise HTTPException(status_code=404, detail="Squadra non trovata")
-    n_atleti = db.execute(text(f"SELECT COUNT(*) FROM squadra_atleti WHERE squadra_id = {squadra.id}")).scalar()
-    return {
-        "username": utente.username,
-        "squadra_id": squadra.id,
-        "is_new": squadra.is_new,
-        "punti_bonus": squadra.punti_bonus,
-        "n_atleti_db": n_atleti,
-        "n_atleti_orm": len(squadra.atleti)
-    }
-
-@app.post("/admin/reset-squadre-new")
-def reset_squadre_new(db=Depends(get_db)):
-    squadre_new = db.query(Squadra).filter(Squadra.is_new == 1).all()
-    resettate = 0
-    for squadra in squadre_new:
-        utente = db.query(User).filter(User.id == squadra.user_id).first()
-        # Restituisci i crediti spesi
-        speso = sum(a.prezzo for a in squadra.atleti)
-        utente.budget = 150
-        # Rimuovi tutti gli atleti
-        db.execute(text(f"DELETE FROM squadra_atleti WHERE squadra_id = {squadra.id}"))
-        resettate += 1
-    db.commit()
-    return {"message": f"Squadre resettate: {resettate}"}
 
 @app.post("/admin/migrate-punti-gara")
 def migrate_punti_gara(db=Depends(get_db)):
@@ -1525,40 +1306,50 @@ def migrate_punti_gara(db=Depends(get_db)):
     except Exception as e:
         return {"message": f"Errore: {str(e)}"}
 
-@app.get("/classifica/posizione")
-def posizione_classifica(utente=Depends(get_utente_corrente), db=Depends(get_db)):
-    from sqlalchemy import text
-    rows = db.execute(text("""
-        SELECT u.username, s.nome, COALESCE(SUM(pe.punti), 0) + COALESCE(s.punti_bonus, 0) as punti
-        FROM users u
-        JOIN squadre s ON s.user_id = u.id
-        JOIN squadra_atleti sa ON sa.squadra_id = s.id
-        LEFT JOIN punti_evento pe ON pe.atleta_id = sa.atleta_id AND pe.evento = 'Campionati Italiani Pista 2026'
-        GROUP BY u.username, s.nome, s.id, s.punti_bonus, s.is_new
-        HAVING (COUNT(sa.atleta_id) >= 16) OR (s.is_new = 1 AND COUNT(sa.atleta_id) >= 12)
-        ORDER BY punti DESC
-        LIMIT 1000
-    """)).fetchall()
-    
-    for i, r in enumerate(rows):
-        if r[0] == utente.username:
-            return {"posizione": i + 1, "totale": len(rows), "punti": r[2], "vincitore": i == 0}
-    
-    return {"posizione": None, "totale": len(rows), "punti": 0, "vincitore": False}
+@app.post("/squadra/aggiungi-manuale")
+def aggiungi_atleta_manuale_squadra(req: AggiungiAtletaManualeRequest, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    lega = db.query(League).filter(League.id == req.league_id).first()
+    if not lega:
+        raise HTTPException(status_code=404, detail="Lega non trovata")
+    if lega.modalita != "asta":
+        raise HTTPException(status_code=400, detail="Questa lega non è in modalità asta")
+    squadra = db.query(Squadra).filter(Squadra.user_id == utente.id, Squadra.league_id == req.league_id).first()
+    if not squadra:
+        raise HTTPException(status_code=400, detail="Crea prima una squadra in questa lega")
+    atleta = db.query(Athlete).filter(Athlete.id == req.atleta_id).first()
+    if not atleta:
+        raise HTTPException(status_code=404, detail="Atleta non trovato")
+    if atleta in squadra.atleti:
+        raise HTTPException(status_code=400, detail="Atleta già in squadra")
+    if len(squadra.atleti) >= 16:
+        raise HTTPException(status_code=400, detail="Squadra completa!")
+    if req.prezzo < 0:
+        raise HTTPException(status_code=400, detail="Prezzo non valido")
+    if squadra.budget < req.prezzo:
+        raise HTTPException(status_code=400, detail="Budget insufficiente")
+    squadra.atleti.append(atleta)
+    squadra.budget -= req.prezzo
+    db.commit()
+    return {"message": f"{atleta.name} aggiunto alla squadra a {req.prezzo}cr!", "budget_rimasto": squadra.budget}
 
-@app.get("/squadre/pubbliche")
-def squadre_pubbliche(db=Depends(get_db)):
-    imp = db.query(Impostazioni).first()
-    if imp and imp.mercato_aperto:
-        raise HTTPException(status_code=403, detail="Il mercato è ancora aperto")
-    utenti = db.query(User).all()
-    risultato = []
-    for u in utenti:
-        squadra = db.query(Squadra).filter(Squadra.user_id == u.id).first()
-        if squadra and len(squadra.atleti) == 16:
-            risultato.append({
-                "username": u.username,
-                "squadra": squadra.nome,
-                "atleti": [{"name": a.name, "categoria": a.categoria, "prezzo": a.prezzo} for a in squadra.atleti]
-            })
-    return risultato
+
+@app.post("/admin/migrate-leghe-v2")
+def migrate_leghe_v2(db=Depends(get_db)):
+    try:
+        db.execute(text("ALTER TABLE leagues ADD COLUMN IF NOT EXISTS tipo VARCHAR DEFAULT 'privata'"))
+        db.execute(text("ALTER TABLE leagues ADD COLUMN IF NOT EXISTS modalita VARCHAR DEFAULT 'listone'"))
+        db.execute(text("ALTER TABLE leagues ADD COLUMN IF NOT EXISTS crediti_iniziali INTEGER DEFAULT 200"))
+        db.execute(text("ALTER TABLE leagues ADD COLUMN IF NOT EXISTS atleti_per_categoria INTEGER DEFAULT 2"))
+        db.execute(text("ALTER TABLE leagues ADD COLUMN IF NOT EXISTS mercato_aperto INTEGER DEFAULT 1"))
+        db.execute(text("ALTER TABLE squadre ADD COLUMN IF NOT EXISTS league_id INTEGER REFERENCES leagues(id)"))
+        db.execute(text("ALTER TABLE squadre ADD COLUMN IF NOT EXISTS budget INTEGER DEFAULT 200"))
+        # Come richiesto: azzeriamo tutto per ripartire pulito con le nuove leghe
+        db.execute(text("DELETE FROM squadra_atleti"))
+        db.execute(text("DELETE FROM squadre"))
+        db.execute(text("DELETE FROM utente_leghe"))
+        db.execute(text("DELETE FROM leagues"))
+        db.commit()
+        return {"message": "Migrazione completata, dati vecchi azzerati"}
+    except Exception as e:
+        db.rollback()
+        return {"message": f"Errore: {str(e)}"}

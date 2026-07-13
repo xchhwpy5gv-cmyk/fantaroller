@@ -28,6 +28,7 @@ class LeagueCreate(BaseModel):
     modalita: str
     codice: str | None = None
     crediti_iniziali: int = 200
+    atleti_per_categoria: int = 2
 
 class AggiungiAtletaManualeRequest(BaseModel):
     league_id: int

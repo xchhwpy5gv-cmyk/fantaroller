@@ -330,7 +330,8 @@ def parse_gara(url, moltiplicatore, categoria, anno=2026):
                     "nome": nome,
                     "punti": punti,
                     "categoria": categoria,
-                    "anno": anno
+                    "anno": anno,
+                    "_url": url
                 })
 
     # Leggi sanzioni dal testo della pagina
@@ -722,16 +723,31 @@ CATEGORIE_AGGIORNAMENTO = [
     "Senior Maschi", "Senior Femminile"
 ]
 
-risultati_pista = {}
-for r in tutti_risultati:
-    if r.get("anno", 2026) != 2026:
+# Raccogli gli URL già processati per evitare di contare due volte la stessa gara
+# (es. RAM/RAF compaiono sia nella lista "gare" principale sia in gare_pista2026_ragazzi)
+url_gare_pista = set()
+gare_pista_2026_tutte = []
+for g in gare + gare_pista2026_ragazzi:
+    if g.get("anno", 2026) != 2026:
         continue
-    chiave = r["nome"].upper().strip() + "|" + r["categoria"]
-    if chiave not in risultati_pista:
-        risultati_pista[chiave] = {"punti": 0, "gare": 0}
-    risultati_pista[chiave]["punti"] += r["punti"]
-    risultati_pista[chiave]["gare"] += 1
+    if g["url"] in url_gare_pista:
+        continue
+    url_gare_pista.add(g["url"])
+    gare_pista_2026_tutte.append(g)
 
+risultati_pista = {}
+for gara in gare_pista_2026_tutte:
+    # Riusa i risultati già calcolati in tutti_risultati per questo URL, se disponibili
+    trovati = [r for r in tutti_risultati if r.get("_url") == gara["url"]]
+    if not trovati:
+        # Fallback: se per qualche motivo non è in tutti_risultati, scraping diretto
+        trovati = parse_gara(gara["url"], gara["moltiplicatore"], gara["categoria"], gara.get("anno", 2026))
+    for r in trovati:
+        chiave = r["nome"].upper().strip() + "|" + gara["categoria"]
+        if chiave not in risultati_pista:
+            risultati_pista[chiave] = {"punti": 0, "gare": 0}
+        risultati_pista[chiave]["punti"] += r["punti"]
+        risultati_pista[chiave]["gare"] += 1
 print(f"Atleti unici in pista: {len(risultati_pista)}")
 print("Esempio chiavi:", list(risultati_pista.keys())[:10])
 

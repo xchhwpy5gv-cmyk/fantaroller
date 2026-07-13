@@ -1335,7 +1335,6 @@ def ripristina_prezzi(db=Depends(get_db)):
 @app.get("/atleti/plusvalenze")
 def atleti_plusvalenze(db=Depends(get_db)):
     atleti = db.query(Athlete).filter(
-        Athlete.categoria.in_(["Ragazzi Maschi", "Ragazze Femminile"]),
         Athlete.prezzo_precedente > 0,
         Athlete.visibile == 1
     ).all()

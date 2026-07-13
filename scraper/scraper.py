@@ -710,22 +710,27 @@ with open("listone.json", "w") as f:
 
 print("Listone salvato!")
 
-# Aggiorna prezzi solo per Ragazzi Maschi e Ragazze Femminile
+# Aggiorna prezzi per TUTTE le categorie (stessa logica già usata per Ragazzi/Ragazze)
+# Ottimizzato: riusa tutti_risultati già calcolato nel primo ciclo, niente doppio scraping
 import requests as req
 
 API_URL = "https://fantaroller-api.onrender.com"
-CATEGORIE_AGGIORNAMENTO = ["Ragazzi Maschi", "Ragazze Femminile"]
+CATEGORIE_AGGIORNAMENTO = [
+    "Ragazzi Maschi", "Ragazze Femminile",
+    "Allievi Maschi", "Allieve Femminile",
+    "Junior Maschi", "Junior Femminile",
+    "Senior Maschi", "Senior Femminile"
+]
 
-# Calcola risultati pista 2026 - solo RAM e RAF
 risultati_pista = {}
-for gara in gare_pista2026_ragazzi:
-    res = parse_gara(gara["url"], gara["moltiplicatore"], gara["categoria"], gara["anno"])
-    for r in res:
-        chiave = r["nome"].upper().strip() + "|" + gara["categoria"]
-        if chiave not in risultati_pista:
-            risultati_pista[chiave] = {"punti": 0, "gare": 0}
-        risultati_pista[chiave]["punti"] += r["punti"]
-        risultati_pista[chiave]["gare"] += 1
+for r in tutti_risultati:
+    if r.get("anno", 2026) != 2026:
+        continue
+    chiave = r["nome"].upper().strip() + "|" + r["categoria"]
+    if chiave not in risultati_pista:
+        risultati_pista[chiave] = {"punti": 0, "gare": 0}
+    risultati_pista[chiave]["punti"] += r["punti"]
+    risultati_pista[chiave]["gare"] += 1
 
 print(f"Atleti unici in pista: {len(risultati_pista)}")
 print("Esempio chiavi:", list(risultati_pista.keys())[:10])

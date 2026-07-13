@@ -1352,6 +1352,7 @@ def migrate_leghe_v2(db=Depends(get_db)):
         db.execute(text("UPDATE users SET league_id = NULL"))
         db.execute(text("DELETE FROM squadra_atleti"))
         db.execute(text("DELETE FROM squadre"))
+        db.execute(text("DELETE FROM messaggi"))
         db.execute(text("DELETE FROM utente_leghe"))
         db.execute(text("DELETE FROM leagues"))
         db.commit()

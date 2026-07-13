@@ -1348,7 +1348,8 @@ def migrate_leghe_v2(db=Depends(get_db)):
         db.execute(text("ALTER TABLE leagues ADD COLUMN IF NOT EXISTS mercato_aperto INTEGER DEFAULT 1"))
         db.execute(text("ALTER TABLE squadre ADD COLUMN IF NOT EXISTS league_id INTEGER REFERENCES leagues(id)"))
         db.execute(text("ALTER TABLE squadre ADD COLUMN IF NOT EXISTS budget INTEGER DEFAULT 200"))
-        # Come richiesto: azzeriamo tutto per ripartire pulito con le nuove leghe
+        # Azzera prima i riferimenti nelle tabelle figlie
+        db.execute(text("UPDATE users SET league_id = NULL"))
         db.execute(text("DELETE FROM squadra_atleti"))
         db.execute(text("DELETE FROM squadre"))
         db.execute(text("DELETE FROM utente_leghe"))

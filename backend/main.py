@@ -370,8 +370,6 @@ def vendi_atleta(atleta_id: int, league_id: int, utente=Depends(get_utente_corre
     atleta = db.query(Athlete).filter(Athlete.id == atleta_id).first()
     if not atleta:
         raise HTTPException(status_code=404, detail="Atleta non trovato")
-    if atleta.categoria in ["Ragazzi Maschi", "Ragazze Femminile"]:
-        raise HTTPException(status_code=400, detail="Non puoi vendere atleti di Ragazzi/Ragazze")
     if atleta not in squadra.atleti:
         raise HTTPException(status_code=400, detail="Atleta non in squadra")
     squadra.atleti.remove(atleta)

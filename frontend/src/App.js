@@ -1548,12 +1548,11 @@ function Leghe({ token, onCambioLeghe, mieLeghe, sceltaLega }) {
     }
   };
 
-  const entraLega = async (legaId, codiceLega) => {
-    const url = codiceLega ? `${API}/league/join?league_id=${legaId}&codice=${encodeURIComponent(codiceLega)}` : `${API}/league/join?league_id=${legaId}`;
-    const res = await fetch(url, { method: "POST", headers: { Authorization: `Bearer ${token}` } });
+  const entraLega = async (codiceLega) => {
+    const res = await fetch(`${API}/league/join?codice=${encodeURIComponent(codiceLega)}`, { method: "POST", headers: { Authorization: `Bearer ${token}` } });
     const data = await res.json();
     setMessaggio(data.message || data.detail);
-    if (res.ok) { setCodiceInserito(""); setLegaEntrata(null); onCambioLeghe(); caricaTutteLeghe(); }
+    if (res.ok) { setCodiceInserito(""); onCambioLeghe(); caricaTutteLeghe(); }
   };
 
   const sonoMembro = (id) => mieLeghe.some(l => l.id === id);
@@ -1668,13 +1667,8 @@ function Leghe({ token, onCambioLeghe, mieLeghe, sceltaLega }) {
 
           <div style={{ marginTop: 20, paddingTop: 20, borderTop: `1px solid ${theme.border}` }}>
             <div className="card-title" style={{ fontSize: "1.1rem" }}>🔒 Ho un codice per una lega privata</div>
-            <input className="input" placeholder="ID Lega (numero)" value={legaEntrata || ""} onChange={e => setLegaEntrata(e.target.value)} />
-            <input className="input" placeholder="Codice" value={codiceInserito} onChange={e => setCodiceInserito(e.target.value)} />
-            <button className="btn btn-primary" onClick={() => {
-              const id = parseInt(legaEntrata);
-              if (isNaN(id)) { setMessaggio("❌ Inserisci un ID lega valido"); return; }
-              entraLega(id, codiceInserito);
-            }}>Entra nella lega</button>
+            <input className="input" placeholder="Inserisci il codice della lega" value={codiceInserito} onChange={e => setCodiceInserito(e.target.value)} />
+            <button className="btn btn-primary" onClick={() => entraLega(codiceInserito)}>Entra nella lega</button>
           </div>
         </div>
       )}

@@ -709,12 +709,10 @@ def create_league(req: LeagueCreate, db=Depends(get_db), utente=Depends(get_uten
     return {"message": f"Lega '{req.nome}' creata!", "league_id": lega.id}
 
 @app.post("/league/join")
-def join_league(league_id: int, codice: str = None, db=Depends(get_db), utente=Depends(get_utente_corrente)):
-    lega = db.query(League).filter(League.id == league_id).first()
+def join_league(codice: str, db=Depends(get_db), utente=Depends(get_utente_corrente)):
+    lega = db.query(League).filter(League.codice == codice).first()
     if not lega:
-        raise HTTPException(status_code=404, detail="Lega non trovata")
-    if lega.tipo == "privata" and lega.codice != codice:
-        raise HTTPException(status_code=401, detail="Codice errato")
+        raise HTTPException(status_code=404, detail="Codice non valido")
     if lega in utente.leghe:
         raise HTTPException(status_code=400, detail="Sei già in questa lega")
     utente.leghe.append(lega)

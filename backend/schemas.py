@@ -21,3 +21,15 @@ class Token(BaseModel):
 class AggiornaPrezzoRequest(BaseModel):
     atleta_id: int
     nuovo_prezzo: int
+
+class LeagueCreate(BaseModel):
+    nome: str
+    tipo: str
+    modalita: str
+    codice: str | None = None
+    crediti_iniziali: int = 200
+
+class AggiungiAtletaManualeRequest(BaseModel):
+    league_id: int
+    atleta_id: int
+    prezzo: int

@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy import create_engine, text
 from models import Base, User, Athlete, Squadra, Impostazioni, Gara, PuntiEvento, League, Messaggio
-from schemas import UserCreate, UserLogin, Token, AggiornaPrezzoRequest, AggiungiEmailRequest
+from schemas import UserCreate, UserLogin, Token, AggiornaPrezzoRequest, AggiungiEmailRequest, LeagueCreate, AggiungiAtletaManualeRequest
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
@@ -291,30 +291,30 @@ def lista_atleti(db=Depends(get_db)):
     return atleti
 
 @app.post("/squadra/crea")
-def crea_squadra(nome: str, utente=Depends(get_utente_corrente), db=Depends(get_db)):
-    esistente = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
+def crea_squadra(nome: str, league_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    lega = db.query(League).filter(League.id == league_id).first()
+    if not lega:
+        raise HTTPException(status_code=404, detail="Lega non trovata")
+    if lega not in utente.leghe:
+        raise HTTPException(status_code=403, detail="Non sei membro di questa lega")
+    esistente = db.query(Squadra).filter(Squadra.user_id == utente.id, Squadra.league_id == league_id).first()
     if esistente:
-        raise HTTPException(status_code=400, detail="Hai già una squadra")
-    imp = db.query(Impostazioni).first()
-    # Se il mercato è aperto ma le gare sono già iniziate, assegna bonus automaticamente
-    punti_bonus = 358 if imp and imp.mercato_aperto else 0
-    is_new = 1 if punti_bonus > 0 else 0
-    budget_iniziale = max(0, utente.budget - 50) if is_new else utente.budget
-    utente.budget = budget_iniziale
-    squadra = Squadra(user_id=utente.id, nome=nome, punti_bonus=punti_bonus, is_new=is_new)
+        raise HTTPException(status_code=400, detail="Hai già una squadra in questa lega")
+    squadra = Squadra(user_id=utente.id, league_id=league_id, nome=nome, budget=lega.crediti_iniziali, punti_bonus=0, is_new=0)
     db.add(squadra)
     db.commit()
     return {"message": f"Squadra '{nome}' creata!"}
 
 @app.post("/squadra/acquista/{atleta_id}")
-def acquista_atleta(atleta_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
-    squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
-    imp = db.query(Impostazioni).first()
-    if not imp.mercato_aperto:
-        raise HTTPException(status_code=400, detail="Il mercato è chiuso!")
-
+def acquista_atleta(atleta_id: int, league_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    squadra = db.query(Squadra).filter(Squadra.user_id == utente.id, Squadra.league_id == league_id).first()
     if not squadra:
-        raise HTTPException(status_code=400, detail="Crea prima una squadra")
+        raise HTTPException(status_code=400, detail="Crea prima una squadra in questa lega")
+    lega = db.query(League).filter(League.id == league_id).first()
+    if lega.modalita != "listone":
+        raise HTTPException(status_code=400, detail="Questa lega non usa il mercato a listone")
+    if not lega.mercato_aperto:
+        raise HTTPException(status_code=400, detail="Il mercato è chiuso!")
     atleta = db.query(Athlete).filter(Athlete.id == atleta_id).first()
     if not atleta:
         raise HTTPException(status_code=404, detail="Atleta non trovato")
@@ -323,35 +323,29 @@ def acquista_atleta(atleta_id: int, utente=Depends(get_utente_corrente), db=Depe
     limite = 12 if squadra.is_new else 16
     if len(squadra.atleti) >= limite:
         raise HTTPException(status_code=400, detail="Squadra completa!")
-    # Blocca acquisto Ragazzi/Ragazze per tutti
     categorie_bloccate = ["Ragazzi Maschi", "Ragazze Femminile"]
     if atleta.categoria in categorie_bloccate:
         raise HTTPException(status_code=400, detail="Non puoi acquistare atleti di questa categoria")
     atleti_stessa_categoria = [a for a in squadra.atleti if a.categoria == atleta.categoria]
     if len(atleti_stessa_categoria) >= 2:
         raise HTTPException(status_code=400, detail=f"Hai già 2 atleti in {atleta.categoria}")
-
-    if utente.budget < atleta.prezzo:
+    if squadra.budget < atleta.prezzo:
         raise HTTPException(status_code=400, detail="Budget insufficiente")
-    if squadra.is_new:
-        speso = sum(a.prezzo for a in squadra.atleti)
-        if speso + atleta.prezzo > 150:
-            raise HTTPException(status_code=400, detail="Budget massimo per nuovi utenti è 150 crediti")
     squadra.atleti.append(atleta)
-    utente.budget -= atleta.prezzo
+    squadra.budget -= atleta.prezzo
     db.commit()
-    return {"message": f"{atleta.name} acquistato!", "budget_rimasto": utente.budget}
+    return {"message": f"{atleta.name} acquistato!", "budget_rimasto": squadra.budget}
 
 @app.get("/squadra/")
-def vedi_squadra(utente=Depends(get_utente_corrente), db=Depends(get_db)):
-    squadra = db.query(Squadra).filter(Squadra.user_id == utente.id).first()
+def vedi_squadra(league_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    squadra = db.query(Squadra).filter(Squadra.user_id == utente.id, Squadra.league_id == league_id).first()
     if not squadra:
         raise HTTPException(status_code=404, detail="Nessuna squadra trovata")
     return {
         "nome": squadra.nome,
-        "budget": utente.budget,
+        "budget": squadra.budget,
         "is_new": squadra.is_new or 0,
-       "atleti": [{
+        "atleti": [{
             "id": a.id,
             "name": a.name,
             "categoria": a.categoria,

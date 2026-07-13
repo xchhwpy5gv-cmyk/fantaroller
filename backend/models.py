@@ -25,18 +25,20 @@ class User(Base):
     email_verificata = Column(Integer, default=0)
     token_verifica = Column(String, nullable=True)
     password = Column(String)
-    budget = Column(Integer, default=200)
     is_admin = Column(Integer, default=0)
-    league_id = Column(Integer, nullable=True)
-    squadra = relationship("Squadra", back_populates="utente", uselist=False)
+    squadre = relationship("Squadra", back_populates="utente")
     leghe = relationship("League", secondary=utente_leghe)
 
 class League(Base):
     __tablename__ = "leagues"
     id = Column(Integer, primary_key=True, index=True)
     nome = Column(String, unique=True)
-    codice = Column(String, unique=True)
+    codice = Column(String, unique=True, nullable=True)
     owner_id = Column(Integer)
+    tipo = Column(String, default="privata")
+    modalita = Column(String, default="listone")
+    crediti_iniziali = Column(Integer, default=200)
+    mercato_aperto = Column(Integer, default=1)
     membri = relationship("User", secondary=utente_leghe)
 
 class Squadra(Base):
@@ -44,9 +46,12 @@ class Squadra(Base):
     id = Column(Integer, primary_key=True, index=True)
     nome = Column(String)
     user_id = Column(Integer, ForeignKey("users.id"))
+    league_id = Column(Integer, ForeignKey("leagues.id"))
+    budget = Column(Integer, default=200)
     punti_bonus = Column(Integer, default=0)
     is_new = Column(Integer, default=0)
-    utente = relationship("User", back_populates="squadra")
+    utente = relationship("User", back_populates="squadre")
+    lega = relationship("League")
     atleti = relationship("Athlete", secondary=squadra_atleti)
 
 class Athlete(Base):

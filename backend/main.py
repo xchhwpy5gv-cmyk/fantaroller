@@ -349,7 +349,7 @@ def vedi_squadra(league_id: int, utente=Depends(get_utente_corrente), db=Depends
             "id": a.id,
             "name": a.name,
             "categoria": a.categoria,
-            "prezzo": a.prezzo,
+            "prezzo": db.execute(text(f"SELECT prezzo_pagato FROM squadra_atleti WHERE squadra_id = {squadra.id} AND atleta_id = {a.id}")).scalar() or a.prezzo,
             "punti": (db.query(PuntiEvento).filter(
                 PuntiEvento.atleta_id == a.id,
                 PuntiEvento.evento == "Campionati Italiani Pista 2026"
@@ -1331,7 +1331,18 @@ def aggiungi_atleta_manuale_squadra(req: AggiungiAtletaManualeRequest, utente=De
     squadra.atleti.append(atleta)
     squadra.budget -= req.prezzo
     db.commit()
+    db.execute(text(f"UPDATE squadra_atleti SET prezzo_pagato = {req.prezzo} WHERE squadra_id = {squadra.id} AND atleta_id = {req.atleta_id}"))
+    db.commit()
     return {"message": f"{atleta.name} aggiunto alla squadra a {req.prezzo}cr!", "budget_rimasto": squadra.budget}
+
+@app.post("/admin/migrate-prezzo-pagato")
+def migrate_prezzo_pagato(db=Depends(get_db)):
+    try:
+        db.execute(text("ALTER TABLE squadra_atleti ADD COLUMN IF NOT EXISTS prezzo_pagato INTEGER DEFAULT 0"))
+        db.commit()
+        return {"message": "Migrazione completata"}
+    except Exception as e:
+        return {"message": f"Errore: {str(e)}"}
 
 
 @app.post("/admin/migrate-leghe-v2")

@@ -1658,7 +1658,7 @@ function Leghe({ token, onCambioLeghe, mieLeghe, sceltaLega }) {
                   </div>
                   {sonoMembro(l.id)
                     ? <span className="badge badge-green">Già dentro</span>
-                    : <button className="btn btn-success" style={{ fontSize: 12, padding: "5px 12px" }} onClick={() => entraLega(l.id, null)}>Entra</button>
+                    : <button className="btn btn-success" style={{ fontSize: 12, padding: "5px 12px" }} onClick={() => entraLega(l.id)}>Entra</button>
                   }
                 </div>
               ))

@@ -1548,8 +1548,15 @@ function Leghe({ token, onCambioLeghe, mieLeghe, sceltaLega }) {
     }
   };
 
-  const entraLega = async (codiceLega) => {
-    const res = await fetch(`${API}/league/join?codice=${encodeURIComponent(codiceLega)}`, { method: "POST", headers: { Authorization: `Bearer ${token}` } });
+  const entraLegaAperta = async (leagueId) => {
+    const res = await fetch(`${API}/league/join?league_id=${leagueId}`, { method: "POST", headers: { Authorization: `Bearer ${token}` } });
+    const data = await res.json();
+    setMessaggio(data.message || data.detail);
+    if (res.ok) { onCambioLeghe(); caricaTutteLeghe(); }
+  };
+
+  const entraLegaCodice = async (codiceLega) => {
+    const res = await fetch(`${API}/league/join?codice=${encodeURIComponent(String(codiceLega))}`, { method: "POST", headers: { Authorization: `Bearer ${token}` } });
     const data = await res.json();
     setMessaggio(data.message || data.detail);
     if (res.ok) { setCodiceInserito(""); onCambioLeghe(); caricaTutteLeghe(); }
@@ -1658,7 +1665,7 @@ function Leghe({ token, onCambioLeghe, mieLeghe, sceltaLega }) {
                   </div>
                   {sonoMembro(l.id)
                     ? <span className="badge badge-green">Già dentro</span>
-                    : <button className="btn btn-success" style={{ fontSize: 12, padding: "5px 12px" }} onClick={() => entraLega(l.codice || l.id)}>Entra</button>
+                    : <button className="btn btn-success" style={{ fontSize: 12, padding: "5px 12px" }} onClick={() => entraLegaAperta(l.id)}>Entra</button>
                   }
                 </div>
               ))
@@ -1668,7 +1675,7 @@ function Leghe({ token, onCambioLeghe, mieLeghe, sceltaLega }) {
           <div style={{ marginTop: 20, paddingTop: 20, borderTop: `1px solid ${theme.border}` }}>
             <div className="card-title" style={{ fontSize: "1.1rem" }}>🔒 Ho un codice per una lega privata</div>
             <input className="input" placeholder="Inserisci il codice della lega" value={codiceInserito} onChange={e => setCodiceInserito(e.target.value)} />
-            <button className="btn btn-primary" onClick={() => entraLega(codiceInserito)}>Entra nella lega</button>
+            <button className="btn btn-primary" onClick={() => entraLegaCodice(codiceInserito)}>Entra nella lega</button>
           </div>
         </div>
       )}

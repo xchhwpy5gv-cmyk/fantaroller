@@ -707,14 +707,12 @@ def create_league(req: LeagueCreate, db=Depends(get_db), utente=Depends(get_uten
     return {"message": f"Lega '{req.nome}' creata!", "league_id": lega.id}
 
 @app.post("/league/join")
-def join_league(codice: str, db=Depends(get_db), utente=Depends(get_utente_corrente)):
-    lega = db.query(League).filter(League.codice == codice).first()
-    if not lega:
-        # Prova con l'ID per le leghe aperte
-        try:
-            lega = db.query(League).filter(League.id == int(codice), League.tipo == "aperta").first()
-        except:
-            pass
+def join_league(codice: str = None, league_id: int = None, db=Depends(get_db), utente=Depends(get_utente_corrente)):
+    lega = None
+    if league_id is not None:
+        lega = db.query(League).filter(League.id == league_id, League.tipo == "aperta").first()
+    if not lega and codice:
+        lega = db.query(League).filter(League.codice == codice).first()
     if not lega:
         raise HTTPException(status_code=404, detail="Codice non valido")
     if lega in utente.leghe:

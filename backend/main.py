@@ -710,6 +710,12 @@ def create_league(req: LeagueCreate, db=Depends(get_db), utente=Depends(get_uten
 def join_league(codice: str, db=Depends(get_db), utente=Depends(get_utente_corrente)):
     lega = db.query(League).filter(League.codice == codice).first()
     if not lega:
+        # Prova con l'ID per le leghe aperte
+        try:
+            lega = db.query(League).filter(League.id == int(codice), League.tipo == "aperta").first()
+        except:
+            pass
+    if not lega:
         raise HTTPException(status_code=404, detail="Codice non valido")
     if lega in utente.leghe:
         raise HTTPException(status_code=400, detail="Sei già in questa lega")

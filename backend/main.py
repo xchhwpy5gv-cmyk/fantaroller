@@ -16,7 +16,8 @@ import secrets as secrets_lib
 import os
 
 def invia_email_verifica(destinatario: str, username: str, token: str):
-    url_verifica = f"https://fantaroller-api.onrender.com/verifica-email?token={token}"
+    BACKEND_URL = os.environ.get("BACKEND_URL", "http://127.0.0.1:8000")
+    url_verifica = f"{BACKEND_URL}/verifica-email?token={token}"
     try:
         risposta = http_requests.post(
             "https://api.resend.com/emails",
@@ -45,7 +46,7 @@ app.add_middleware(
 
 Base.metadata.create_all(bind=engine)
 
-SECRET_KEY = "fantaroller2026"
+SECRET_KEY = os.environ.get("SECRET_KEY", "fantaroller2026")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 365
 
@@ -204,17 +205,7 @@ def cambia_email(req: AggiungiEmailRequest, db=Depends(get_db)):
     invia_email_verifica(req.email, utente.username, token)
     return {"message": "Email aggiornata! Controlla la posta per confermare."}
 
-@app.post("/admin/migrate-email")
-def migrate_email(db=Depends(get_db)):
-    try:
-        db.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS email VARCHAR UNIQUE"))
-        db.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS email_verificata INTEGER DEFAULT 0"))
-        db.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS token_verifica VARCHAR"))
-        db.commit()
-        return {"message": "Migrazione completata"}
-    except Exception as e:
-        db.rollback()
-        return {"message": f"Errore: {str(e)}"}
+# Migrazione email non più necessaria: il nuovo schema viene creato direttamente dai models.
 
 @app.post("/import-athletes")
 def import_athletes(db=Depends(get_db)):
@@ -589,14 +580,7 @@ def calcola_punti(evento: str = None, utente=Depends(get_utente_corrente), db=De
     return {"message": "Punti aggiornati!"}
 
 
-@app.post("/admin/migrate-db")
-def migrate_db(db=Depends(get_db)):
-    try:
-        db.execute(text("ALTER TABLE punti_evento ADD COLUMN IF NOT EXISTS categoria VARCHAR"))
-        db.commit()
-        return {"message": "Migrazione completata"}
-    except Exception as e:
-        return {"message": f"Errore: {str(e)}"}
+# Migrazione categoria punti evento non più necessaria: il nuovo schema viene creato direttamente dai models.
 
 @app.post("/admin/importa-evento")
 def importa_evento(url_index: str, evento: str, utente=Depends(get_utente_corrente), db=Depends(get_db)):
@@ -731,16 +715,7 @@ def mie_leghe(utente=Depends(get_utente_corrente), db=Depends(get_db)):
         "is_owner": l.owner_id == utente.id
     } for l in utente.leghe]
 
-@app.post("/admin/migrate-leagues")
-def migrate_leagues(db=Depends(get_db)):
-    try:
-        db.execute(text("CREATE TABLE IF NOT EXISTS leagues (id SERIAL PRIMARY KEY, nome VARCHAR UNIQUE, codice VARCHAR UNIQUE, owner_id INTEGER REFERENCES users(id))"))
-        db.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS league_id INTEGER REFERENCES leagues(id)"))
-        db.commit()
-        return {"message": "Migrazione completata"}
-    except Exception as e:
-        db.rollback()
-        return {"message": f"Errore: {str(e)}"}
+# Migrazione leghe non più necessaria: il nuovo schema viene creato direttamente dai models.
 
 @app.get("/league/dettagli")
 def dettagli_lega(league_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
@@ -802,15 +777,7 @@ def classifica_lega(league_id: int, evento: str = None, utente=Depends(get_utent
     risultati.sort(key=lambda x: x["punti"], reverse=True)
     return risultati
 
-@app.post("/admin/migrate-utente-leghe")
-def migrate_utente_leghe(db=Depends(get_db)):
-    try:
-        db.execute(text("CREATE TABLE IF NOT EXISTS utente_leghe (user_id INTEGER REFERENCES users(id), league_id INTEGER REFERENCES leagues(id))"))
-        db.commit()
-        return {"message": "Migrazione completata"}
-    except Exception as e:
-        db.rollback()
-        return {"message": f"Errore: {str(e)}"}
+# Migrazione utente-leghe non più necessaria: il nuovo schema viene creato direttamente dai models.
 
 @app.get("/gare/eventi")
 def gare_eventi(db=Depends(get_db)):
@@ -848,15 +815,7 @@ def gare_risultati(evento: str, league_id: int, utente=Depends(get_utente_corren
     
     return categorie
 
-@app.post("/admin/migrate-visibile")
-def migrate_visibile(db=Depends(get_db)):
-    try:
-        db.execute(text("ALTER TABLE athletes ADD COLUMN IF NOT EXISTS visibile INTEGER DEFAULT 1"))
-        db.commit()
-        return {"message": "Migrazione completata"}
-    except Exception as e:
-        db.rollback()
-        return {"message": f"Errore: {str(e)}"}
+# Migrazione visibilità atleti non più necessaria: il nuovo schema viene creato direttamente dai models.
 
 @app.post("/admin/atleta-visibilita/{atleta_id}")
 def cambia_visibilita(atleta_id: int, visibile: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
@@ -1060,14 +1019,7 @@ def squadre_lega(league_id: int, utente=Depends(get_utente_corrente), db=Depends
             })
     return risultato
 
-@app.post("/admin/reset-password-temp")
-def reset_password_temp(db=Depends(get_db)):
-    utente = db.query(User).filter(User.username == "Danysdrubo").first()
-    if not utente:
-        raise HTTPException(status_code=404, detail="Utente non trovato")
-    utente.password = pwd_context.hash("fantaroller2026")
-    db.commit()
-    return {"message": "Password resettata a: fantaroller2026"}
+# Endpoint temporaneo di reset password rimosso prima del deploy pubblico.
 
 @app.get("/league/atleti-squadra")
 def atleti_squadra(username: str, league_id: int, evento: str = None, utente=Depends(get_utente_corrente), db=Depends(get_db)):
@@ -1301,15 +1253,7 @@ def media_campionato(league_id: int, db=Depends(get_db)):
     }
 
 
-@app.post("/admin/migrate-punti-gara")
-def migrate_punti_gara(db=Depends(get_db)):
-    try:
-        db.execute(text("ALTER TABLE punti_evento ADD COLUMN IF NOT EXISTS gara_url VARCHAR"))
-        db.execute(text("ALTER TABLE punti_evento ADD COLUMN IF NOT EXISTS gara_tipo VARCHAR"))
-        db.commit()
-        return {"message": "Migrazione completata"}
-    except Exception as e:
-        return {"message": f"Errore: {str(e)}"}
+# Migrazione gara punti non più necessaria: il nuovo schema viene creato direttamente dai models.
 
 @app.post("/squadra/aggiungi-manuale")
 def aggiungi_atleta_manuale_squadra(req: AggiungiAtletaManualeRequest, utente=Depends(get_utente_corrente), db=Depends(get_db)):
@@ -1339,35 +1283,7 @@ def aggiungi_atleta_manuale_squadra(req: AggiungiAtletaManualeRequest, utente=De
     db.commit()
     return {"message": f"{atleta.name} aggiunto alla squadra a {req.prezzo}cr!", "budget_rimasto": squadra.budget}
 
-@app.post("/admin/migrate-prezzo-pagato")
-def migrate_prezzo_pagato(db=Depends(get_db)):
-    try:
-        db.execute(text("ALTER TABLE squadra_atleti ADD COLUMN IF NOT EXISTS prezzo_pagato INTEGER DEFAULT 0"))
-        db.commit()
-        return {"message": "Migrazione completata"}
-    except Exception as e:
-        return {"message": f"Errore: {str(e)}"}
+# Migrazione prezzo pagato non più necessaria: il nuovo schema viene creato direttamente dai models.
 
 
-@app.post("/admin/migrate-leghe-v2")
-def migrate_leghe_v2(db=Depends(get_db)):
-    try:
-        db.execute(text("ALTER TABLE leagues ADD COLUMN IF NOT EXISTS tipo VARCHAR DEFAULT 'privata'"))
-        db.execute(text("ALTER TABLE leagues ADD COLUMN IF NOT EXISTS modalita VARCHAR DEFAULT 'listone'"))
-        db.execute(text("ALTER TABLE leagues ADD COLUMN IF NOT EXISTS crediti_iniziali INTEGER DEFAULT 200"))
-        db.execute(text("ALTER TABLE leagues ADD COLUMN IF NOT EXISTS atleti_per_categoria INTEGER DEFAULT 2"))
-        db.execute(text("ALTER TABLE leagues ADD COLUMN IF NOT EXISTS mercato_aperto INTEGER DEFAULT 1"))
-        db.execute(text("ALTER TABLE squadre ADD COLUMN IF NOT EXISTS league_id INTEGER REFERENCES leagues(id)"))
-        db.execute(text("ALTER TABLE squadre ADD COLUMN IF NOT EXISTS budget INTEGER DEFAULT 200"))
-        # Azzera prima i riferimenti nelle tabelle figlie
-        db.execute(text("UPDATE users SET league_id = NULL"))
-        db.execute(text("DELETE FROM squadra_atleti"))
-        db.execute(text("DELETE FROM squadre"))
-        db.execute(text("DELETE FROM messaggi"))
-        db.execute(text("DELETE FROM utente_leghe"))
-        db.execute(text("DELETE FROM leagues"))
-        db.commit()
-        return {"message": "Migrazione completata, dati vecchi azzerati"}
-    except Exception as e:
-        db.rollback()
-        return {"message": f"Errore: {str(e)}"}
+# Migrazione leghe v2 non più necessaria: il nuovo schema viene creato direttamente dai models.

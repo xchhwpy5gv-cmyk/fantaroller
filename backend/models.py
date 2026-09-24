@@ -7,7 +7,8 @@ squadra_atleti = Table(
     "squadra_atleti",
     Base.metadata,
     Column("squadra_id", Integer, ForeignKey("squadre.id")),
-    Column("atleta_id", Integer, ForeignKey("athletes.id"))
+    Column("atleta_id", Integer, ForeignKey("athletes.id")),
+    Column("prezzo_pagato", Integer, default=0)
 )
 utente_leghe = Table(
     "utente_leghe",

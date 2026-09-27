@@ -8,7 +8,11 @@ DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///./fantaroller.db")
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine(
+    DATABASE_URL,
+    pool_pre_ping=True,
+    pool_recycle=1800
+)
 
 SessionLocal = sessionmaker(
     autocommit=False,

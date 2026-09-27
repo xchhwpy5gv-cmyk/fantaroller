@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const API = "https://fantaroller-api.onrender.com";
+const API = "https://fantaroller-production.up.railway.app";
 
 const theme = {
   bg: "#0a0e1a",

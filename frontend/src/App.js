@@ -1515,7 +1515,6 @@ function Leghe({ token, onCambioLeghe, mieLeghe, sceltaLega }) {
   const [messaggio, setMessaggio] = useState("");
   const [tutteLeghe, setTutteLeghe] = useState([]);
   const [ricerca, setRicerca] = useState("");
-  const [legaEntrata, setLegaEntrata] = useState(null);
   const [codiceInserito, setCodiceInserito] = useState("");
 
   const caricaTutteLeghe = async () => {

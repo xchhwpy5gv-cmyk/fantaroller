@@ -1196,8 +1196,7 @@ function Mercato({ token, lega }) {
                 <thead><tr><th style={{ paddingLeft: 20 }}>Nome</th><th>Valutazione</th><th>Prezzo</th><th></th></tr></thead>
                 <tbody>
                   {atletiCategoria.map(a => {
-                    const bloccato = ["Ragazzi Maschi", "Ragazze Femminile"].includes(a.categoria) && !squadra.includes(a.id);
-                    const sbiadito = !isDisponibile(a) || bloccato;
+                    const sbiadito = !isDisponibile(a);
                     return (
                       <React.Fragment key={a.id}>
                         <tr style={{ opacity: sbiadito ? 0.4 : 1 }}>
@@ -1216,8 +1215,6 @@ function Mercato({ token, lega }) {
                               <button className="btn btn-blue" style={{ padding: "5px 8px", fontSize: 11 }} onClick={() => apriDettagli(a.id)}>{atletaAperto === a.id ? "▲" : "📊"}</button>
                               {squadra.includes(a.id)
                                 ? <span style={{ color: theme.green, fontSize: 12, fontWeight: 600 }}>✓</span>
-                                : bloccato
-                                ? <span style={{ fontSize: 16 }}>🔒</span>
                                 : <button className="btn btn-success" style={{ padding: "5px 12px", fontSize: 12 }} onClick={() => acquista(a.id)}>Acquista</button>
                               }
                             </div>

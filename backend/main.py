@@ -564,9 +564,6 @@ def acquista_atleta(atleta_id: int, league_id: int, utente=Depends(get_utente_co
     limite_totale = lega.atleti_per_categoria * 8  # 8 categorie totali
     if len(squadra.atleti) >= limite_totale:
         raise HTTPException(status_code=400, detail="Squadra completa!")
-    categorie_bloccate = ["Ragazzi Maschi", "Ragazze Femminile"]
-    if atleta.categoria in categorie_bloccate:
-        raise HTTPException(status_code=400, detail="Non puoi acquistare atleti di questa categoria")
     atleti_stessa_categoria = [a for a in squadra.atleti if a.categoria == atleta.categoria]
     if len(atleti_stessa_categoria) >= lega.atleti_per_categoria:
         raise HTTPException(status_code=400, detail=f"Hai già {lega.atleti_per_categoria} atleti in {atleta.categoria}")

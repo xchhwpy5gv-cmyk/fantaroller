@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Table
+from sqlalchemy import Column, Float, Index, Integer, String, ForeignKey, Table
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -67,6 +67,15 @@ class Athlete(Base):
     gare = Column(Integer)
     malus = Column(Integer, default=0)
     visibile = Column(Integer, default=1)
+    tessera = Column(String, nullable=True)
+    sesso = Column(String, nullable=True)
+    categoria_2027 = Column(String, nullable=True)
+    valutazione = Column(Float, nullable=True)
+    gare_storiche = Column(Integer, nullable=True)
+
+    __table_args__ = (
+        Index("uq_athletes_tessera", "tessera", unique=True),
+    )
 
 class Impostazioni(Base):
     __tablename__ = "impostazioni"

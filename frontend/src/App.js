@@ -1193,7 +1193,7 @@ function Mercato({ token, lega }) {
             </div>
             {categoriaAperta === cat && (
               <table className="table">
-                <thead><tr><th style={{ paddingLeft: 20 }}>Nome</th><th>Prezzo</th><th></th></tr></thead>
+                <thead><tr><th style={{ paddingLeft: 20 }}>Nome</th><th>Valutazione</th><th>Prezzo</th><th></th></tr></thead>
                 <tbody>
                   {atletiCategoria.map(a => {
                     const bloccato = ["Ragazzi Maschi", "Ragazze Femminile"].includes(a.categoria) && !squadra.includes(a.id);
@@ -1203,7 +1203,12 @@ function Mercato({ token, lega }) {
                         <tr style={{ opacity: sbiadito ? 0.4 : 1 }}>
                           <td style={{ paddingLeft: 20 }}>
                             <div style={{ fontWeight: 600 }}>{a.name}</div>
-                            <div style={{ fontSize: 11, color: theme.textMuted }}>{a.categoria}</div>
+                            <div style={{ fontSize: 11, color: theme.textMuted }}>
+                              {a.categoria}{a.categoria_2027 ? ` · ${a.categoria_2027}` : ""}
+                            </div>
+                          </td>
+                          <td style={{ color: theme.blue, fontWeight: 600 }}>
+                            {Number.isFinite(a.valutazione) ? `${a.valutazione.toFixed(1)}/100` : "—"}
                           </td>
                           <td style={{ color: theme.accent, fontWeight: 700 }}>{a.prezzo}cr</td>
                           <td style={{ paddingRight: 16 }}>
@@ -1220,7 +1225,7 @@ function Mercato({ token, lega }) {
                         </tr>
                         {atletaAperto === a.id && atletaDettagli && (
                           <tr>
-                            <td colSpan={3} style={{ padding: "12px 20px", background: "#0d1526" }}>
+                            <td colSpan={4} style={{ padding: "12px 20px", background: "#0d1526" }}>
                               <div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: "flex-start" }}>
                                 <div>
                                   <div style={{ fontSize: 11, color: theme.textMuted, marginBottom: 6, textTransform: "uppercase" }}>Punti per evento</div>

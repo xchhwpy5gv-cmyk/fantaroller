@@ -1,11 +1,14 @@
 import json
+import math
 import secrets
+import unicodedata
+from pathlib import Path
 from database import engine, SessionLocal
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
-from sqlalchemy import create_engine, text
-from models import Base, User, Athlete, Squadra, Impostazioni, Gara, PuntiEvento, League, Messaggio
+from sqlalchemy import create_engine, inspect as sqlalchemy_inspect, text
+from models import Base, User, Athlete, Squadra, Impostazioni, Gara, PuntiEvento, League, Messaggio, squadra_atleti
 from schemas import UserCreate, UserLogin, Token, AggiornaPrezzoRequest, AggiungiEmailRequest, LeagueCreate, AggiungiAtletaManualeRequest
 from passlib.context import CryptContext
 from jose import JWTError, jwt
@@ -45,6 +48,58 @@ app.add_middleware(
 
 
 Base.metadata.create_all(bind=engine)
+
+
+def ensure_athlete_listone_columns():
+    """Additive, transactional migration for listone metadata."""
+    with engine.begin() as connection:
+        is_postgresql = connection.dialect.name == "postgresql"
+        if is_postgresql:
+            # A transaction-scoped lock makes concurrent app startups re-check
+            # the schema one at a time; it is released automatically on commit/rollback.
+            connection.execute(text("SELECT pg_advisory_xact_lock(20271027, 1)"))
+        elif connection.dialect.name == "sqlite":
+            # sqlite3's legacy transaction mode otherwise may auto-commit DDL.
+            # Begin eagerly so a later index error rolls back added columns too.
+            connection.exec_driver_sql("BEGIN IMMEDIATE")
+
+        columns = {
+            column["name"]
+            for column in sqlalchemy_inspect(connection).get_columns("athletes")
+        }
+        new_columns = {
+            "tessera": "VARCHAR",
+            "sesso": "VARCHAR",
+            "categoria_2027": "VARCHAR",
+            "valutazione": "FLOAT",
+            "gare_storiche": "INTEGER",
+        }
+        for name, sql_type in new_columns.items():
+            if name not in columns:
+                if is_postgresql:
+                    connection.execute(text(
+                        f"ALTER TABLE athletes ADD COLUMN IF NOT EXISTS {name} {sql_type}"
+                    ))
+                else:
+                    connection.execute(text(f"ALTER TABLE athletes ADD COLUMN {name} {sql_type}"))
+
+        indexes = sqlalchemy_inspect(connection).get_indexes("athletes")
+        tessera_index = next(
+            (index for index in indexes if index["name"] == "uq_athletes_tessera"),
+            None,
+        )
+        if tessera_index:
+            if tessera_index.get("column_names") != ["tessera"] or not tessera_index.get("unique"):
+                raise RuntimeError(
+                    "L'indice uq_athletes_tessera esiste ma non è univoco sulla sola colonna tessera"
+                )
+        else:
+            connection.execute(text(
+                "CREATE UNIQUE INDEX uq_athletes_tessera ON athletes (tessera)"
+            ))
+
+
+ensure_athlete_listone_columns()
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "fantaroller2026")
 ALGORITHM = "HS256"
@@ -124,6 +179,11 @@ def statistiche_atleta(atleta_id: int, db=Depends(get_db)):
     return {
         "name": atleta.name,
         "categoria": atleta.categoria,
+        "categoria_2027": atleta.categoria_2027,
+        "sesso": atleta.sesso,
+        "tessera": atleta.tessera,
+        "valutazione": atleta.valutazione,
+        "gare_storiche": atleta.gare_storiche,
         "punti_totali": atleta.punti,
         "gare": atleta.gare,
         "prezzo": atleta.prezzo,
@@ -208,66 +268,256 @@ def cambia_email(req: AggiungiEmailRequest, db=Depends(get_db)):
 # Migrazione email non più necessaria: il nuovo schema viene creato direttamente dai models.
 
 @app.post("/import-athletes")
-def import_athletes(db=Depends(get_db)):
+def import_athletes(
+    dry_run: bool = True,
+    utente=Depends(get_utente_corrente),
+    db=Depends(get_db),
+):
+    if not utente.is_admin:
+        raise HTTPException(status_code=403, detail="Non sei admin")
+
+    category_groups = {
+        "RA1": "Ragazzi",
+        "RA2": "Ragazzi",
+        "AL1": "Allievi",
+        "AL2": "Allievi",
+        "JU1": "Junior",
+        "JU2": "Junior",
+        "SE": "Senior",
+    }
+    old_category_groups = {
+        "R12": "Ragazzi",
+        "R1": "Ragazzi",
+        "RA": "Ragazzi",
+        "AL": "Allievi",
+        "JU": "Junior",
+        "SE": "Senior",
+    }
+
+    def market_category(group, sex):
+        if group == "Ragazzi":
+            return "Ragazzi Maschi" if sex == "M" else "Ragazze Femminile"
+        if group == "Allievi":
+            return "Allievi Maschi" if sex == "M" else "Allieve Femminile"
+        if group == "Junior":
+            return "Junior Maschi" if sex == "M" else "Junior Femminile"
+        return "Senior Maschi" if sex == "M" else "Senior Femminile"
+
+    def normalize_name(value):
+        value = unicodedata.normalize("NFKC", value)
+        return " ".join(value.casefold().split())
+
     try:
-        with open("../scraper/listone.json", "r") as file:
+        repository_listone = Path(__file__).resolve().parent.parent / "scraper" / "listone.json"
+        source_path = repository_listone if repository_listone.is_file() else Path(__file__).resolve().parent / "listone.json"
+        with source_path.open("r", encoding="utf-8") as file:
             data = json.load(file)
+        if not isinstance(data, list) or not data:
+            raise HTTPException(status_code=400, detail="Il listone deve essere una lista non vuota")
 
-        importati = 0
-        errori = 0
-        
-        for atleta in data:
-            try:
-                nome_completo = atleta["nome"]
-                separatore = None
-                for sep in [" \u2013 ", " - ", "\u2013", "-"]:
-                    if sep in nome_completo:
-                        separatore = sep
-                        break
-                if separatore:
-                    parti = nome_completo.split(separatore, 1)
-                    nome = parti[0].strip()
-                    categoria = parti[1].strip()
-                else:
-                    nome = nome_completo.strip()
-                    categoria = ""
+        required = {
+            "tessera", "nome", "sesso", "valutazione", "prezzo",
+            "categoria_2026", "categoria_2027", "gare",
+        }
+        seen_tessere = set()
+        for position, record in enumerate(data, start=1):
+            if not isinstance(record, dict) or not required.issubset(record):
+                raise HTTPException(status_code=400, detail=f"Record {position}: campi listone mancanti")
+            if isinstance(record["tessera"], bool) or not isinstance(record["tessera"], (str, int)):
+                raise HTTPException(status_code=400, detail=f"Tessera non valida al record {position}")
+            tessera = str(record["tessera"]).strip()
+            nome = record["nome"]
+            sesso = record["sesso"]
+            category_code = record["categoria_2027"]
+            if not tessera or tessera in seen_tessere:
+                raise HTTPException(status_code=400, detail=f"Tessera vuota o duplicata al record {position}")
+            seen_tessere.add(tessera)
+            if not isinstance(nome, str) or not nome.strip():
+                raise HTTPException(status_code=400, detail=f"Nome non valido al record {position}")
+            if sesso not in {"M", "F"}:
+                raise HTTPException(status_code=400, detail=f"Sesso non valido al record {position}")
+            if category_code not in category_groups:
+                raise HTTPException(status_code=400, detail=f"Categoria 2027 non valida al record {position}")
+            if isinstance(record["prezzo"], bool) or not isinstance(record["prezzo"], int) or record["prezzo"] < 0:
+                raise HTTPException(status_code=400, detail=f"Prezzo non valido al record {position}")
+            if isinstance(record["gare"], bool) or not isinstance(record["gare"], int) or record["gare"] < 0:
+                raise HTTPException(status_code=400, detail=f"Numero gare non valido al record {position}")
+            if isinstance(record["valutazione"], bool) or not isinstance(record["valutazione"], (int, float)) or not math.isfinite(record["valutazione"]):
+                raise HTTPException(status_code=400, detail=f"Valutazione non valida al record {position}")
 
-                # Controlla se esiste già
-                esistente = db.query(Athlete).filter(
-                    Athlete.name == nome,
-                    Athlete.categoria == categoria
-                ).first()
-                
-                if esistente:
-                    esistente.punti = atleta["punti"]
-                    esistente.prezzo = atleta["prezzo"]
-                    esistente.gare = atleta["gare"]
-                    esistente.malus = atleta.get("malus", 0)
-                else:
-                    nuovo = Athlete(
-                        name=nome,
-                        categoria=categoria,
-                        punti=atleta["punti"],
-                        prezzo=atleta["prezzo"],
-                        gare=atleta["gare"],
-                        malus=atleta.get("malus", 0),
-                        visibile=1
-                    )
-                    db.add(nuovo)
-                importati += 1
-                
-                if importati % 100 == 0:
-                    db.commit()
-                    
-            except Exception as e:
-                errori += 1
-                print(f"Errore atleta {atleta.get('nome', '?')}: {e}")
-                
+        athletes = db.query(Athlete).all()
+        by_tessera = {athlete.tessera: athlete for athlete in athletes if athlete.tessera}
+        by_name_category = {}
+        for athlete in athletes:
+            key = normalize_name(athlete.name or "")
+            by_name_category.setdefault((key, athlete.categoria), []).append(athlete)
+
+        plans = []
+        claimed_ids = set()
+        reserved_tessera_ids = {
+            by_tessera[str(record["tessera"])].id
+            for record in data
+            if str(record["tessera"]) in by_tessera
+        }
+        ambiguous = []
+        for record in data:
+            name_key = normalize_name(record["nome"])
+            group_2027 = category_groups[record["categoria_2027"]]
+            category_2027 = market_category(group_2027, record["sesso"])
+            old_group = old_category_groups.get(record["categoria_2026"])
+            old_category = market_category(old_group, record["sesso"]) if old_group else None
+
+            athlete = by_tessera.get(str(record["tessera"]))
+            if athlete and athlete.id in claimed_ids:
+                athlete = None
+            if athlete is None:
+                categories = tuple(dict.fromkeys(
+                    category for category in (old_category, category_2027) if category
+                ))
+                candidates = {
+                    candidate.id: candidate
+                    for category in categories
+                    for candidate in by_name_category.get((name_key, category), [])
+                    if candidate.id not in claimed_ids and candidate.id not in reserved_tessera_ids
+                }
+                if len(candidates) == 1:
+                    athlete = next(iter(candidates.values()))
+                elif len(candidates) > 1:
+                    ambiguous.append({
+                        "nome": record["nome"],
+                        "tessera": str(record["tessera"]),
+                        "candidati": [
+                            {"atleta_id": candidate.id, "nome": candidate.name, "categoria": candidate.categoria, "tessera": candidate.tessera}
+                            for candidate in sorted(candidates.values(), key=lambda item: item.id)
+                        ],
+                    })
+            if athlete:
+                claimed_ids.add(athlete.id)
+            plans.append((record, athlete, category_2027))
+
+        stale_unmatched = [athlete for athlete in athletes if athlete.id not in claimed_ids]
+        stale = [athlete for athlete in stale_unmatched if athlete.visibile]
+        stale_ids = {athlete.id for athlete in stale_unmatched}
+        stale_squad_links = db.query(
+            squadra_atleti.c.atleta_id,
+            Squadra.id.label("squadra_id"),
+            Squadra.nome.label("squadra"),
+            Squadra.league_id.label("league_id"),
+        ).join(Squadra, Squadra.id == squadra_atleti.c.squadra_id).filter(
+            squadra_atleti.c.atleta_id.in_(stale_ids)
+        ).order_by(squadra_atleti.c.atleta_id, Squadra.id).all() if stale_ids else []
+        created_count = sum(1 for _, athlete, _ in plans if athlete is None)
+        matched_count = len(plans) - created_count
+        athlete_by_id = {athlete.id: athlete for athlete in stale_unmatched}
+        roster_records = [
+            {
+                "atleta_id": athlete_id,
+                "nome": athlete_by_id[athlete_id].name,
+                "categoria": athlete_by_id[athlete_id].categoria,
+                "tessera": athlete_by_id[athlete_id].tessera,
+                "squadra_id": squadra_id,
+                "squadra": squadra,
+                "league_id": league_id,
+            }
+            for athlete_id, squadra_id, squadra, league_id in stale_squad_links
+        ]
+        planned_categories = {
+            athlete.id: category
+            for _, athlete, category in plans
+            if athlete is not None
+        }
+        category_overflows = []
+        listone_squads = db.query(Squadra, League).join(
+            League, Squadra.league_id == League.id
+        ).filter(League.modalita == "listone").all()
+        for squad, league in listone_squads:
+            current_counts = {}
+            planned_counts = {}
+            for athlete in squad.atleti:
+                current_category = athlete.categoria
+                planned_category = planned_categories.get(athlete.id, current_category)
+                current_counts[current_category] = current_counts.get(current_category, 0) + 1
+                planned_counts[planned_category] = planned_counts.get(planned_category, 0) + 1
+
+            limit = league.atleti_per_categoria
+            for category, count in sorted(planned_counts.items(), key=lambda item: str(item[0])):
+                if count > limit and count > current_counts.get(category, 0):
+                    category_overflows.append({
+                        "league_id": league.id,
+                        "lega": league.nome,
+                        "squadra_id": squad.id,
+                        "squadra": squad.nome,
+                        "categoria": category,
+                        "numero_atleti": count,
+                        "limite": limit,
+                    })
+
+        importabile = not ambiguous and not roster_records and not category_overflows
+        summary = {
+            "modalita": "anteprima" if dry_run else "importazione",
+            "importabile": importabile,
+            "atleti_listone": len(data),
+            "atleti_aggiornati": matched_count,
+            "atleti_nuovi": created_count,
+            "atleti_fuori_listone_da_nascondere": len(stale),
+            "corrispondenze_ambigue": len(ambiguous),
+            "ambigui": ambiguous,
+            "atleti_in_rosa_non_abbinati": roster_records,
+            "superamenti_limite_categorie": category_overflows,
+        }
+        if dry_run:
+            return summary
+
+        if not importabile:
+            issues = []
+            if ambiguous:
+                issues.append("alcuni nomi corrispondono a più atleti esistenti")
+            if roster_records:
+                issues.append("alcuni atleti fuori listone sono ancora presenti nelle rose")
+            if category_overflows:
+                issues.append("l'importazione supererebbe il limite di categoria in alcune rose listone")
+            raise HTTPException(
+                status_code=409,
+                detail={"message": "Importazione annullata: " + "; ".join(issues), "anteprima": summary},
+            )
+
+        for record, athlete, category in plans:
+            if athlete is None:
+                athlete = Athlete(
+                    name=record["nome"].strip(),
+                    categoria=category,
+                    punti=0,
+                    prezzo=record["prezzo"],
+                    gare=0,
+                    malus=0,
+                    visibile=1,
+                )
+                db.add(athlete)
+            else:
+                athlete.name = record["nome"].strip()
+                athlete.categoria = category
+                athlete.prezzo = record["prezzo"]
+                athlete.visibile = 1
+
+            athlete.tessera = str(record["tessera"]).strip()
+            athlete.sesso = record["sesso"]
+            athlete.categoria_2027 = record["categoria_2027"]
+            athlete.valutazione = float(record["valutazione"])
+            athlete.gare_storiche = record["gare"]
+
+        for athlete in stale:
+            athlete.visibile = 0
+
         db.commit()
-        return {"message": f"Atleti importati: {importati}, errori: {errori}"}
+        summary["message"] = "Listone 2027 importato; rose, punti e relazioni sono stati conservati"
+        return summary
+    except HTTPException:
+        db.rollback()
+        raise
     except Exception as e:
         db.rollback()
-        return {"message": f"Errore: {str(e)}"}
+        print(f"Errore importazione listone 2027: {e}")
+        raise HTTPException(status_code=500, detail="Errore durante l'importazione del listone 2027") from e
 
 @app.delete("/reset-athletes")
 def reset_athletes(db=Depends(get_db)):

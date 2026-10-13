@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Float, Index, Integer, String, ForeignKey, Table
+from datetime import datetime, timezone
+from sqlalchemy import Column, DateTime, Float, Index, Integer, String, ForeignKey, Table, UniqueConstraint
 from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
@@ -38,10 +39,127 @@ class League(Base):
     owner_id = Column(Integer)
     tipo = Column(String, default="privata")
     modalita = Column(String, default="listone")
-    crediti_iniziali = Column(Integer, default=200)
+    modalita_economica = Column(String, default="continuita")
+    crediti_iniziali = Column(Integer, default=500)
     atleti_per_categoria = Column(Integer, default=2)
     mercato_aperto = Column(Integer, default=1)
     membri = relationship("User", secondary=utente_leghe)
+    competizioni = relationship("CompetizioneLega", back_populates="lega")
+
+class EventoCatalogo(Base):
+    __tablename__ = "eventi_catalogo"
+    id = Column(Integer, primary_key=True, index=True)
+    nome = Column(String, nullable=False, unique=True)
+    descrizione = Column(String, nullable=True)
+    data_evento = Column(String, nullable=True)
+    url_risultati = Column(String, nullable=True)
+    stato = Column(String, default="disponibile", nullable=False)
+
+class EventoLega(Base):
+    __tablename__ = "eventi_leghe"
+    id = Column(Integer, primary_key=True, index=True)
+    evento_id = Column(Integer, ForeignKey("eventi_catalogo.id"), nullable=False)
+    league_id = Column(Integer, ForeignKey("leagues.id"), nullable=False)
+    stato = Column(String, nullable=False, default="in_attesa")
+    creato_il = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
+    evento = relationship("EventoCatalogo")
+    lega = relationship("League")
+    __table_args__ = (UniqueConstraint("evento_id", "league_id", name="uq_evento_lega"),)
+
+class CompetizioneLega(Base):
+    __tablename__ = "competizioni_leghe"
+    id = Column(Integer, primary_key=True, index=True)
+    league_id = Column(Integer, ForeignKey("leagues.id"), nullable=False)
+    evento_id = Column(Integer, ForeignKey("eventi_catalogo.id"), nullable=False)
+    numero = Column(Integer, nullable=False, default=1)
+    fase = Column(String, nullable=False, default="configurata")
+    finalizzato_da = Column(Integer, ForeignKey("users.id"), nullable=True)
+    finalizzato_il = Column(DateTime(timezone=True), nullable=True)
+    lega = relationship("League", back_populates="competizioni")
+    evento = relationship("EventoCatalogo")
+    rose = relationship("RosaCompetizione", back_populates="competizione")
+    risultati = relationship("PuntiCompetizione", back_populates="competizione")
+    __table_args__ = (UniqueConstraint("league_id", "numero", name="uq_competizione_lega_numero"),)
+
+class RosaCompetizione(Base):
+    __tablename__ = "rose_competizione"
+    id = Column(Integer, primary_key=True, index=True)
+    competizione_id = Column(Integer, ForeignKey("competizioni_leghe.id"), nullable=False)
+    squadra_id = Column(Integer, ForeignKey("squadre.id"), nullable=False)
+    squadra_nome = Column(String, nullable=False)
+    atleta_id = Column(Integer, ForeignKey("athletes.id"), nullable=False)
+    atleta_nome = Column(String, nullable=False)
+    categoria = Column(String, nullable=False)
+    prezzo_pagato = Column(Integer, nullable=False, default=0)
+    competizione = relationship("CompetizioneLega", back_populates="rose")
+    atleta = relationship("Athlete")
+    __table_args__ = (UniqueConstraint("competizione_id", "squadra_id", "atleta_id", name="uq_rosa_competizione_atleta"),)
+
+class PuntiCompetizione(Base):
+    __tablename__ = "punti_competizione"
+    id = Column(Integer, primary_key=True, index=True)
+    competizione_id = Column(Integer, ForeignKey("competizioni_leghe.id"), nullable=False)
+    atleta_id = Column(Integer, ForeignKey("athletes.id"), nullable=False)
+    punti = Column(Integer, nullable=False, default=0)
+    competizione = relationship("CompetizioneLega", back_populates="risultati")
+    atleta = relationship("Athlete")
+    __table_args__ = (UniqueConstraint("competizione_id", "atleta_id", name="uq_punti_competizione_atleta"),)
+
+class RisultatoPartecipante(Base):
+    __tablename__ = "risultati_partecipanti"
+    id = Column(Integer, primary_key=True, index=True)
+    league_id = Column(Integer, ForeignKey("leagues.id"), nullable=False)
+    competizione_id = Column(Integer, ForeignKey("competizioni_leghe.id"), nullable=False)
+    squadra_id = Column(Integer, ForeignKey("squadre.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    atleta_id = Column(Integer, ForeignKey("athletes.id"), nullable=False)
+    squadra_nome = Column(String, nullable=False)
+    username = Column(String, nullable=False)
+    atleta_nome = Column(String, nullable=False)
+    punti = Column(Integer, nullable=False, default=0)
+    creato_il = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
+    __table_args__ = (UniqueConstraint("competizione_id", "squadra_id", "atleta_id", name="uq_risultato_partecipante_atleta"),)
+
+class ClassificaCompetizione(Base):
+    __tablename__ = "classifiche_competizione"
+    id = Column(Integer, primary_key=True, index=True)
+    league_id = Column(Integer, ForeignKey("leagues.id"), nullable=False)
+    competizione_id = Column(Integer, ForeignKey("competizioni_leghe.id"), nullable=False)
+    squadra_id = Column(Integer, ForeignKey("squadre.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    squadra_nome = Column(String, nullable=False)
+    username = Column(String, nullable=False)
+    numero_atleti = Column(Integer, nullable=False, default=0)
+    punti_atleti = Column(Integer, nullable=False, default=0)
+    punti_bonus = Column(Integer, nullable=False, default=0)
+    punti_totali = Column(Integer, nullable=False, default=0)
+    __table_args__ = (UniqueConstraint("competizione_id", "squadra_id", name="uq_classifica_competizione_squadra"),)
+
+class CorrezioneRisultato(Base):
+    __tablename__ = "correzioni_risultati"
+    id = Column(Integer, primary_key=True, index=True)
+    competizione_id = Column(Integer, ForeignKey("competizioni_leghe.id"), nullable=False)
+    squadra_id = Column(Integer, ForeignKey("squadre.id"), nullable=True)
+    atleta_id = Column(Integer, ForeignKey("athletes.id"), nullable=False)
+    punti_precedenti = Column(Integer, nullable=False)
+    punti_nuovi = Column(Integer, nullable=False)
+    autore_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    motivazione = Column(String, nullable=False)
+    creato_il = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
+
+class TransazioneMercato(Base):
+    __tablename__ = "transazioni_mercato"
+    id = Column(Integer, primary_key=True, index=True)
+    chiave_idempotenza = Column(String, nullable=False, unique=True)
+    league_id = Column(Integer, ForeignKey("leagues.id"), nullable=False)
+    squadra_id = Column(Integer, ForeignKey("squadre.id"), nullable=False)
+    atleta_id = Column(Integer, ForeignKey("athletes.id"), nullable=False)
+    competizione_id = Column(Integer, ForeignKey("competizioni_leghe.id"), nullable=True)
+    tipo = Column(String, nullable=False)
+    prezzo = Column(Integer, nullable=False)
+    plusvalenza = Column(Integer, nullable=True)
+    creato_il = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
+    atleta = relationship("Athlete")
 
 class Squadra(Base):
     __tablename__ = "squadre"

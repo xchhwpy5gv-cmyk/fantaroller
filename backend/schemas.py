@@ -26,9 +26,32 @@ class LeagueCreate(BaseModel):
     nome: str
     tipo: str
     modalita: str
+    modalita_economica: str = "continuita"
     codice: str | None = None
-    crediti_iniziali: int = 200
+    crediti_iniziali: int = 500
     atleti_per_categoria: int = 2
+
+class EventoCatalogoCreate(BaseModel):
+    nome: str
+    descrizione: str | None = None
+    data_evento: str | None = None
+    url_risultati: str | None = None
+
+class SelezionaEventoRequest(BaseModel):
+    league_id: int
+    evento_id: int
+    conferma_reset: bool = False
+
+class AssociaEventoLegheRequest(BaseModel):
+    league_ids: list[int]
+
+class CorrezionePunteggioAtleta(BaseModel):
+    atleta_id: int
+    punti: int
+
+class CorrezioneRisultatoRequest(BaseModel):
+    motivazione: str
+    risultati: list[CorrezionePunteggioAtleta]
 
 class AggiungiAtletaManualeRequest(BaseModel):
     league_id: int

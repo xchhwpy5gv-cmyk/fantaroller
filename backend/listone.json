@@ -11,6 +11,17 @@
     "gare": 30
   },
   {
+    "tessera": "444473",
+    "nome": "MARELLI GIULIA",
+    "sesso": "F",
+    "valutazione": 91.6,
+    "prezzo": 67,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 37
+  },
+  {
     "tessera": "466182",
     "nome": "DI PASQUALE CHIARA",
     "sesso": "F",
@@ -42,6 +53,17 @@
     "anno_categoria_2026": 1,
     "categoria_2027": "JU2",
     "gare": 23
+  },
+  {
+    "tessera": "458669",
+    "nome": "AIELLO AURORA",
+    "sesso": "F",
+    "valutazione": 73.31,
+    "prezzo": 37,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 29
   },
   {
     "tessera": "480488",
@@ -187,6 +209,17 @@
     "gare": 32
   },
   {
+    "tessera": "440537",
+    "nome": "OSENDA LUCREZIA",
+    "sesso": "F",
+    "valutazione": 66.11,
+    "prezzo": 33,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 39
+  },
+  {
     "tessera": "466914",
     "nome": "BULLO ALICE",
     "sesso": "F",
@@ -214,9 +247,9 @@
     "sesso": "F",
     "valutazione": 37.44,
     "prezzo": 16,
-    "categoria_2026": "AL",
-    "anno_categoria_2026": 2,
-    "categoria_2027": "JU1",
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
     "gare": 23
   },
   {
@@ -462,6 +495,17 @@
     "gare": 16
   },
   {
+    "tessera": "597879",
+    "nome": "PIREDDA SARA",
+    "sesso": "F",
+    "valutazione": 24.2,
+    "prezzo": 11,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 2
+  },
+  {
     "tessera": "541498",
     "nome": "BAUTISTA VALENTINA",
     "sesso": "F",
@@ -537,6 +581,17 @@
     "anno_categoria_2026": 2,
     "categoria_2027": "JU1",
     "gare": 9
+  },
+  {
+    "tessera": "536994",
+    "nome": "TODARO SOFIA",
+    "sesso": "F",
+    "valutazione": 18.23,
+    "prezzo": 8,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
+    "gare": 2
   },
   {
     "tessera": "586792",
@@ -643,10 +698,21 @@
     "sesso": "F",
     "valutazione": 9.45,
     "prezzo": 5,
-    "categoria_2026": "AL",
-    "anno_categoria_2026": 2,
-    "categoria_2027": "JU1",
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
     "gare": 3
+  },
+  {
+    "tessera": "440110",
+    "nome": "DE GRADO MARTINA",
+    "sesso": "F",
+    "valutazione": 75.14,
+    "prezzo": 38,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 32
   },
   {
     "tessera": "433551",
@@ -654,6 +720,17 @@
     "sesso": "F",
     "valutazione": 89.42,
     "prezzo": 59,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 39
+  },
+  {
+    "tessera": "468638",
+    "nome": "FOSSEMO' SALVEMME GIORGIA",
+    "sesso": "F",
+    "valutazione": 83.37,
+    "prezzo": 50,
     "categoria_2026": "JU",
     "anno_categoria_2026": 1,
     "categoria_2027": "JU2",
@@ -704,6 +781,17 @@
     "gare": 32
   },
   {
+    "tessera": "516487",
+    "nome": "TRAMONTANI ALICE",
+    "sesso": "F",
+    "valutazione": 81.97,
+    "prezzo": 48,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
+    "gare": 32
+  },
+  {
     "tessera": "455295",
     "nome": "BIANCHI CHANEL",
     "sesso": "F",
@@ -726,6 +814,28 @@
     "gare": 38
   },
   {
+    "tessera": "482965",
+    "nome": "BOTTICELLI ELENA",
+    "sesso": "F",
+    "valutazione": 76.46,
+    "prezzo": 40,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 35
+  },
+  {
+    "tessera": "485519",
+    "nome": "GRANATO ELISA",
+    "sesso": "F",
+    "valutazione": 54.81,
+    "prezzo": 25,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 33
+  },
+  {
     "tessera": "491528",
     "nome": "ADAMO ARIANNA",
     "sesso": "F",
@@ -735,6 +845,17 @@
     "anno_categoria_2026": 2,
     "categoria_2027": "JU1",
     "gare": 32
+  },
+  {
+    "tessera": "442631",
+    "nome": "MASSA ELIZBET",
+    "sesso": "F",
+    "valutazione": 82.35,
+    "prezzo": 48,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
+    "gare": 25
   },
   {
     "tessera": "496314",
@@ -779,6 +900,17 @@
     "anno_categoria_2026": 1,
     "categoria_2027": "JU2",
     "gare": 30
+  },
+  {
+    "tessera": "474963",
+    "nome": "ROSSETTO EMMA",
+    "sesso": "F",
+    "valutazione": 65.37,
+    "prezzo": 32,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
+    "gare": 32
   },
   {
     "tessera": "435821",
@@ -836,6 +968,17 @@
     "gare": 23
   },
   {
+    "tessera": "458146",
+    "nome": "MARTIRADONNA SARA",
+    "sesso": "F",
+    "valutazione": 47.26,
+    "prezzo": 21,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
+    "gare": 29
+  },
+  {
     "tessera": "521161",
     "nome": "VECCHIATO ASIA",
     "sesso": "F",
@@ -889,6 +1032,17 @@
     "anno_categoria_2026": 1,
     "categoria_2027": "JU2",
     "gare": 38
+  },
+  {
+    "tessera": "476020",
+    "nome": "DAL SANTO ELEONORA",
+    "sesso": "F",
+    "valutazione": 62.98,
+    "prezzo": 31,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 34
   },
   {
     "tessera": "478968",
@@ -955,6 +1109,17 @@
     "anno_categoria_2026": 2,
     "categoria_2027": "JU1",
     "gare": 32
+  },
+  {
+    "tessera": "497080",
+    "nome": "PELLEGRINO ALMA",
+    "sesso": "F",
+    "valutazione": 34.21,
+    "prezzo": 15,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
+    "gare": 2
   },
   {
     "tessera": "437074",
@@ -1287,6 +1452,17 @@
     "gare": 4
   },
   {
+    "tessera": "475887",
+    "nome": "MARCHIOTTO VITTORIA",
+    "sesso": "F",
+    "valutazione": 71.15,
+    "prezzo": 36,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 39
+  },
+  {
     "tessera": "478554",
     "nome": "ZANETTI ANNA",
     "sesso": "F",
@@ -1303,9 +1479,9 @@
     "sesso": "F",
     "valutazione": 16.54,
     "prezzo": 7,
-    "categoria_2026": "AL",
-    "anno_categoria_2026": 2,
-    "categoria_2027": "JU1",
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
     "gare": 4
   },
   {
@@ -1397,6 +1573,17 @@
     "gare": 10
   },
   {
+    "tessera": "586339",
+    "nome": "ZANCHETTA MATILDE",
+    "sesso": "F",
+    "valutazione": 18.73,
+    "prezzo": 8,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 16
+  },
+  {
     "tessera": "475203",
     "nome": "RAVELLI FILIPPO",
     "sesso": "M",
@@ -1452,6 +1639,17 @@
     "gare": 34
   },
   {
+    "tessera": "481285",
+    "nome": "RODI ALBERTO",
+    "sesso": "M",
+    "valutazione": 79.77,
+    "prezzo": 45,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
+    "gare": 32
+  },
+  {
     "tessera": "466458",
     "nome": "VINCI GABRIELE",
     "sesso": "M",
@@ -1485,14 +1683,25 @@
     "gare": 32
   },
   {
+    "tessera": "440391",
+    "nome": "OSENDA NICCOLO'",
+    "sesso": "M",
+    "valutazione": 59.72,
+    "prezzo": 28,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 39
+  },
+  {
     "tessera": "488307",
     "nome": "PAGANI MATTEO",
     "sesso": "M",
     "valutazione": 32.05,
     "prezzo": 14,
-    "categoria_2026": "JU",
-    "anno_categoria_2026": 1,
-    "categoria_2027": "JU2",
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
     "gare": 26
   },
   {
@@ -1694,6 +1903,17 @@
     "gare": 18
   },
   {
+    "tessera": "550959",
+    "nome": "BEVILACQUA GIORGIO",
+    "sesso": "M",
+    "valutazione": 20.97,
+    "prezzo": 9,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 10
+  },
+  {
     "tessera": "468514",
     "nome": "PISANU ALESSIO",
     "sesso": "M",
@@ -1881,6 +2101,17 @@
     "gare": 32
   },
   {
+    "tessera": "433899",
+    "nome": "NISI ELIA",
+    "sesso": "M",
+    "valutazione": 69.37,
+    "prezzo": 35,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 37
+  },
+  {
     "tessera": "466592",
     "nome": "GIANNETTONI PIETRO",
     "sesso": "M",
@@ -1901,6 +2132,17 @@
     "anno_categoria_2026": 2,
     "categoria_2027": "JU1",
     "gare": 29
+  },
+  {
+    "tessera": "458721",
+    "nome": "SIVIGLIA FILIPPO",
+    "sesso": "M",
+    "valutazione": 60.09,
+    "prezzo": 29,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 37
   },
   {
     "tessera": "466590",
@@ -1969,6 +2211,17 @@
     "gare": 30
   },
   {
+    "tessera": "483511",
+    "nome": "MARCOCCI RICCARDO",
+    "sesso": "M",
+    "valutazione": 36.28,
+    "prezzo": 16,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
+    "gare": 31
+  },
+  {
     "tessera": "467391",
     "nome": "FILOIA ANDREA GABRIEL",
     "sesso": "M",
@@ -2000,6 +2253,17 @@
     "anno_categoria_2026": 2,
     "categoria_2027": "JU1",
     "gare": 30
+  },
+  {
+    "tessera": "458720",
+    "nome": "SIVIGLIA ALESSANDRO",
+    "sesso": "M",
+    "valutazione": 34.25,
+    "prezzo": 15,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 28
   },
   {
     "tessera": "466174",
@@ -2077,6 +2341,17 @@
     "anno_categoria_2026": 1,
     "categoria_2027": "JU2",
     "gare": 39
+  },
+  {
+    "tessera": "492278",
+    "nome": "SACCHINI CHRISTIAN",
+    "sesso": "M",
+    "valutazione": 32.19,
+    "prezzo": 14,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
+    "gare": 32
   },
   {
     "tessera": "468176",
@@ -2244,6 +2519,17 @@
     "gare": 22
   },
   {
+    "tessera": "482591",
+    "nome": "RISTAINO DAVIDE",
+    "sesso": "M",
+    "valutazione": 11.58,
+    "prezzo": 5,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
+    "gare": 5
+  },
+  {
     "tessera": "455314",
     "nome": "CHIUMIENTO SOFIA PAOLA",
     "sesso": "F",
@@ -2363,6 +2649,17 @@
     "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 36
+  },
+  {
+    "tessera": "451098",
+    "nome": "RAGA MAINA",
+    "sesso": "F",
+    "valutazione": 55.88,
+    "prezzo": 26,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "SE",
+    "gare": 34
   },
   {
     "tessera": "444478",
@@ -2607,6 +2904,28 @@
     "gare": 17
   },
   {
+    "tessera": "477558",
+    "nome": "PICCININ ELISABETTA",
+    "sesso": "F",
+    "valutazione": 14.56,
+    "prezzo": 6,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "SE",
+    "gare": 6
+  },
+  {
+    "tessera": "448368",
+    "nome": "BORTOLAN GIADA",
+    "sesso": "F",
+    "valutazione": 9.13,
+    "prezzo": 5,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "SE",
+    "gare": 16
+  },
+  {
     "tessera": "476963",
     "nome": "PAOLINI GIORDANA",
     "sesso": "F",
@@ -2673,6 +2992,28 @@
     "gare": 8
   },
   {
+    "tessera": "527505",
+    "nome": "ALBERTINI ELISA",
+    "sesso": "F",
+    "valutazione": 9.73,
+    "prezzo": 5,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "SE",
+    "gare": 2
+  },
+  {
+    "tessera": "428803",
+    "nome": "MISTERO MARTINA",
+    "sesso": "F",
+    "valutazione": 6.44,
+    "prezzo": 5,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "SE",
+    "gare": 8
+  },
+  {
     "tessera": "424110",
     "nome": "PITTATORE ALESSIA",
     "sesso": "F",
@@ -2695,11 +3036,33 @@
     "gare": 46
   },
   {
+    "tessera": "442572",
+    "nome": "FALCIONI VIOLA",
+    "sesso": "F",
+    "valutazione": 63.85,
+    "prezzo": 31,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "SE",
+    "gare": 45
+  },
+  {
     "tessera": "444038",
     "nome": "FOLLI ELISA",
     "sesso": "F",
     "valutazione": 88.52,
     "prezzo": 58,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 46
+  },
+  {
+    "tessera": "421204",
+    "nome": "CLEMENTONI SOFIA",
+    "sesso": "F",
+    "valutazione": 69.12,
+    "prezzo": 34,
     "categoria_2026": "SE",
     "anno_categoria_2026": null,
     "categoria_2027": "SE",
@@ -3443,6 +3806,28 @@
     "gare": 43
   },
   {
+    "tessera": "442011",
+    "nome": "DI PAOLA ANDREA",
+    "sesso": "M",
+    "valutazione": 64.83,
+    "prezzo": 32,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 45
+  },
+  {
+    "tessera": "484244",
+    "nome": "RICCA MATTIA",
+    "sesso": "M",
+    "valutazione": 61.13,
+    "prezzo": 29,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "SE",
+    "gare": 38
+  },
+  {
     "tessera": "450919",
     "nome": "FERRARINI DANIELE",
     "sesso": "M",
@@ -3498,6 +3883,28 @@
     "gare": 34
   },
   {
+    "tessera": "445406",
+    "nome": "FRATTONE RICCARDO",
+    "sesso": "M",
+    "valutazione": 36.72,
+    "prezzo": 16,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "SE",
+    "gare": 33
+  },
+  {
+    "tessera": "474961",
+    "nome": "ROSSETTO FEDERICO",
+    "sesso": "M",
+    "valutazione": 33.21,
+    "prezzo": 15,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "SE",
+    "gare": 37
+  },
+  {
     "tessera": "451452",
     "nome": "MORO GABRIELE",
     "sesso": "M",
@@ -3540,6 +3947,17 @@
     "anno_categoria_2026": 2,
     "categoria_2027": "SE",
     "gare": 17
+  },
+  {
+    "tessera": "445574",
+    "nome": "ROCCHETTI MICHELE",
+    "sesso": "M",
+    "valutazione": 43.88,
+    "prezzo": 19,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "SE",
+    "gare": 44
   },
   {
     "tessera": "423786",
@@ -3614,7 +4032,7 @@
     "valutazione": 92.34,
     "prezzo": 69,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 41
   },
@@ -3625,7 +4043,7 @@
     "valutazione": 79.05,
     "prezzo": 44,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 46
   },
@@ -3636,7 +4054,7 @@
     "valutazione": 84.24,
     "prezzo": 51,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 42
   },
@@ -3658,9 +4076,20 @@
     "valutazione": 45.82,
     "prezzo": 20,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 25
+  },
+  {
+    "tessera": "436153",
+    "nome": "COGNIGNI CHIARA",
+    "sesso": "F",
+    "valutazione": 48.06,
+    "prezzo": 21,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 29
   },
   {
     "tessera": "389193",
@@ -3669,7 +4098,7 @@
     "valutazione": 50.42,
     "prezzo": 22,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 10
   },
@@ -3680,7 +4109,7 @@
     "valutazione": 40.11,
     "prezzo": 18,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 45
   },
@@ -3691,7 +4120,7 @@
     "valutazione": 26.72,
     "prezzo": 12,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 32
   },
@@ -3702,7 +4131,7 @@
     "valutazione": 22.75,
     "prezzo": 10,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 44
   },
@@ -3713,7 +4142,7 @@
     "valutazione": 25.55,
     "prezzo": 11,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 36
   },
@@ -3724,7 +4153,7 @@
     "valutazione": 19.35,
     "prezzo": 9,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 25
   },
@@ -3735,7 +4164,7 @@
     "valutazione": 27.28,
     "prezzo": 12,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 16
   },
@@ -3801,7 +4230,7 @@
     "valutazione": 80.4,
     "prezzo": 46,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 31
   },
@@ -3812,7 +4241,7 @@
     "valutazione": 86.94,
     "prezzo": 55,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 35
   },
@@ -3823,7 +4252,7 @@
     "valutazione": 81.34,
     "prezzo": 47,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 47
   },
@@ -3834,7 +4263,7 @@
     "valutazione": 58.74,
     "prezzo": 28,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 45
   },
@@ -3845,7 +4274,7 @@
     "valutazione": 73.74,
     "prezzo": 37,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 44
   },
@@ -3856,9 +4285,20 @@
     "valutazione": 74.0,
     "prezzo": 37,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 42
+  },
+  {
+    "tessera": "369822",
+    "nome": "FALASCHETTI IRENE",
+    "sesso": "F",
+    "valutazione": 62.68,
+    "prezzo": 30,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 40
   },
   {
     "tessera": "405953",
@@ -3867,7 +4307,7 @@
     "valutazione": 76.27,
     "prezzo": 40,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 48
   },
@@ -3878,7 +4318,7 @@
     "valutazione": 66.67,
     "prezzo": 33,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 48
   },
@@ -3889,7 +4329,7 @@
     "valutazione": 43.19,
     "prezzo": 19,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 45
   },
@@ -3900,9 +4340,20 @@
     "valutazione": 77.51,
     "prezzo": 42,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 19
+  },
+  {
+    "tessera": "228377",
+    "nome": "DI NATALE FEDERICA",
+    "sesso": "F",
+    "valutazione": 67.18,
+    "prezzo": 33,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 30
   },
   {
     "tessera": "366854",
@@ -3911,7 +4362,7 @@
     "valutazione": 62.37,
     "prezzo": 30,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 19
   },
@@ -3922,7 +4373,7 @@
     "valutazione": 62.76,
     "prezzo": 31,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 44
   },
@@ -3933,7 +4384,7 @@
     "valutazione": 28.95,
     "prezzo": 13,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 46
   },
@@ -3944,7 +4395,7 @@
     "valutazione": 40.15,
     "prezzo": 18,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 32
   },
@@ -3955,7 +4406,7 @@
     "valutazione": 34.25,
     "prezzo": 15,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 37
   },
@@ -3966,7 +4417,7 @@
     "valutazione": 39.99,
     "prezzo": 18,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 45
   },
@@ -3977,7 +4428,7 @@
     "valutazione": 50.37,
     "prezzo": 22,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 41
   },
@@ -3999,7 +4450,7 @@
     "valutazione": 45.18,
     "prezzo": 20,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 37
   },
@@ -4010,7 +4461,7 @@
     "valutazione": 37.97,
     "prezzo": 17,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 45
   },
@@ -4021,7 +4472,7 @@
     "valutazione": 57.17,
     "prezzo": 27,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 48
   },
@@ -4037,13 +4488,24 @@
     "gare": 25
   },
   {
+    "tessera": "406241",
+    "nome": "FERRETTI MARTINA",
+    "sesso": "F",
+    "valutazione": 24.9,
+    "prezzo": 11,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 39
+  },
+  {
     "tessera": "423388",
     "nome": "BARILANI REBECCA",
     "sesso": "F",
     "valutazione": 36.67,
     "prezzo": 16,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 48
   },
@@ -4076,7 +4538,7 @@
     "valutazione": 22.54,
     "prezzo": 10,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 43
   },
@@ -4098,7 +4560,7 @@
     "valutazione": 5.71,
     "prezzo": 5,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 19
   },
@@ -4120,7 +4582,7 @@
     "valutazione": 86.76,
     "prezzo": 55,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 38
   },
@@ -4131,7 +4593,7 @@
     "valutazione": 94.14,
     "prezzo": 71,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 42
   },
@@ -4142,7 +4604,7 @@
     "valutazione": 90.78,
     "prezzo": 66,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 42
   },
@@ -4153,7 +4615,7 @@
     "valutazione": 67.55,
     "prezzo": 34,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 45
   },
@@ -4164,7 +4626,7 @@
     "valutazione": 70.52,
     "prezzo": 35,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 44
   },
@@ -4175,7 +4637,7 @@
     "valutazione": 78.6,
     "prezzo": 43,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 48
   },
@@ -4197,7 +4659,7 @@
     "valutazione": 67.08,
     "prezzo": 33,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 47
   },
@@ -4208,7 +4670,7 @@
     "valutazione": 49.71,
     "prezzo": 22,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 43
   },
@@ -4230,7 +4692,7 @@
     "valutazione": 66.58,
     "prezzo": 33,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 30
   },
@@ -4241,7 +4703,7 @@
     "valutazione": 45.69,
     "prezzo": 20,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 42
   },
@@ -4252,7 +4714,7 @@
     "valutazione": 74.49,
     "prezzo": 38,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 43
   },
@@ -4263,7 +4725,7 @@
     "valutazione": 65.54,
     "prezzo": 32,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 42
   },
@@ -4274,7 +4736,7 @@
     "valutazione": 47.5,
     "prezzo": 21,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 37
   },
@@ -4296,7 +4758,7 @@
     "valutazione": 59.25,
     "prezzo": 28,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 44
   },
@@ -4307,7 +4769,7 @@
     "valutazione": 47.72,
     "prezzo": 21,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 40
   },
@@ -4318,7 +4780,7 @@
     "valutazione": 30.09,
     "prezzo": 13,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 30
   },
@@ -4329,7 +4791,7 @@
     "valutazione": 48.44,
     "prezzo": 21,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 47
   },
@@ -4340,7 +4802,7 @@
     "valutazione": 45.68,
     "prezzo": 20,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 37
   },
@@ -4373,7 +4835,7 @@
     "valutazione": 48.89,
     "prezzo": 22,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 35
   },
@@ -4384,7 +4846,7 @@
     "valutazione": 31.52,
     "prezzo": 14,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 38
   },
@@ -4406,7 +4868,7 @@
     "valutazione": 37.94,
     "prezzo": 17,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 45
   },
@@ -4428,7 +4890,7 @@
     "valutazione": 21.65,
     "prezzo": 10,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 18
   },
@@ -4439,7 +4901,7 @@
     "valutazione": 35.36,
     "prezzo": 16,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 41
   },
@@ -4450,7 +4912,7 @@
     "valutazione": 28.43,
     "prezzo": 13,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 12
   },
@@ -4461,7 +4923,7 @@
     "valutazione": 28.73,
     "prezzo": 13,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 12
   },
@@ -4472,7 +4934,7 @@
     "valutazione": 18.03,
     "prezzo": 8,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 30
   },
@@ -4483,7 +4945,7 @@
     "valutazione": 27.16,
     "prezzo": 12,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 28
   },
@@ -4494,7 +4956,7 @@
     "valutazione": 29.55,
     "prezzo": 13,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 37
   },
@@ -4505,7 +4967,7 @@
     "valutazione": 23.34,
     "prezzo": 10,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 25
   },
@@ -4516,7 +4978,7 @@
     "valutazione": 15.62,
     "prezzo": 7,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 30
   },
@@ -4527,7 +4989,7 @@
     "valutazione": 14.37,
     "prezzo": 6,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 17
   },
@@ -4538,7 +5000,7 @@
     "valutazione": 18.37,
     "prezzo": 8,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 22
   },
@@ -4582,7 +5044,7 @@
     "valutazione": 10.49,
     "prezzo": 5,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 26
   },
@@ -4593,7 +5055,7 @@
     "valutazione": 9.47,
     "prezzo": 5,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 8
   },
@@ -4615,9 +5077,20 @@
     "valutazione": 5.66,
     "prezzo": 5,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 19
+  },
+  {
+    "tessera": "406039",
+    "nome": "CLEMENTONI ALESSIO",
+    "sesso": "M",
+    "valutazione": 90.81,
+    "prezzo": 66,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 36
   },
   {
     "tessera": "367643",
@@ -4626,7 +5099,7 @@
     "valutazione": 92.84,
     "prezzo": 69,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 45
   },
@@ -4637,7 +5110,7 @@
     "valutazione": 80.73,
     "prezzo": 46,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 47
   },
@@ -4648,7 +5121,7 @@
     "valutazione": 61.38,
     "prezzo": 30,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 44
   },
@@ -4659,7 +5132,7 @@
     "valutazione": 67.34,
     "prezzo": 33,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 48
   },
@@ -4670,9 +5143,31 @@
     "valutazione": 79.52,
     "prezzo": 44,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 41
+  },
+  {
+    "tessera": "412731",
+    "nome": "SALINO ALBERTO MARIA",
+    "sesso": "M",
+    "valutazione": 72.35,
+    "prezzo": 36,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 41
+  },
+  {
+    "tessera": "401781",
+    "nome": "BOSCO LORENZO",
+    "sesso": "M",
+    "valutazione": 64.22,
+    "prezzo": 31,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 45
   },
   {
     "tessera": "424464",
@@ -4681,7 +5176,7 @@
     "valutazione": 49.51,
     "prezzo": 22,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 40
   },
@@ -4703,7 +5198,7 @@
     "valutazione": 78.49,
     "prezzo": 43,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 47
   },
@@ -4714,9 +5209,31 @@
     "valutazione": 73.16,
     "prezzo": 37,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 48
+  },
+  {
+    "tessera": "369728",
+    "nome": "CASADEI MATTEO",
+    "sesso": "M",
+    "valutazione": 69.34,
+    "prezzo": 35,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 44
+  },
+  {
+    "tessera": "383882",
+    "nome": "BARISON MATTEO",
+    "sesso": "M",
+    "valutazione": 56.17,
+    "prezzo": 26,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 44
   },
   {
     "tessera": "214763",
@@ -4747,7 +5264,7 @@
     "valutazione": 68.03,
     "prezzo": 34,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 36
   },
@@ -4758,7 +5275,7 @@
     "valutazione": 53.84,
     "prezzo": 25,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 42
   },
@@ -4769,7 +5286,7 @@
     "valutazione": 61.28,
     "prezzo": 30,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 45
   },
@@ -4791,7 +5308,7 @@
     "valutazione": 43.59,
     "prezzo": 19,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 42
   },
@@ -4802,7 +5319,7 @@
     "valutazione": 60.78,
     "prezzo": 29,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 38
   },
@@ -4813,7 +5330,7 @@
     "valutazione": 46.79,
     "prezzo": 21,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 44
   },
@@ -4829,15 +5346,48 @@
     "gare": 14
   },
   {
+    "tessera": "432884",
+    "nome": "SIVIGLIA LUCA",
+    "sesso": "M",
+    "valutazione": 58.81,
+    "prezzo": 28,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 48
+  },
+  {
     "tessera": "412340",
     "nome": "GIOLO GIANLUCA",
     "sesso": "M",
     "valutazione": 44.68,
     "prezzo": 20,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 37
+  },
+  {
+    "tessera": "449109",
+    "nome": "BIANCHI ERIK",
+    "sesso": "M",
+    "valutazione": 30.36,
+    "prezzo": 13,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 39
+  },
+  {
+    "tessera": "421539",
+    "nome": "MASSA KEVIN",
+    "sesso": "M",
+    "valutazione": 47.65,
+    "prezzo": 21,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 40
   },
   {
     "tessera": "412446",
@@ -4846,7 +5396,7 @@
     "valutazione": 48.91,
     "prezzo": 22,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 41
   },
@@ -4857,7 +5407,7 @@
     "valutazione": 39.03,
     "prezzo": 17,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 39
   },
@@ -4868,7 +5418,7 @@
     "valutazione": 37.11,
     "prezzo": 16,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 30
   },
@@ -4879,7 +5429,7 @@
     "valutazione": 47.38,
     "prezzo": 21,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 43
   },
@@ -4912,7 +5462,7 @@
     "valutazione": 34.76,
     "prezzo": 15,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 35
   },
@@ -4923,7 +5473,7 @@
     "valutazione": 19.9,
     "prezzo": 9,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 39
   },
@@ -4934,7 +5484,7 @@
     "valutazione": 24.0,
     "prezzo": 11,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 42
   },
@@ -4967,7 +5517,7 @@
     "valutazione": 15.14,
     "prezzo": 7,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 5
   },
@@ -4978,7 +5528,7 @@
     "valutazione": 33.42,
     "prezzo": 15,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 29
   },
@@ -5011,7 +5561,7 @@
     "valutazione": 13.59,
     "prezzo": 6,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 42
   },
@@ -5033,7 +5583,7 @@
     "valutazione": 47.67,
     "prezzo": 21,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 48
   },
@@ -5159,6 +5709,17 @@
     "gare": 27
   },
   {
+    "tessera": "479477",
+    "nome": "DORIA SAMUELE",
+    "sesso": "M",
+    "valutazione": 11.12,
+    "prezzo": 5,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 2
+  },
+  {
     "tessera": "441453",
     "nome": "GIULIANI ALESSIO",
     "sesso": "M",
@@ -5214,6 +5775,17 @@
     "gare": 30
   },
   {
+    "tessera": "455213",
+    "nome": "MAZZARA ELISA",
+    "sesso": "F",
+    "valutazione": 12.1,
+    "prezzo": 5,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "SE",
+    "gare": 9
+  },
+  {
     "tessera": "487915",
     "nome": "MICHETTONI GIULIA",
     "sesso": "F",
@@ -5245,6 +5817,17 @@
     "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 23
+  },
+  {
+    "tessera": "482039",
+    "nome": "LIGI GRETA",
+    "sesso": "F",
+    "valutazione": 10.84,
+    "prezzo": 5,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "SE",
+    "gare": 7
   },
   {
     "tessera": "441159",
@@ -5319,7 +5902,7 @@
     "valutazione": 70.44,
     "prezzo": 35,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 18
   },
@@ -5330,7 +5913,7 @@
     "valutazione": 19.34,
     "prezzo": 9,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 36
   },
@@ -5341,7 +5924,7 @@
     "valutazione": 24.36,
     "prezzo": 11,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 33
   },
@@ -5352,7 +5935,7 @@
     "valutazione": 6.93,
     "prezzo": 5,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 12
   },
@@ -5363,7 +5946,7 @@
     "valutazione": 3.16,
     "prezzo": 5,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 17
   },
@@ -5374,7 +5957,7 @@
     "valutazione": 85.51,
     "prezzo": 53,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 46
   },
@@ -5396,7 +5979,7 @@
     "valutazione": 63.54,
     "prezzo": 31,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 40
   },
@@ -5418,7 +6001,7 @@
     "valutazione": 65.02,
     "prezzo": 32,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 20
   },
@@ -5429,7 +6012,7 @@
     "valutazione": 48.14,
     "prezzo": 21,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 33
   },
@@ -5440,7 +6023,7 @@
     "valutazione": 33.61,
     "prezzo": 15,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 43
   },
@@ -5462,7 +6045,7 @@
     "valutazione": 12.22,
     "prezzo": 5,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 12
   },
@@ -5495,7 +6078,7 @@
     "valutazione": 3.91,
     "prezzo": 5,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 19
   },
@@ -5506,9 +6089,20 @@
     "valutazione": 60.21,
     "prezzo": 29,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 27
+  },
+  {
+    "tessera": "214838",
+    "nome": "VOLTATTORNI MATTEO",
+    "sesso": "M",
+    "valutazione": 43.61,
+    "prezzo": 19,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 6
   },
   {
     "tessera": "380987",
@@ -5528,7 +6122,7 @@
     "valutazione": 29.68,
     "prezzo": 13,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 38
   },
@@ -5539,7 +6133,7 @@
     "valutazione": 91.51,
     "prezzo": 67,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 16
   },
@@ -5608,6 +6202,17 @@
     "anno_categoria_2026": 2,
     "categoria_2027": "JU1",
     "gare": 19
+  },
+  {
+    "tessera": "538506",
+    "nome": "MORASSUTTI ENNIO",
+    "sesso": "M",
+    "valutazione": 7.68,
+    "prezzo": 5,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
+    "gare": 8
   },
   {
     "tessera": "478880",
@@ -5696,6 +6301,17 @@
     "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 6
+  },
+  {
+    "tessera": "177394",
+    "nome": "PIVA ERIKA",
+    "sesso": "F",
+    "valutazione": 18.62,
+    "prezzo": 8,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 5
   },
   {
     "tessera": "498607",
@@ -6473,9 +7089,9 @@
     "sesso": "F",
     "valutazione": 21.45,
     "prezzo": 9,
-    "categoria_2026": "RA",
-    "anno_categoria_2026": 1,
-    "categoria_2027": "RA2",
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
     "gare": 6
   },
   {
@@ -6785,17 +7401,6 @@
     "anno_categoria_2026": 1,
     "categoria_2027": "RA2",
     "gare": 10
-  },
-  {
-    "tessera": "540436",
-    "nome": "CHECCHETTO AURELIO",
-    "sesso": "M",
-    "valutazione": 47.57,
-    "prezzo": 21,
-    "categoria_2026": "RA",
-    "anno_categoria_2026": 1,
-    "categoria_2027": "RA2",
-    "gare": 16
   },
   {
     "tessera": "517453",
@@ -7733,6 +8338,17 @@
     "gare": 24
   },
   {
+    "tessera": "505854",
+    "nome": "BARON TOALDO BEATRICE",
+    "sesso": "F",
+    "valutazione": 45.67,
+    "prezzo": 20,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 8
+  },
+  {
     "tessera": "547712",
     "nome": "VIRGILI EMMA",
     "sesso": "F",
@@ -8028,6 +8644,17 @@
     "anno_categoria_2026": 2,
     "categoria_2027": "AL1",
     "gare": 24
+  },
+  {
+    "tessera": "496370",
+    "nome": "FILARETI INES",
+    "sesso": "F",
+    "valutazione": 35.71,
+    "prezzo": 16,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 2
   },
   {
     "tessera": "502566",
@@ -8492,6 +9119,17 @@
     "gare": 11
   },
   {
+    "tessera": "504782",
+    "nome": "PISANO GIULIA",
+    "sesso": "F",
+    "valutazione": 22.03,
+    "prezzo": 10,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 5
+  },
+  {
     "tessera": "550497",
     "nome": "GOBBETTI GIORGIA",
     "sesso": "F",
@@ -8514,6 +9152,17 @@
     "gare": 15
   },
   {
+    "tessera": "586793",
+    "nome": "BORONI EMMA",
+    "sesso": "F",
+    "valutazione": 16.39,
+    "prezzo": 7,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 3
+  },
+  {
     "tessera": "566679",
     "nome": "SENATORE FEDERICA",
     "sesso": "F",
@@ -8523,6 +9172,17 @@
     "anno_categoria_2026": 1,
     "categoria_2027": "AL2",
     "gare": 24
+  },
+  {
+    "tessera": "578498",
+    "nome": "CAMPARDO ISABELLA",
+    "sesso": "F",
+    "valutazione": 17.87,
+    "prezzo": 8,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 3
   },
   {
     "tessera": "510679",
@@ -8732,6 +9392,17 @@
     "anno_categoria_2026": 2,
     "categoria_2027": "AL1",
     "gare": 10
+  },
+  {
+    "tessera": "560279",
+    "nome": "DEMIRAJ DEA",
+    "sesso": "F",
+    "valutazione": 10.07,
+    "prezzo": 5,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 3
   },
   {
     "tessera": "475857",
@@ -9614,13 +10285,24 @@
     "gare": 19
   },
   {
+    "tessera": "435208",
+    "nome": "BIONDI MATILDE",
+    "sesso": "F",
+    "valutazione": 55.78,
+    "prezzo": 26,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 34
+  },
+  {
     "tessera": "463220",
     "nome": "DI BITONTO AURORA",
     "sesso": "F",
     "valutazione": 30.23,
     "prezzo": 13,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 29
   },
@@ -9664,7 +10346,7 @@
     "valutazione": 41.37,
     "prezzo": 18,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 25
   },
@@ -9686,7 +10368,7 @@
     "valutazione": 26.35,
     "prezzo": 12,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 35
   },
@@ -9708,7 +10390,7 @@
     "valutazione": 32.86,
     "prezzo": 14,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 35
   },
@@ -9722,6 +10404,17 @@
     "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 25
+  },
+  {
+    "tessera": "428615",
+    "nome": "CABBOI LUDOVICA",
+    "sesso": "F",
+    "valutazione": 9.24,
+    "prezzo": 5,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 11
   },
   {
     "tessera": "419389",
@@ -9752,7 +10445,7 @@
     "valutazione": 68.82,
     "prezzo": 34,
     "categoria_2026": "SE",
-    "anno_categoria_2026": 2,
+    "anno_categoria_2026": null,
     "categoria_2027": "SE",
     "gare": 13
   },
@@ -10290,9 +10983,9 @@
     "sesso": "F",
     "valutazione": 18.63,
     "prezzo": 8,
-    "categoria_2026": "RA",
-    "anno_categoria_2026": 1,
-    "categoria_2027": "RA2",
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
     "gare": 2
   },
   {
@@ -10378,9 +11071,9 @@
     "sesso": "F",
     "valutazione": 13.78,
     "prezzo": 6,
-    "categoria_2026": "RA",
-    "anno_categoria_2026": 1,
-    "categoria_2027": "RA2",
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
     "gare": 2
   },
   {
@@ -10598,9 +11291,9 @@
     "sesso": "F",
     "valutazione": 19.61,
     "prezzo": 9,
-    "categoria_2026": "RA",
-    "anno_categoria_2026": 1,
-    "categoria_2027": "RA2",
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
     "gare": 5
   },
   {
@@ -11198,6 +11891,17 @@
     "gare": 7
   },
   {
+    "tessera": "594120",
+    "nome": "BISTON FRANCESCA MARIA",
+    "sesso": "F",
+    "valutazione": 27.2,
+    "prezzo": 12,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 2
+  },
+  {
     "tessera": "540832",
     "nome": "GALLO GIORGIA",
     "sesso": "F",
@@ -11220,6 +11924,28 @@
     "gare": 5
   },
   {
+    "tessera": "533239",
+    "nome": "MORELLO MATILDA",
+    "sesso": "F",
+    "valutazione": 20.64,
+    "prezzo": 9,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 2
+  },
+  {
+    "tessera": "587987",
+    "nome": "POZZI SOFIA",
+    "sesso": "F",
+    "valutazione": 18.39,
+    "prezzo": 8,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 2
+  },
+  {
     "tessera": "488580",
     "nome": "CIRAVOLO REBECCA",
     "sesso": "F",
@@ -11240,6 +11966,39 @@
     "anno_categoria_2026": 2,
     "categoria_2027": "AL1",
     "gare": 4
+  },
+  {
+    "tessera": "504557",
+    "nome": "RIGHETTI ALICE",
+    "sesso": "F",
+    "valutazione": 19.19,
+    "prezzo": 8,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 2
+  },
+  {
+    "tessera": "480089",
+    "nome": "FASOLINO ALESSANDRA",
+    "sesso": "F",
+    "valutazione": 18.1,
+    "prezzo": 8,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 2
+  },
+  {
+    "tessera": "491702",
+    "nome": "TARIBELLO AURORA",
+    "sesso": "F",
+    "valutazione": 14.53,
+    "prezzo": 6,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 2
   },
   {
     "tessera": "464580",
@@ -11273,6 +12032,17 @@
     "anno_categoria_2026": 2,
     "categoria_2027": "AL1",
     "gare": 4
+  },
+  {
+    "tessera": "540949",
+    "nome": "BONIELLO SOFIA",
+    "sesso": "F",
+    "valutazione": 18.79,
+    "prezzo": 8,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 2
   },
   {
     "tessera": "551800",
@@ -11319,6 +12089,17 @@
     "gare": 4
   },
   {
+    "tessera": "590342",
+    "nome": "ARIU EBY",
+    "sesso": "F",
+    "valutazione": 12.93,
+    "prezzo": 6,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 2
+  },
+  {
     "tessera": "501917",
     "nome": "RICCI AZZURRA",
     "sesso": "F",
@@ -11339,6 +12120,28 @@
     "anno_categoria_2026": 1,
     "categoria_2027": "AL2",
     "gare": 4
+  },
+  {
+    "tessera": "569534",
+    "nome": "CACIORGNA MATILDE",
+    "sesso": "F",
+    "valutazione": 11.56,
+    "prezzo": 5,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 2
+  },
+  {
+    "tessera": "609467",
+    "nome": "SABA MELISSA",
+    "sesso": "F",
+    "valutazione": 11.57,
+    "prezzo": 5,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 2
   },
   {
     "tessera": "507377",
@@ -11449,6 +12252,17 @@
     "anno_categoria_2026": 1,
     "categoria_2027": "AL2",
     "gare": 6
+  },
+  {
+    "tessera": "484468",
+    "nome": "MISURIELLO SOFIA",
+    "sesso": "F",
+    "valutazione": 38.39,
+    "prezzo": 17,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 2
   },
   {
     "tessera": "534390",
@@ -11581,6 +12395,17 @@
     "anno_categoria_2026": 1,
     "categoria_2027": "AL2",
     "gare": 6
+  },
+  {
+    "tessera": "498825",
+    "nome": "TESTANI SOFIA",
+    "sesso": "F",
+    "valutazione": 22.85,
+    "prezzo": 10,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 2
   },
   {
     "tessera": "528036",
@@ -11737,6 +12562,17 @@
     "gare": 4
   },
   {
+    "tessera": "523832",
+    "nome": "STEVANO SARA",
+    "sesso": "F",
+    "valutazione": 13.41,
+    "prezzo": 6,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 2
+  },
+  {
     "tessera": "594959",
     "nome": "BASTARI FLORA",
     "sesso": "F",
@@ -11858,6 +12694,17 @@
     "gare": 10
   },
   {
+    "tessera": "585911",
+    "nome": "PICCIOLI GABRIEL",
+    "sesso": "M",
+    "valutazione": 26.18,
+    "prezzo": 12,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 2
+  },
+  {
     "tessera": "466455",
     "nome": "SANTUCCIO MARCO",
     "sesso": "M",
@@ -11896,9 +12743,9 @@
     "sesso": "M",
     "valutazione": 22.51,
     "prezzo": 10,
-    "categoria_2026": "AL",
-    "anno_categoria_2026": 1,
-    "categoria_2027": "AL2",
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
     "gare": 4
   },
   {
@@ -11968,6 +12815,17 @@
     "gare": 6
   },
   {
+    "tessera": "552222",
+    "nome": "CESARO GIACOMO",
+    "sesso": "M",
+    "valutazione": 17.11,
+    "prezzo": 8,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 2
+  },
+  {
     "tessera": "594955",
     "nome": "MAROZZI CRISTIAN",
     "sesso": "M",
@@ -12021,6 +12879,17 @@
     "anno_categoria_2026": 1,
     "categoria_2027": "AL2",
     "gare": 4
+  },
+  {
+    "tessera": "511901",
+    "nome": "POLEGGI LORENZO",
+    "sesso": "M",
+    "valutazione": 12.59,
+    "prezzo": 6,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 2
   },
   {
     "tessera": "521831",
@@ -12142,6 +13011,17 @@
     "anno_categoria_2026": 2,
     "categoria_2027": "AL1",
     "gare": 16
+  },
+  {
+    "tessera": "523653",
+    "nome": "GOBBO TIMOFEJ",
+    "sesso": "M",
+    "valutazione": 16.41,
+    "prezzo": 7,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 2
   },
   {
     "tessera": "496780",
@@ -13101,14 +13981,47 @@
     "gare": 2
   },
   {
+    "tessera": "535652",
+    "nome": "PERSICHETTI ANNA",
+    "sesso": "F",
+    "valutazione": 74.55,
+    "prezzo": 38,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 2
+  },
+  {
+    "tessera": "627973",
+    "nome": "SERRA CAMILLA",
+    "sesso": "F",
+    "valutazione": 62.02,
+    "prezzo": 30,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 7
+  },
+  {
+    "tessera": "505239",
+    "nome": "LAI CLAUDIA",
+    "sesso": "F",
+    "valutazione": 36.04,
+    "prezzo": 16,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 4
+  },
+  {
     "tessera": "462806",
     "nome": "BARIN MARGHERITA",
     "sesso": "F",
     "valutazione": 49.51,
     "prezzo": 22,
     "categoria_2026": "RA",
-    "anno_categoria_2026": 1,
-    "categoria_2027": "RA2",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
     "gare": 7
   },
   {
@@ -13118,9 +14031,64 @@
     "valutazione": 41.71,
     "prezzo": 18,
     "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 16
+  },
+  {
+    "tessera": "479150",
+    "nome": "PINTUS AURORA",
+    "sesso": "F",
+    "valutazione": 33.24,
+    "prezzo": 15,
+    "categoria_2026": "RA",
     "anno_categoria_2026": 1,
     "categoria_2027": "RA2",
-    "gare": 16
+    "gare": 5
+  },
+  {
+    "tessera": "605288",
+    "nome": "MARCELLINO GIULIA",
+    "sesso": "F",
+    "valutazione": 28.94,
+    "prezzo": 13,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 2
+  },
+  {
+    "tessera": "588264",
+    "nome": "D'AMORE ROBERTA",
+    "sesso": "F",
+    "valutazione": 23.36,
+    "prezzo": 10,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 4
+  },
+  {
+    "tessera": "479566",
+    "nome": "ARCIUOLO SERENA",
+    "sesso": "F",
+    "valutazione": 34.19,
+    "prezzo": 15,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 4
+  },
+  {
+    "tessera": "616168",
+    "nome": "SPAGNUOLO ANNA",
+    "sesso": "F",
+    "valutazione": 38.5,
+    "prezzo": 17,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 5
   },
   {
     "tessera": "518879",
@@ -13129,8 +14097,8 @@
     "valutazione": 26.39,
     "prezzo": 12,
     "categoria_2026": "RA",
-    "anno_categoria_2026": 1,
-    "categoria_2027": "RA2",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
     "gare": 5
   },
   {
@@ -13140,9 +14108,196 @@
     "valutazione": 17.52,
     "prezzo": 8,
     "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 8
+  },
+  {
+    "tessera": "598196",
+    "nome": "GRECO LUCHINA NICOLE",
+    "sesso": "F",
+    "valutazione": 23.67,
+    "prezzo": 10,
+    "categoria_2026": "RA",
     "anno_categoria_2026": 1,
     "categoria_2027": "RA2",
-    "gare": 8
+    "gare": 2
+  },
+  {
+    "tessera": "561123",
+    "nome": "PETRI ALESSIA",
+    "sesso": "F",
+    "valutazione": 22.77,
+    "prezzo": 10,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 2
+  },
+  {
+    "tessera": "568487",
+    "nome": "INGALLINA ILARIA",
+    "sesso": "F",
+    "valutazione": 21.66,
+    "prezzo": 10,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 2
+  },
+  {
+    "tessera": "568459",
+    "nome": "CARBONE ARIANNA",
+    "sesso": "F",
+    "valutazione": 19.66,
+    "prezzo": 9,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 2
+  },
+  {
+    "tessera": "590548",
+    "nome": "MURTAS AURORA",
+    "sesso": "F",
+    "valutazione": 15.3,
+    "prezzo": 7,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 2
+  },
+  {
+    "tessera": "620177",
+    "nome": "SINGH EKNOORKAUR",
+    "sesso": "F",
+    "valutazione": 15.95,
+    "prezzo": 7,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 2
+  },
+  {
+    "tessera": "595164",
+    "nome": "SALZANO GABRIELLA ZAIRA",
+    "sesso": "F",
+    "valutazione": 18.09,
+    "prezzo": 8,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 2
+  },
+  {
+    "tessera": "607471",
+    "nome": "ZURLO NAUSICA",
+    "sesso": "F",
+    "valutazione": 17.13,
+    "prezzo": 8,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 2
+  },
+  {
+    "tessera": "557315",
+    "nome": "PEREYRA BEATRIZ",
+    "sesso": "F",
+    "valutazione": 15.83,
+    "prezzo": 7,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 2
+  },
+  {
+    "tessera": "552934",
+    "nome": "RIZZO GIORGIA",
+    "sesso": "F",
+    "valutazione": 16.07,
+    "prezzo": 7,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 2
+  },
+  {
+    "tessera": "549372",
+    "nome": "SILANUS PENELOPE",
+    "sesso": "F",
+    "valutazione": 14.22,
+    "prezzo": 6,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 2
+  },
+  {
+    "tessera": "583792",
+    "nome": "GASPARI GIULIA",
+    "sesso": "F",
+    "valutazione": 14.02,
+    "prezzo": 6,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 2
+  },
+  {
+    "tessera": "549435",
+    "nome": "VASSENA GAIA",
+    "sesso": "F",
+    "valutazione": 15.19,
+    "prezzo": 7,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 2
+  },
+  {
+    "tessera": "649445",
+    "nome": "DI GERMANIO GIULIA",
+    "sesso": "F",
+    "valutazione": 13.72,
+    "prezzo": 6,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 1
+  },
+  {
+    "tessera": "582759",
+    "nome": "PRIMICERIO GIULIANA",
+    "sesso": "F",
+    "valutazione": 11.37,
+    "prezzo": 5,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 2
+  },
+  {
+    "tessera": "564003",
+    "nome": "MAMO GRETA",
+    "sesso": "F",
+    "valutazione": 11.62,
+    "prezzo": 5,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 2
+  },
+  {
+    "tessera": "518892",
+    "nome": "PUMA AMBRA",
+    "sesso": "F",
+    "valutazione": 20.61,
+    "prezzo": 9,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 5
   },
   {
     "tessera": "469776",
@@ -13151,9 +14306,31 @@
     "valutazione": 66.12,
     "prezzo": 33,
     "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 8
+  },
+  {
+    "tessera": "488202",
+    "nome": "BARILLI MAYA",
+    "sesso": "F",
+    "valutazione": 34.65,
+    "prezzo": 15,
+    "categoria_2026": "RA",
     "anno_categoria_2026": 1,
     "categoria_2027": "RA2",
-    "gare": 8
+    "gare": 2
+  },
+  {
+    "tessera": "519660",
+    "nome": "CANZIANI NOEMI",
+    "sesso": "F",
+    "valutazione": 32.01,
+    "prezzo": 14,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 2
   },
   {
     "tessera": "535757",
@@ -13162,9 +14339,31 @@
     "valutazione": 26.84,
     "prezzo": 12,
     "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 8
+  },
+  {
+    "tessera": "507937",
+    "nome": "GALLO CHIARA",
+    "sesso": "F",
+    "valutazione": 17.23,
+    "prezzo": 8,
+    "categoria_2026": "RA",
     "anno_categoria_2026": 1,
     "categoria_2027": "RA2",
-    "gare": 8
+    "gare": 5
+  },
+  {
+    "tessera": "613097",
+    "nome": "RICCIUTI DILETTA",
+    "sesso": "F",
+    "valutazione": 26.02,
+    "prezzo": 11,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 2
   },
   {
     "tessera": "582099",
@@ -13173,9 +14372,53 @@
     "valutazione": 36.81,
     "prezzo": 16,
     "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 7
+  },
+  {
+    "tessera": "591706",
+    "nome": "CAMINATI GRETA",
+    "sesso": "F",
+    "valutazione": 18.93,
+    "prezzo": 8,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 2
+  },
+  {
+    "tessera": "615414",
+    "nome": "GALLUZZO SOPHIE",
+    "sesso": "F",
+    "valutazione": 19.29,
+    "prezzo": 8,
+    "categoria_2026": "RA",
     "anno_categoria_2026": 1,
     "categoria_2027": "RA2",
-    "gare": 7
+    "gare": 5
+  },
+  {
+    "tessera": "605054",
+    "nome": "ANSELMI GIORGIA",
+    "sesso": "F",
+    "valutazione": 18.0,
+    "prezzo": 8,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 2
+  },
+  {
+    "tessera": "581336",
+    "nome": "SANTORINO GIULIA",
+    "sesso": "F",
+    "valutazione": 16.59,
+    "prezzo": 7,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 5
   },
   {
     "tessera": "528343",
@@ -13184,9 +14427,163 @@
     "valutazione": 11.71,
     "prezzo": 5,
     "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 13
+  },
+  {
+    "tessera": "522498",
+    "nome": "LORENZONI SARA",
+    "sesso": "F",
+    "valutazione": 21.91,
+    "prezzo": 10,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 5
+  },
+  {
+    "tessera": "540733",
+    "nome": "STUCCHI ASIA",
+    "sesso": "F",
+    "valutazione": 19.61,
+    "prezzo": 9,
+    "categoria_2026": "RA",
     "anno_categoria_2026": 1,
     "categoria_2027": "RA2",
-    "gare": 13
+    "gare": 2
+  },
+  {
+    "tessera": "498574",
+    "nome": "DONADIO GINEVRA",
+    "sesso": "F",
+    "valutazione": 12.65,
+    "prezzo": 6,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 5
+  },
+  {
+    "tessera": "566766",
+    "nome": "BENCINI VIOLA",
+    "sesso": "F",
+    "valutazione": 24.96,
+    "prezzo": 11,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 2
+  },
+  {
+    "tessera": "595681",
+    "nome": "ZAAOUATE MIRIAM SOFIA",
+    "sesso": "F",
+    "valutazione": 16.26,
+    "prezzo": 7,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 2
+  },
+  {
+    "tessera": "543447",
+    "nome": "PANICHELLI FLAVIA",
+    "sesso": "F",
+    "valutazione": 14.17,
+    "prezzo": 6,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 2
+  },
+  {
+    "tessera": "569369",
+    "nome": "DAMIAN STEFAN",
+    "sesso": "M",
+    "valutazione": 44.66,
+    "prezzo": 20,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 2
+  },
+  {
+    "tessera": "518876",
+    "nome": "RUBINO RICCARDO",
+    "sesso": "M",
+    "valutazione": 30.63,
+    "prezzo": 13,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 5
+  },
+  {
+    "tessera": "637309",
+    "nome": "FRUGGIERO RAFFAELE",
+    "sesso": "M",
+    "valutazione": 17.01,
+    "prezzo": 7,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 4
+  },
+  {
+    "tessera": "515592",
+    "nome": "SERENA NICOL?",
+    "sesso": "M",
+    "valutazione": 24.47,
+    "prezzo": 11,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 2
+  },
+  {
+    "tessera": "616939",
+    "nome": "GALLUZZO GABRIEL",
+    "sesso": "M",
+    "valutazione": 13.95,
+    "prezzo": 6,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 5
+  },
+  {
+    "tessera": "498889",
+    "nome": "BAESSO GIOVANNI",
+    "sesso": "M",
+    "valutazione": 16.67,
+    "prezzo": 7,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 2
+  },
+  {
+    "tessera": "546962",
+    "nome": "MAROTTA MATTEO",
+    "sesso": "M",
+    "valutazione": 15.65,
+    "prezzo": 7,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 2
+  },
+  {
+    "tessera": "485851",
+    "nome": "LAZZARO TOMMASO",
+    "sesso": "M",
+    "valutazione": 12.84,
+    "prezzo": 6,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 2
   },
   {
     "tessera": "537388",
@@ -13195,9 +14592,42 @@
     "valutazione": 35.29,
     "prezzo": 16,
     "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 16
+  },
+  {
+    "tessera": "582733",
+    "nome": "BARTOLAZZI MENCHETTI FILIPPO FRANCESCO",
+    "sesso": "M",
+    "valutazione": 20.54,
+    "prezzo": 9,
+    "categoria_2026": "RA",
     "anno_categoria_2026": 1,
     "categoria_2027": "RA2",
-    "gare": 16
+    "gare": 2
+  },
+  {
+    "tessera": "605053",
+    "nome": "PEZZOTTA CHRISTIAN",
+    "sesso": "M",
+    "valutazione": 16.01,
+    "prezzo": 7,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 2
+  },
+  {
+    "tessera": "552268",
+    "nome": "RIGHETTI ALESSANDRO",
+    "sesso": "M",
+    "valutazione": 13.14,
+    "prezzo": 6,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 2
   },
   {
     "tessera": "516443",
@@ -13318,6 +14748,17 @@
     "categoria_2026": "R12",
     "anno_categoria_2026": null,
     "categoria_2027": "RA1",
+    "gare": 3
+  },
+  {
+    "tessera": "548762",
+    "nome": "SCARLATTI TOMMASO",
+    "sesso": "M",
+    "valutazione": 36.41,
+    "prezzo": 16,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
     "gare": 3
   },
   {
@@ -13475,14 +14916,2225 @@
     "gare": 3
   },
   {
+    "tessera": "538418",
+    "nome": "FALCOMER AURORA",
+    "sesso": "F",
+    "valutazione": 15.25,
+    "prezzo": 7,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 3
+  },
+  {
+    "tessera": "546070",
+    "nome": "SGROI REBECCA",
+    "sesso": "F",
+    "valutazione": 12.18,
+    "prezzo": 5,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 3
+  },
+  {
+    "tessera": "538599",
+    "nome": "AMADORE CHIARA",
+    "sesso": "F",
+    "valutazione": 12.16,
+    "prezzo": 5,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 3
+  },
+  {
     "tessera": "474501",
     "nome": "MARZIONI TOMMASO",
     "sesso": "M",
     "valutazione": 25.58,
     "prezzo": 11,
     "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 6
+  },
+  {
+    "tessera": "582041",
+    "nome": "CURZI RICCARDO",
+    "sesso": "M",
+    "valutazione": 19.09,
+    "prezzo": 8,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 3
+  },
+  {
+    "tessera": "566566",
+    "nome": "ROSINI ALVISE LUCIANO",
+    "sesso": "M",
+    "valutazione": 20.8,
+    "prezzo": 9,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 12
+  },
+  {
+    "tessera": "380400",
+    "nome": "VIRILI ALESSIO",
+    "sesso": "M",
+    "valutazione": 9.74,
+    "prezzo": 5,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 20
+  },
+  {
+    "tessera": "190242",
+    "nome": "FRANCOLINI FABIO",
+    "sesso": "M",
+    "valutazione": 80.79,
+    "prezzo": 46,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 13
+  },
+  {
+    "tessera": "527714",
+    "nome": "DI BARI NICCOLO'",
+    "sesso": "M",
+    "valutazione": 12.19,
+    "prezzo": 5,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 13
+  },
+  {
+    "tessera": "566481",
+    "nome": "CHIRICO PAOLO",
+    "sesso": "M",
+    "valutazione": 17.33,
+    "prezzo": 8,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 10
+  },
+  {
+    "tessera": "581822",
+    "nome": "BOSCO BEATRICE",
+    "sesso": "F",
+    "valutazione": 7.44,
+    "prezzo": 5,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 9
+  },
+  {
+    "tessera": "476518",
+    "nome": "FRULLA PENELOPE",
+    "sesso": "F",
+    "valutazione": 52.96,
+    "prezzo": 24,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 7
+  },
+  {
+    "tessera": "597068",
+    "nome": "BARTOCCIONI BARTOLAC LEONARDO",
+    "sesso": "M",
+    "valutazione": 13.07,
+    "prezzo": 6,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 4
+  },
+  {
+    "tessera": "509094",
+    "nome": "BORTOLATO VITTORIA",
+    "sesso": "F",
+    "valutazione": 31.55,
+    "prezzo": 14,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 11
+  },
+  {
+    "tessera": "598231",
+    "nome": "GIACHI MIA",
+    "sesso": "F",
+    "valutazione": 12.73,
+    "prezzo": 6,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 3
+  },
+  {
+    "tessera": "537198",
+    "nome": "OLIVIERI IRENE",
+    "sesso": "F",
+    "valutazione": 37.14,
+    "prezzo": 16,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 3
+  },
+  {
+    "tessera": "488639",
+    "nome": "SECLI' VIOLA",
+    "sesso": "F",
+    "valutazione": 10.12,
+    "prezzo": 5,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 3
+  },
+  {
+    "tessera": "516663",
+    "nome": "PALMAS ANITA",
+    "sesso": "F",
+    "valutazione": 21.25,
+    "prezzo": 9,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 7
+  },
+  {
+    "tessera": "535186",
+    "nome": "MARCOMINI LETIZIA",
+    "sesso": "F",
+    "valutazione": 19.97,
+    "prezzo": 9,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 3
+  },
+  {
+    "tessera": "579642",
+    "nome": "FIAMINGO RICCARDO",
+    "sesso": "M",
+    "valutazione": 16.2,
+    "prezzo": 7,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 5
+  },
+  {
+    "tessera": "579643",
+    "nome": "FIAMINGO ROSARIO",
+    "sesso": "M",
+    "valutazione": 19.22,
+    "prezzo": 8,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 5
+  },
+  {
+    "tessera": "541053",
+    "nome": "PAGELLA FRANCESCO",
+    "sesso": "M",
+    "valutazione": 45.9,
+    "prezzo": 20,
+    "categoria_2026": "RA",
     "anno_categoria_2026": 1,
     "categoria_2027": "RA2",
     "gare": 6
+  },
+  {
+    "tessera": "475808",
+    "nome": "CECCHELLI NICHOLAS",
+    "sesso": "M",
+    "valutazione": 19.7,
+    "prezzo": 9,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 5
+  },
+  {
+    "tessera": "546692",
+    "nome": "GASPARRI GRETA",
+    "sesso": "F",
+    "valutazione": 15.83,
+    "prezzo": 7,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 9
+  },
+  {
+    "tessera": "494528",
+    "nome": "DELPUPO MAXIMA BELEN",
+    "sesso": "F",
+    "valutazione": 67.28,
+    "prezzo": 33,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 13
+  },
+  {
+    "tessera": "571930",
+    "nome": "CIREDDU FIORELLA",
+    "sesso": "F",
+    "valutazione": 43.97,
+    "prezzo": 19,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 12
+  },
+  {
+    "tessera": "532478",
+    "nome": "FORNERIS FRANCESCA",
+    "sesso": "F",
+    "valutazione": 6.24,
+    "prezzo": 5,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "AL1",
+    "gare": 11
+  },
+  {
+    "tessera": "526891",
+    "nome": "CARMINATI SYRIA",
+    "sesso": "F",
+    "valutazione": 33.81,
+    "prezzo": 15,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 11
+  },
+  {
+    "tessera": "468175",
+    "nome": "CANTONI ADELAIDE",
+    "sesso": "F",
+    "valutazione": 22.9,
+    "prezzo": 10,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
+    "gare": 8
+  },
+  {
+    "tessera": "486689",
+    "nome": "FRULLINI GIOIA",
+    "sesso": "F",
+    "valutazione": 22.49,
+    "prezzo": 10,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
+    "gare": 4
+  },
+  {
+    "tessera": "506819",
+    "nome": "FIERLI MIREN",
+    "sesso": "F",
+    "valutazione": 17.66,
+    "prezzo": 8,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
+    "gare": 12
+  },
+  {
+    "tessera": "566683",
+    "nome": "TURSI GINEVRA",
+    "sesso": "F",
+    "valutazione": 15.2,
+    "prezzo": 7,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
+    "gare": 4
+  },
+  {
+    "tessera": "603250",
+    "nome": "ARNABOLDI ALICE",
+    "sesso": "F",
+    "valutazione": 15.03,
+    "prezzo": 7,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 2
+  },
+  {
+    "tessera": "504199",
+    "nome": "BARONI GIORGIA",
+    "sesso": "F",
+    "valutazione": 14.02,
+    "prezzo": 6,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 2
+  },
+  {
+    "tessera": "630126",
+    "nome": "COLOMBO MARIASOLE",
+    "sesso": "F",
+    "valutazione": 12.3,
+    "prezzo": 5,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 2
+  },
+  {
+    "tessera": "547704",
+    "nome": "MILIOZZI MATILDE",
+    "sesso": "F",
+    "valutazione": 11.54,
+    "prezzo": 5,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
+    "gare": 2
+  },
+  {
+    "tessera": "545932",
+    "nome": "MEI LAURA",
+    "sesso": "F",
+    "valutazione": 13.16,
+    "prezzo": 6,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
+    "gare": 2
+  },
+  {
+    "tessera": "622495",
+    "nome": "BARTOCCIONI BARTOLAC ALICE",
+    "sesso": "F",
+    "valutazione": 10.96,
+    "prezzo": 5,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
+    "gare": 2
+  },
+  {
+    "tessera": "480489",
+    "nome": "CERIANI NOELIA",
+    "sesso": "F",
+    "valutazione": 37.41,
+    "prezzo": 16,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
+    "gare": 23
+  },
+  {
+    "tessera": "521703",
+    "nome": "SALVIATO GIOIA",
+    "sesso": "F",
+    "valutazione": 26.73,
+    "prezzo": 12,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 9
+  },
+  {
+    "tessera": "549159",
+    "nome": "MEDDA GIULIA",
+    "sesso": "F",
+    "valutazione": 26.68,
+    "prezzo": 12,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 2
+  },
+  {
+    "tessera": "480916",
+    "nome": "BERETTA DANIELE",
+    "sesso": "M",
+    "valutazione": 20.42,
+    "prezzo": 9,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
+    "gare": 11
+  },
+  {
+    "tessera": "596817",
+    "nome": "ANTONACI MATTEO",
+    "sesso": "M",
+    "valutazione": 20.45,
+    "prezzo": 9,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 2
+  },
+  {
+    "tessera": "477081",
+    "nome": "PETTINARI EMANUELE",
+    "sesso": "M",
+    "valutazione": 11.46,
+    "prezzo": 5,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 4
+  },
+  {
+    "tessera": "474981",
+    "nome": "MARINELLI ANDREA",
+    "sesso": "M",
+    "valutazione": 23.4,
+    "prezzo": 10,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
+    "gare": 10
+  },
+  {
+    "tessera": "495067",
+    "nome": "SPAGNOLO ANDREA",
+    "sesso": "M",
+    "valutazione": 12.41,
+    "prezzo": 5,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 2
+  },
+  {
+    "tessera": "626531",
+    "nome": "COLLA GIORGIA",
+    "sesso": "F",
+    "valutazione": 18.05,
+    "prezzo": 8,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 5
+  },
+  {
+    "tessera": "498739",
+    "nome": "TURETTA ARTEMISIA",
+    "sesso": "F",
+    "valutazione": 27.18,
+    "prezzo": 12,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 4
+  },
+  {
+    "tessera": "538736",
+    "nome": "PAOLOTTI ELISA",
+    "sesso": "F",
+    "valutazione": 18.87,
+    "prezzo": 8,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 6
+  },
+  {
+    "tessera": "578769",
+    "nome": "GRANITZIO MATILDE",
+    "sesso": "F",
+    "valutazione": 12.33,
+    "prezzo": 5,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 2
+  },
+  {
+    "tessera": "645207",
+    "nome": "VALERI VALERIA",
+    "sesso": "F",
+    "valutazione": 11.33,
+    "prezzo": 5,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 2
+  },
+  {
+    "tessera": "480902",
+    "nome": "BORTOLETTI FRANCESCO",
+    "sesso": "M",
+    "valutazione": 13.66,
+    "prezzo": 6,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 5
+  },
+  {
+    "tessera": "583793",
+    "nome": "SPEZZAFERRI NICOLA",
+    "sesso": "M",
+    "valutazione": 10.23,
+    "prezzo": 5,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 2
+  },
+  {
+    "tessera": "392866",
+    "nome": "MOSCA SARA",
+    "sesso": "F",
+    "valutazione": 43.35,
+    "prezzo": 19,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 18
+  },
+  {
+    "tessera": "511624",
+    "nome": "GOMEZ BOHORQUEZ PAULA VALERIA",
+    "sesso": "F",
+    "valutazione": 16.21,
+    "prezzo": 7,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 28
+  },
+  {
+    "tessera": "408725",
+    "nome": "DI CIUCCIO VIOLA",
+    "sesso": "F",
+    "valutazione": 14.49,
+    "prezzo": 6,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 2
+  },
+  {
+    "tessera": "407640",
+    "nome": "CORSINI GIORGIA",
+    "sesso": "F",
+    "valutazione": 50.26,
+    "prezzo": 22,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 39
+  },
+  {
+    "tessera": "419638",
+    "nome": "FELICETTI ELIA",
+    "sesso": "M",
+    "valutazione": 19.09,
+    "prezzo": 8,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 31
+  },
+  {
+    "tessera": "356649",
+    "nome": "FERRARI TIZIANO",
+    "sesso": "M",
+    "valutazione": 13.58,
+    "prezzo": 6,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 3
+  },
+  {
+    "tessera": "585646",
+    "nome": "KLESYK CLAUDIO",
+    "sesso": "M",
+    "valutazione": 12.68,
+    "prezzo": 6,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 2
+  },
+  {
+    "tessera": "406444",
+    "nome": "LAZZARINI ANDREA",
+    "sesso": "M",
+    "valutazione": 37.82,
+    "prezzo": 17,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 23
+  },
+  {
+    "tessera": "507958",
+    "nome": "DETTORI ALESSANDRA",
+    "sesso": "F",
+    "valutazione": 21.72,
+    "prezzo": 10,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 3
+  },
+  {
+    "tessera": "490922",
+    "nome": "IMPELLITTERI DALIA",
+    "sesso": "F",
+    "valutazione": 14.22,
+    "prezzo": 6,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
+    "gare": 3
+  },
+  {
+    "tessera": "534693",
+    "nome": "MORETTI VIOLA",
+    "sesso": "F",
+    "valutazione": 11.61,
+    "prezzo": 5,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 3
+  },
+  {
+    "tessera": "495143",
+    "nome": "ORSI SARA",
+    "sesso": "F",
+    "valutazione": 27.56,
+    "prezzo": 12,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "SE",
+    "gare": 15
+  },
+  {
+    "tessera": "451765",
+    "nome": "BERNARDINI GIULIA",
+    "sesso": "F",
+    "valutazione": 8.41,
+    "prezzo": 5,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 5
+  },
+  {
+    "tessera": "465226",
+    "nome": "BECCACECI GIOVANNI",
+    "sesso": "M",
+    "valutazione": 10.54,
+    "prezzo": 5,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "JU2",
+    "gare": 3
+  },
+  {
+    "tessera": "440650",
+    "nome": "AMICONE GINEVRA",
+    "sesso": "F",
+    "valutazione": 42.99,
+    "prezzo": 19,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 26
+  },
+  {
+    "tessera": "361686",
+    "nome": "BAZZANI CAMILLA",
+    "sesso": "F",
+    "valutazione": 13.91,
+    "prezzo": 6,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 6
+  },
+  {
+    "tessera": "422240",
+    "nome": "MONTICO SIRIA",
+    "sesso": "F",
+    "valutazione": 63.83,
+    "prezzo": 31,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 34
+  },
+  {
+    "tessera": "364748",
+    "nome": "LAZZARO SAMUEL",
+    "sesso": "M",
+    "valutazione": 33.0,
+    "prezzo": 15,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 9
+  },
+  {
+    "tessera": "366939",
+    "nome": "BIANCA SIMONE",
+    "sesso": "M",
+    "valutazione": 8.84,
+    "prezzo": 5,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 5
+  },
+  {
+    "tessera": "430805",
+    "nome": "CARRARO ELIA",
+    "sesso": "M",
+    "valutazione": 36.15,
+    "prezzo": 16,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 36
+  },
+  {
+    "tessera": "243230",
+    "nome": "QUADARELLA FABIO",
+    "sesso": "M",
+    "valutazione": 44.64,
+    "prezzo": 20,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 22
+  },
+  {
+    "tessera": "468121",
+    "nome": "EPIFANI MATILDA",
+    "sesso": "F",
+    "valutazione": 51.59,
+    "prezzo": 23,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "JU1",
+    "gare": 2
+  },
+  {
+    "tessera": "615235",
+    "nome": "CRUDU DENISA",
+    "sesso": "F",
+    "valutazione": 16.16,
+    "prezzo": 7,
+    "categoria_2026": "AL",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "AL2",
+    "gare": 3
+  },
+  {
+    "tessera": "454739",
+    "nome": "LLESHAJ AMELIA",
+    "sesso": "F",
+    "valutazione": 15.79,
+    "prezzo": 7,
+    "categoria_2026": "JU",
+    "anno_categoria_2026": 2,
+    "categoria_2027": "SE",
+    "gare": 15
+  },
+  {
+    "tessera": "428953",
+    "nome": "CAMERANI FRANCESCA",
+    "sesso": "F",
+    "valutazione": 32.82,
+    "prezzo": 14,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 3
+  },
+  {
+    "tessera": "238617",
+    "nome": "DEMARTIS SARA",
+    "sesso": "F",
+    "valutazione": 7.06,
+    "prezzo": 5,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 6
+  },
+  {
+    "tessera": "440811",
+    "nome": "SALATTI FEDERICO",
+    "sesso": "M",
+    "valutazione": 22.35,
+    "prezzo": 10,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 10
+  },
+  {
+    "tessera": "700001",
+    "nome": "RIENZO RICCARDO",
+    "sesso": "M",
+    "valutazione": 14.83,
+    "prezzo": 7,
+    "categoria_2026": "SE",
+    "anno_categoria_2026": null,
+    "categoria_2027": "SE",
+    "gare": 1
+  },
+  {
+    "tessera": "549876",
+    "nome": "PINTORE SOFIA",
+    "sesso": "F",
+    "valutazione": 82.33,
+    "prezzo": 48,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "582332",
+    "nome": "BONAFEDE CHIARA",
+    "sesso": "F",
+    "valutazione": 79.09,
+    "prezzo": 44,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "496321",
+    "nome": "MARELLI ELISA",
+    "sesso": "F",
+    "valutazione": 87.11,
+    "prezzo": 55,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "548730",
+    "nome": "USAI MARGHERITA",
+    "sesso": "F",
+    "valutazione": 72.48,
+    "prezzo": 36,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "554413",
+    "nome": "MASI MARTINA",
+    "sesso": "F",
+    "valutazione": 81.58,
+    "prezzo": 47,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "582473",
+    "nome": "RIZZATO MARTINA",
+    "sesso": "F",
+    "valutazione": 87.49,
+    "prezzo": 56,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "549858",
+    "nome": "LEDDA EMANUELA",
+    "sesso": "F",
+    "valutazione": 66.98,
+    "prezzo": 33,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "527655",
+    "nome": "CAPORALE CHIARA",
+    "sesso": "F",
+    "valutazione": 50.0,
+    "prezzo": 22,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "550229",
+    "nome": "BASSETTI SARA",
+    "sesso": "F",
+    "valutazione": 63.01,
+    "prezzo": 31,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "496322",
+    "nome": "TAGLIABUE CECILIA",
+    "sesso": "F",
+    "valutazione": 78.52,
+    "prezzo": 43,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "499704",
+    "nome": "TORRESIN SARA",
+    "sesso": "F",
+    "valutazione": 43.69,
+    "prezzo": 19,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "564500",
+    "nome": "FERRARA ELEONORA LUCIA",
+    "sesso": "F",
+    "valutazione": 53.74,
+    "prezzo": 24,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "560524",
+    "nome": "GATTI LUCIA",
+    "sesso": "F",
+    "valutazione": 64.33,
+    "prezzo": 32,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "528334",
+    "nome": "NANNA VERONICA",
+    "sesso": "F",
+    "valutazione": 50.56,
+    "prezzo": 22,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "483357",
+    "nome": "BELFIORI ARIANNA",
+    "sesso": "F",
+    "valutazione": 26.67,
+    "prezzo": 12,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "548261",
+    "nome": "FERRETTI ELISA",
+    "sesso": "F",
+    "valutazione": 62.81,
+    "prezzo": 31,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "567907",
+    "nome": "BARTOLINI GLORIA",
+    "sesso": "F",
+    "valutazione": 35.13,
+    "prezzo": 15,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "586373",
+    "nome": "GHADDAR GIULIA",
+    "sesso": "F",
+    "valutazione": 62.61,
+    "prezzo": 30,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "548750",
+    "nome": "LUPACCHINI GAIA",
+    "sesso": "F",
+    "valutazione": 52.75,
+    "prezzo": 24,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "599310",
+    "nome": "FORTUNATO AURORA",
+    "sesso": "F",
+    "valutazione": 59.44,
+    "prezzo": 28,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "488408",
+    "nome": "PILLONI AMELIA",
+    "sesso": "F",
+    "valutazione": 26.35,
+    "prezzo": 12,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "606894",
+    "nome": "RAO MARIA CHIARA",
+    "sesso": "F",
+    "valutazione": 33.47,
+    "prezzo": 15,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "518470",
+    "nome": "SACCARDIN CLAUDIA",
+    "sesso": "F",
+    "valutazione": 55.39,
+    "prezzo": 26,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "532619",
+    "nome": "OPREA ADA",
+    "sesso": "F",
+    "valutazione": 41.43,
+    "prezzo": 18,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "568485",
+    "nome": "MARTINELLI IRENE",
+    "sesso": "F",
+    "valutazione": 30.88,
+    "prezzo": 14,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "607475",
+    "nome": "QUICI MARZIA",
+    "sesso": "F",
+    "valutazione": 50.26,
+    "prezzo": 22,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "611810",
+    "nome": "ORILIA ARIANNA",
+    "sesso": "F",
+    "valutazione": 46.27,
+    "prezzo": 20,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "549640",
+    "nome": "SANTORO CORINNA",
+    "sesso": "F",
+    "valutazione": 53.83,
+    "prezzo": 25,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "552094",
+    "nome": "DIDONE NICOLE",
+    "sesso": "F",
+    "valutazione": 42.79,
+    "prezzo": 19,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "527572",
+    "nome": "BOSCHI GIORGIA",
+    "sesso": "F",
+    "valutazione": 39.54,
+    "prezzo": 17,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "551702",
+    "nome": "DELPRIORI GAIA",
+    "sesso": "F",
+    "valutazione": 32.5,
+    "prezzo": 14,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "627011",
+    "nome": "NARCISI MYA",
+    "sesso": "F",
+    "valutazione": 43.77,
+    "prezzo": 19,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "564724",
+    "nome": "COVATTA GIADA",
+    "sesso": "F",
+    "valutazione": 35.71,
+    "prezzo": 16,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "545104",
+    "nome": "MIRA GINEVRA",
+    "sesso": "F",
+    "valutazione": 46.92,
+    "prezzo": 21,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "550905",
+    "nome": "TOMASI ANNA",
+    "sesso": "F",
+    "valutazione": 31.33,
+    "prezzo": 14,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "591010",
+    "nome": "RINALDI REBECCA",
+    "sesso": "F",
+    "valutazione": 36.79,
+    "prezzo": 16,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "550718",
+    "nome": "ROSSI SABRINA",
+    "sesso": "F",
+    "valutazione": 27.33,
+    "prezzo": 12,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "562310",
+    "nome": "PALA CHIARA",
+    "sesso": "F",
+    "valutazione": 40.44,
+    "prezzo": 18,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "591363",
+    "nome": "PECELLI VIRGINIA",
+    "sesso": "F",
+    "valutazione": 36.69,
+    "prezzo": 16,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "491015",
+    "nome": "MARRAFFA KAROL",
+    "sesso": "F",
+    "valutazione": 30.02,
+    "prezzo": 13,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "594500",
+    "nome": "FILIPENKO ZLATA",
+    "sesso": "F",
+    "valutazione": 40.6,
+    "prezzo": 18,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "528612",
+    "nome": "D'AGOSTINO LAVINIA",
+    "sesso": "F",
+    "valutazione": 31.62,
+    "prezzo": 14,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "534358",
+    "nome": "NORTESANI SOFIA",
+    "sesso": "F",
+    "valutazione": 28.57,
+    "prezzo": 13,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "613253",
+    "nome": "DE CARO NOEMI",
+    "sesso": "F",
+    "valutazione": 29.25,
+    "prezzo": 13,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "537342",
+    "nome": "ROSSI GIORGIA",
+    "sesso": "F",
+    "valutazione": 29.72,
+    "prezzo": 13,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "551584",
+    "nome": "PULVIRENTI EMMA",
+    "sesso": "F",
+    "valutazione": 21.06,
+    "prezzo": 9,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "611066",
+    "nome": "MERCURI LUNA",
+    "sesso": "F",
+    "valutazione": 25.94,
+    "prezzo": 11,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "532741",
+    "nome": "CARRETTI ASIA",
+    "sesso": "F",
+    "valutazione": 24.7,
+    "prezzo": 11,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "613299",
+    "nome": "MENNUTI MICHELLE",
+    "sesso": "F",
+    "valutazione": 26.11,
+    "prezzo": 11,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "579279",
+    "nome": "ZAPPI NICOLE",
+    "sesso": "F",
+    "valutazione": 20.0,
+    "prezzo": 9,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "582024",
+    "nome": "BRUNO GAIA",
+    "sesso": "F",
+    "valutazione": 20.19,
+    "prezzo": 9,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "528363",
+    "nome": "LILLINI CATERINA",
+    "sesso": "F",
+    "valutazione": 21.48,
+    "prezzo": 9,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "600374",
+    "nome": "PIAZZON BENEDETTA",
+    "sesso": "F",
+    "valutazione": 21.21,
+    "prezzo": 9,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "600012",
+    "nome": "GENTILE SIRIA",
+    "sesso": "F",
+    "valutazione": 17.99,
+    "prezzo": 8,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "580572",
+    "nome": "GARGHENTINI GRETA",
+    "sesso": "F",
+    "valutazione": 18.86,
+    "prezzo": 8,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "578665",
+    "nome": "PAOLUCCI CARLOTTA",
+    "sesso": "F",
+    "valutazione": 19.28,
+    "prezzo": 8,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "528352",
+    "nome": "BUFANO MELANIA",
+    "sesso": "F",
+    "valutazione": 19.73,
+    "prezzo": 9,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "505132",
+    "nome": "DETTORI LARA",
+    "sesso": "F",
+    "valutazione": 15.68,
+    "prezzo": 7,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "550146",
+    "nome": "BIONDI MATILDE",
+    "sesso": "F",
+    "valutazione": 16.51,
+    "prezzo": 7,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "580080",
+    "nome": "DI CREDICO GIULIA",
+    "sesso": "F",
+    "valutazione": 17.78,
+    "prezzo": 8,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "609175",
+    "nome": "BRUSATORI CHARLOTTE GISELLE GR",
+    "sesso": "F",
+    "valutazione": 16.48,
+    "prezzo": 7,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "488838",
+    "nome": "COCCO GIADA",
+    "sesso": "F",
+    "valutazione": 14.05,
+    "prezzo": 6,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "552844",
+    "nome": "CHIA CLARA",
+    "sesso": "F",
+    "valutazione": 15.36,
+    "prezzo": 7,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "549691",
+    "nome": "ZAPPATA VIOLA",
+    "sesso": "F",
+    "valutazione": 20.1,
+    "prezzo": 9,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "569633",
+    "nome": "MOTTA ANNA",
+    "sesso": "F",
+    "valutazione": 14.04,
+    "prezzo": 6,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "566789",
+    "nome": "LEONE ALICE",
+    "sesso": "F",
+    "valutazione": 12.73,
+    "prezzo": 6,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "636282",
+    "nome": "FE' AMANDA",
+    "sesso": "F",
+    "valutazione": 12.1,
+    "prezzo": 5,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "524980",
+    "nome": "PIN CLARISSA",
+    "sesso": "F",
+    "valutazione": 10.64,
+    "prezzo": 5,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "558624",
+    "nome": "CARDILLO CICCIONE GRETA",
+    "sesso": "F",
+    "valutazione": 86.55,
+    "prezzo": 54,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "518471",
+    "nome": "BONETALLI BENEDETTA",
+    "sesso": "F",
+    "valutazione": 86.35,
+    "prezzo": 54,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "566244",
+    "nome": "BUCCIARELLI NICOLE",
+    "sesso": "F",
+    "valutazione": 85.41,
+    "prezzo": 53,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "557108",
+    "nome": "PASCANIUC REBECCA",
+    "sesso": "F",
+    "valutazione": 92.12,
+    "prezzo": 68,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "581631",
+    "nome": "FRANZOI CHIARA",
+    "sesso": "F",
+    "valutazione": 82.77,
+    "prezzo": 49,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "511390",
+    "nome": "CLEMENTE MATILDE",
+    "sesso": "F",
+    "valutazione": 65.51,
+    "prezzo": 32,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "529679",
+    "nome": "DI FILIPPO RACHELE",
+    "sesso": "F",
+    "valutazione": 80.15,
+    "prezzo": 45,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "512626",
+    "nome": "CARAMANTE IRENE",
+    "sesso": "F",
+    "valutazione": 46.03,
+    "prezzo": 20,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "509061",
+    "nome": "ANNIBALE DILETTA",
+    "sesso": "F",
+    "valutazione": 66.73,
+    "prezzo": 33,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "644725",
+    "nome": "MAFFI GINEVRA",
+    "sesso": "F",
+    "valutazione": 66.14,
+    "prezzo": 33,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "566986",
+    "nome": "TIVERON TECLA",
+    "sesso": "F",
+    "valutazione": 67.36,
+    "prezzo": 33,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "556899",
+    "nome": "DI ROSA MARIA",
+    "sesso": "F",
+    "valutazione": 55.54,
+    "prezzo": 26,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "496339",
+    "nome": "MALERBA MARGHERITA",
+    "sesso": "F",
+    "valutazione": 66.6,
+    "prezzo": 33,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 7
+  },
+  {
+    "tessera": "553277",
+    "nome": "POMPEI MATILDE",
+    "sesso": "F",
+    "valutazione": 69.95,
+    "prezzo": 35,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "540707",
+    "nome": "BRUNO AURORA",
+    "sesso": "F",
+    "valutazione": 75.62,
+    "prezzo": 39,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "609816",
+    "nome": "COCCIA MARIASOLE",
+    "sesso": "F",
+    "valutazione": 37.71,
+    "prezzo": 17,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "500879",
+    "nome": "DI BARTOLO CLOE",
+    "sesso": "F",
+    "valutazione": 74.24,
+    "prezzo": 38,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 7
+  },
+  {
+    "tessera": "558620",
+    "nome": "CRUSCO FLAVIA",
+    "sesso": "F",
+    "valutazione": 51.23,
+    "prezzo": 23,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "555943",
+    "nome": "EMILI GRETA",
+    "sesso": "F",
+    "valutazione": 42.33,
+    "prezzo": 19,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "581084",
+    "nome": "COLLU AMBRA",
+    "sesso": "F",
+    "valutazione": 79.4,
+    "prezzo": 44,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "575146",
+    "nome": "COGLIATI KIM",
+    "sesso": "F",
+    "valutazione": 71.74,
+    "prezzo": 36,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "578509",
+    "nome": "LA MURA SULLO CAMILLA",
+    "sesso": "F",
+    "valutazione": 42.25,
+    "prezzo": 19,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "550086",
+    "nome": "LANDONI AZZURRA HERMIONE",
+    "sesso": "F",
+    "valutazione": 68.15,
+    "prezzo": 34,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "576308",
+    "nome": "CRIPPA CECILIA",
+    "sesso": "F",
+    "valutazione": 69.72,
+    "prezzo": 35,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "536725",
+    "nome": "GABANA ANNA",
+    "sesso": "F",
+    "valutazione": 53.15,
+    "prezzo": 24,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "593863",
+    "nome": "DI CREDICO MELISSA",
+    "sesso": "F",
+    "valutazione": 37.67,
+    "prezzo": 17,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "540151",
+    "nome": "BALDAS GRETA",
+    "sesso": "F",
+    "valutazione": 70.26,
+    "prezzo": 35,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "541015",
+    "nome": "TEI JESSICA",
+    "sesso": "F",
+    "valutazione": 64.03,
+    "prezzo": 31,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "537578",
+    "nome": "PALA DENISE",
+    "sesso": "F",
+    "valutazione": 62.23,
+    "prezzo": 30,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "589212",
+    "nome": "COCCIA BEATRICE",
+    "sesso": "F",
+    "valutazione": 34.03,
+    "prezzo": 15,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "548647",
+    "nome": "BALAUSTRA VITTORIA",
+    "sesso": "F",
+    "valutazione": 47.62,
+    "prezzo": 21,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "549864",
+    "nome": "SABA NICOLE",
+    "sesso": "F",
+    "valutazione": 73.77,
+    "prezzo": 37,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "546804",
+    "nome": "GIOVENZANA MARIA",
+    "sesso": "F",
+    "valutazione": 45.29,
+    "prezzo": 20,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "580746",
+    "nome": "MARINI SVEVA",
+    "sesso": "F",
+    "valutazione": 38.0,
+    "prezzo": 17,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "582474",
+    "nome": "JORGO CRISTINA",
+    "sesso": "F",
+    "valutazione": 52.92,
+    "prezzo": 24,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "537539",
+    "nome": "CHINNICI AURORA",
+    "sesso": "F",
+    "valutazione": 43.0,
+    "prezzo": 19,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "497587",
+    "nome": "ALLARIA ANITA",
+    "sesso": "F",
+    "valutazione": 37.4,
+    "prezzo": 16,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "562555",
+    "nome": "PISELLA ARIANNA",
+    "sesso": "F",
+    "valutazione": 32.19,
+    "prezzo": 14,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "548649",
+    "nome": "BALAUSTRA FRANCESCA",
+    "sesso": "F",
+    "valutazione": 45.06,
+    "prezzo": 20,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "577148",
+    "nome": "SANTANDREA GIORGIA",
+    "sesso": "F",
+    "valutazione": 46.56,
+    "prezzo": 20,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "586209",
+    "nome": "VITTURI ANNA",
+    "sesso": "F",
+    "valutazione": 29.7,
+    "prezzo": 13,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "528610",
+    "nome": "PREZIOSO VITTORIA",
+    "sesso": "F",
+    "valutazione": 41.44,
+    "prezzo": 18,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "538422",
+    "nome": "MASSA SOFIA RITA",
+    "sesso": "F",
+    "valutazione": 60.55,
+    "prezzo": 29,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "572861",
+    "nome": "ZONI GIORGIA",
+    "sesso": "F",
+    "valutazione": 54.99,
+    "prezzo": 25,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "564989",
+    "nome": "DI MUZIO MELISSA",
+    "sesso": "F",
+    "valutazione": 48.05,
+    "prezzo": 21,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "521328",
+    "nome": "CANE CARLOTTA",
+    "sesso": "F",
+    "valutazione": 33.73,
+    "prezzo": 15,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "552622",
+    "nome": "LITTARRU ILARIA",
+    "sesso": "F",
+    "valutazione": 35.12,
+    "prezzo": 15,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "537435",
+    "nome": "GIARRIZZO IRENE MARIA",
+    "sesso": "F",
+    "valutazione": 26.69,
+    "prezzo": 12,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "616278",
+    "nome": "SICHETTI LUCREZIA",
+    "sesso": "F",
+    "valutazione": 51.36,
+    "prezzo": 23,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 2
+  },
+  {
+    "tessera": "496787",
+    "nome": "PASCULLI ANDREA",
+    "sesso": "F",
+    "valutazione": 51.94,
+    "prezzo": 23,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 8
+  },
+  {
+    "tessera": "600954",
+    "nome": "FINOCCHIARO GINEVRA",
+    "sesso": "F",
+    "valutazione": 49.87,
+    "prezzo": 22,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 6
+  },
+  {
+    "tessera": "550076",
+    "nome": "CANU ELISA",
+    "sesso": "F",
+    "valutazione": 53.94,
+    "prezzo": 25,
+    "categoria_2026": "R12",
+    "anno_categoria_2026": null,
+    "categoria_2027": "RA1",
+    "gare": 5
+  },
+  {
+    "tessera": "540436",
+    "nome": "CHECCHETTO AURELIO",
+    "sesso": "M",
+    "valutazione": 47.57,
+    "prezzo": 21,
+    "categoria_2026": "RA",
+    "anno_categoria_2026": 1,
+    "categoria_2027": "RA2",
+    "gare": 16
   }
 ]

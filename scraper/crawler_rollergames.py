@@ -4,6 +4,10 @@ import os
 import time
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+try:
+    from .categorie import estrai_storico_categorie, ricostruisci_stato
+except ImportError:
+    from categorie import estrai_storico_categorie, ricostruisci_stato
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0"
@@ -151,12 +155,25 @@ with open(
 
     risultati_base = json.load(f)
 
+# Integra gli elenchi nazionali appena letti con il file storico già presente:
+# così non si perdono partecipanti che mancano nella raccolta precedente.
+for tessera, atleta in atleti.items():
+    scheda = risultati_base.setdefault(tessera, {
+        "tessera": tessera,
+        "nome": atleta["nome"],
+        "url": atleta["url"],
+        "partecipazioni_2025_2026": [],
+    })
+    scheda.setdefault("partecipazioni_2025_2026", [])
+    scheda["nome"] = atleta["nome"]
+    scheda["url"] = atleta["url"]
+
 
 risultati = {}
 
 print()
 print("=" * 80)
-print("FASE 2 - RECUPERO STORICO 2021-2024")
+print("FASE 2 - RECUPERO CATEGORIE STORICHE DAL PROFILO ATLETA")
 print("=" * 80)
 
 totale = len(risultati_base)
@@ -187,79 +204,25 @@ for indice, (tessera, atleta) in enumerate(
             if r.strip()
         ]
 
-        anno_corrente = None
+        storico = estrai_storico_categorie(righe)
 
-        storico = []
+        # Uniamo i campionati 2025-2026 della raccolta esistente con quelli
+        # appena letti dalle pagine ufficiali, usando la categoria del profilo.
+        partecipazioni_recenti = list(atleta.get("partecipazioni_2025_2026", []))
+        categorie_profilo = {}
+        for record in storico:
+            categorie_profilo.setdefault(record["anno"], record["categoria"])
 
-        for i, riga in enumerate(righe):
-
-            # Individuiamo l'anno
-            if riga.isdigit() and len(riga) == 4:
-
-                anno = int(riga)
-
-                if 2021 <= anno <= 2024:
-                    anno_corrente = anno
-                else:
-                    anno_corrente = None
-
+        for partecipazione in atleti.get(str(tessera), {}).get("partecipazioni", []):
+            anno = partecipazione["anno"]
+            categoria = categorie_profilo.get(anno)
+            if not categoria:
                 continue
-
-            if anno_corrente not in [
-                2021,
-                2022,
-                2023,
-                2024
-            ]:
-                continue
-
-            # Consideriamo solo i Campionati Italiani
-            if "CAMPIONATO ITALIANO" not in riga.upper():
-                continue
-
-            # Escludiamo Maratona e 1/2 Maratona
-            if "MARATONA" in riga.upper():
-                continue
-
-            categoria = None
-
-            # Cerchiamo la categoria nelle righe successive
-            for successiva in righe[i + 1:i + 20]:
-
-                if successiva in [
-                    "R1",
-                    "R12",
-                    "RA",
-                    "AL",
-                    "JU",
-                    "SE"
-                ]:
-
-                    categoria = successiva
-                    break
-
-            if categoria is None:
-                continue
-
-            # Normalizziamo R1 e R12
-            if categoria == "R1":
-                categoria = "R12"
-
-            record = {
-                "anno": anno_corrente,
-                "manifestazione": riga,
-                "categoria": categoria
-            }
-
-            if record not in storico:
-                storico.append(record)
-
-
-        # Copiamo i dati già raccolti 2025-2026
-        partecipazioni_recenti = atleta.get(
-            "partecipazioni_2025_2026",
-            []
-        )
+            partecipazioni_recenti.append({
+                "anno": anno,
+                "manifestazione": partecipazione["campionato"],
+                "categoria": categoria,
+            })
 
         # Normalizziamo eventuali R1
         for p in partecipazioni_recenti:
@@ -269,10 +232,17 @@ for indice, (tessera, atleta) in enumerate(
 
 
         # Uniamo tutto
-        partecipazioni_storiche = (
-            storico +
-            partecipazioni_recenti
-        )
+        partecipazioni_storiche = []
+        viste = set()
+        for partecipazione in storico + partecipazioni_recenti:
+            chiave = (
+                partecipazione.get("anno"),
+                partecipazione.get("manifestazione"),
+                partecipazione.get("categoria"),
+            )
+            if chiave not in viste:
+                partecipazioni_storiche.append(partecipazione)
+                viste.add(chiave)
 
         # Ordiniamo dal più recente al più vecchio
         partecipazioni_storiche.sort(
@@ -284,7 +254,17 @@ for indice, (tessera, atleta) in enumerate(
             "tessera": atleta["tessera"],
             "nome": atleta["nome"],
             "url": atleta["url"],
-            "partecipazioni": partecipazioni_storiche
+            "partecipazioni": partecipazioni_storiche,
+            "storico_categorie": {
+                str(anno): categoria
+                for anno, categoria in sorted(
+                    {
+                        int(p["anno"]): p["categoria"]
+                        for p in partecipazioni_storiche
+                        if p.get("anno") and p.get("categoria")
+                    }.items()
+                )
+            },
         }
 
         # Salvataggio progressivo
@@ -309,6 +289,39 @@ for indice, (tessera, atleta) in enumerate(
             "ERRORE:",
             e
         )
+
+        # Se il profilo non risponde, conserviamo comunque le categorie già
+        # fornite dagli elenchi ufficiali dei campionati 2025/2026. La
+        # proiezione successiva scarterà i casi in cui queste osservazioni non
+        # bastano a determinare una categoria univoca.
+        partecipazioni_base = atleta.get("partecipazioni_2025_2026", [])
+        if partecipazioni_base:
+            risultati[tessera] = {
+                "tessera": atleta.get("tessera", str(tessera)),
+                "nome": atleta.get("nome", "SCONOSCIUTO"),
+                "url": atleta.get("url", ""),
+                "partecipazioni": [
+                    {
+                        "anno": record.get("anno"),
+                        "manifestazione": record.get("manifestazione", ""),
+                        "categoria": "R12" if record.get("categoria") == "R1"
+                        else record.get("categoria"),
+                    }
+                    for record in partecipazioni_base
+                    if record.get("anno") and record.get("categoria")
+                ],
+                "storico_categorie": {
+                    str(anno): categoria
+                    for anno, categoria in sorted(
+                        {
+                            int(record["anno"]): "R12" if record.get("categoria") == "R1"
+                            else record.get("categoria")
+                            for record in partecipazioni_base
+                            if record.get("anno") and record.get("categoria")
+                        }.items()
+                    )
+                },
+            }
 
 
 print()
@@ -345,67 +358,13 @@ def categoria_stato(categoria, anno, storico):
     SE → SE
     """
 
-    # R12 non ha 1°/2° anno
-    if categoria == "R12":
-        return "R12"
-
-    # Senior
-    if categoria == "SE":
-        return "SE"
-
-    # Ordine degli stati
-    stati = [
-        "RA1",
-        "RA2",
-        "AL1",
-        "AL2",
-        "JU1",
-        "JU2",
-        "SE"
-    ]
-
-    # Cerchiamo di ricostruire lo stato
-    # partendo dal primo anno disponibile.
-    anni = sorted(storico.keys())
-
-    stato = None
-
-    for a in anni:
-
-        cat = storico[a]
-
-        if cat == "R12":
-            stato = "RA1"
-
-        elif cat == "RA":
-
-            if stato == "RA1":
-                stato = "RA2"
-            elif stato in [None, "R12"]:
-                stato = "RA1"
-
-        elif cat == "AL":
-
-            if stato == "RA2":
-                stato = "AL1"
-            elif stato == "AL1":
-                stato = "AL2"
-            elif stato in [None, "RA"]:
-                stato = "AL1"
-
-        elif cat == "JU":
-
-            if stato == "AL2":
-                stato = "JU1"
-            elif stato == "JU1":
-                stato = "JU2"
-            elif stato in [None, "AL"]:
-                stato = "JU1"
-
-        elif cat == "SE":
-            stato = "SE"
-
-    return stato or categoria
+    osservazioni = dict(storico or {})
+    osservazioni[int(anno)] = "R12" if categoria == "R1" else categoria
+    return ricostruisci_stato(
+        osservazioni,
+        anno_obiettivo=2026,
+        assumi_primo_anno=True,
+    )
 
 
 def prossimo_stato(stato):
@@ -483,17 +442,12 @@ for tessera, atleta in risultati.items():
     # DETERMINIAMO LO STATO 2026
     # --------------------------------------------------------
 
-    categoria_2026 = storico.get(2026)
-
-    # Se non ha gare nel 2026, usiamo il 2025
-    if categoria_2026 is None:
-
-        categoria_2026 = storico.get(2025)
-
+    anno_categoria_nota = 2026 if storico.get(2026) else 2025
+    categoria_nota = storico.get(anno_categoria_nota)
     stato_2026 = categoria_stato(
-        categoria_2026,
-        2026,
-        storico
+        categoria_nota,
+        anno_categoria_nota,
+        storico,
     )
 
 

@@ -2,6 +2,10 @@ import json
 import math
 from collections import defaultdict
 from pathlib import Path
+try:
+    from .categorie import ricostruisci_stato
+except ImportError:
+    from categorie import ricostruisci_stato
 
 RISULTATI_FILE = "risultati_fantaroller.json"
 AVVERSARI_FILE = "avversari_gare.json"
@@ -69,6 +73,21 @@ def categoria_2027(categoria_2026, anno_categoria):
         return "SE"
 
     return None
+
+
+def ricostruisci_stato_2026(storico, stato_fallback=None):
+    """Ricostruisce lo stato 2026 da categorie osservate in anni diversi.
+
+    `storico` accetta righe con `anno_gara`/`categoria` oppure una mappa
+    anno-categoria. Gli anni senza gare vengono comunque attraversati nella
+    progressione. Un fallback viene usato solo se compatibile con i dati.
+    """
+    return ricostruisci_stato(
+        storico,
+        anno_obiettivo=2026,
+        fallback=stato_fallback,
+    )
+
 
 def ricostruisci_categoria_2026(storico):
     """
@@ -535,7 +554,9 @@ def conta_gare_atleta(gare):
 def applica_penalita_transizione(
     valore,
     tessera,
-    risultati
+    risultati,
+    storico_categorie=None,
+    stato_2026_fallback=None,
 ):
     """
     Applica automaticamente la penalità prevista
@@ -543,16 +564,27 @@ def applica_penalita_transizione(
     """
 
     storico_atleta = [
-        r
-        for r in risultati
+        r for r in risultati
         if str(r.get("tessera")) == str(tessera)
     ]
-
-    categoria_2026, anno_categoria = (
-        ricostruisci_categoria_2026(
-            storico_atleta
-        )
+    storico_atleta.extend(
+        {"anno_gara": anno, "categoria": categoria}
+        for anno, categoria in (storico_categorie or {}).items()
     )
+
+    stato_2026 = ricostruisci_stato_2026(
+        storico_atleta,
+        stato_fallback=stato_2026_fallback,
+    )
+    if stato_2026 is None:
+        return valore, None, None, None
+
+    if stato_2026 == "R12":
+        categoria_2026, anno_categoria = "R12", None
+    elif stato_2026 == "SE":
+        categoria_2026, anno_categoria = "SE", None
+    else:
+        categoria_2026, anno_categoria = stato_2026[:-1], int(stato_2026[-1])
 
     if categoria_2026 is None:
         return valore, None, None, None
@@ -598,7 +630,9 @@ def calcola_valutazione(
     tessera,
     gare,
     forza_avversari,
-    conteggio_gare
+    conteggio_gare,
+    storico_categorie=None,
+    stato_2026_fallback=None,
 ):
 
     risultati = []
@@ -671,7 +705,7 @@ def calcola_valutazione(
         })
 
     if not risultati:
-        return None, {}
+        return None, {}, None, None, None
 
     # -----------------------------------------------------
     # MEDIA PER ANNO
@@ -712,7 +746,7 @@ def calcola_valutazione(
     somma_pesi = sum(pesi_disponibili.values())
 
     if somma_pesi <= 0:
-        return None, per_anno
+        return None, per_anno, None, None, None
 
     valore = sum(
         per_anno[anno]["media"] * pesi_disponibili[anno]
@@ -755,7 +789,9 @@ def calcola_valutazione(
         applica_penalita_transizione(
             valore,
             tessera,
-            RISULTATI_GLOBALI
+            RISULTATI_GLOBALI,
+            storico_categorie=storico_categorie,
+            stato_2026_fallback=stato_2026_fallback,
         )
     )
 
@@ -837,6 +873,17 @@ def main():
         if tessera and sesso in ("M", "F"):
             sesso_atleti.setdefault(tessera, sesso)
 
+    # Le classifiche gara contengono il sesso anche per atleti non presenti
+    # nel file dei risultati storici usato per il calcolo dei punti.
+    for gara in avversari:
+        sesso = gara.get("sesso")
+        if sesso not in ("M", "F"):
+            continue
+        for atleta in gara.get("atleti", []):
+            tessera = str(atleta.get("tessera", ""))
+            if tessera:
+                sesso_atleti.setdefault(tessera, sesso)
+
     listone = []
 
     candidati = carica_json(CANDIDATI_FILE)
@@ -854,7 +901,9 @@ def main():
             tessera,
             gare,
             forza,
-            conteggio
+            conteggio,
+            storico_categorie=dati_atleta.get("storico_categorie"),
+            stato_2026_fallback=dati_atleta.get("stato_2026"),
         )
 
         print()
@@ -900,12 +949,6 @@ def main():
             )
         )
 
-        if valore is None or cat_2027 not in {"RA1", "RA2", "AL1", "AL2", "JU1", "JU2", "SE"}:
-            continue
-
-
-        prezzo = prezzo_da_valutazione(valore)
-
         if cat_2027 is None:
             stato_2027 = dati_atleta.get("stato_2027")
 
@@ -920,6 +963,11 @@ def main():
             }
 
             cat_2027 = mappa_categorie.get(stato_2027, stato_2027)
+
+        if valore is None or cat_2027 not in {"RA1", "RA2", "AL1", "AL2", "JU1", "JU2", "SE"}:
+            continue
+
+        prezzo = prezzo_da_valutazione(valore)
 
         listone.append({
             "tessera": tessera,

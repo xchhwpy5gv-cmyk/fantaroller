@@ -2285,6 +2285,7 @@ function Leghe({ token, onCambioLeghe, mieLeghe, sceltaLega }) {
 function AdminLega({ token, lega }) {
   const [dettagli, setDettagli] = useState(null);
   const [messaggio, setMessaggio] = useState("");
+  const [codiceCopiato, setCodiceCopiato] = useState(false);
   const [catalogo, setCatalogo] = useState([]);
   const [eventoScelto, setEventoScelto] = useState("");
   const [competizione, setCompetizione] = useState(null);
@@ -2337,6 +2338,16 @@ function AdminLega({ token, lega }) {
     carica();
   };
 
+  const copiaCodice = async () => {
+    try {
+      await navigator.clipboard.writeText(dettagli.codice);
+      setCodiceCopiato(true);
+      setTimeout(() => setCodiceCopiato(false), 2000);
+    } catch {
+      setMessaggio("Impossibile copiare il codice. Puoi selezionarlo e copiarlo manualmente.");
+    }
+  };
+
   if (!lega || !dettagli) return <div className="card" style={{ color: theme.textMuted }}>Caricamento...</div>;
 
   return (
@@ -2381,7 +2392,12 @@ function AdminLega({ token, lega }) {
       {dettagli.codice && (
         <div className="stat-box">
           <span className="stat-label">Codice di accesso</span>
-          <span className="stat-value" style={{ fontSize: "1.2rem" }}>{dettagli.codice}</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+            <span className="stat-value" style={{ fontFamily: "monospace", fontSize: "1.2rem", letterSpacing: "0.04em", textTransform: "none" }}>{dettagli.codice}</span>
+            <button className="btn btn-blue" onClick={copiaCodice}>
+              {codiceCopiato ? <><Icon name="check" className="inline-icon" /> Copiato!</> : <><Icon name="key" className="inline-icon" /> Copia codice</>}
+            </button>
+          </div>
         </div>
       )}
     </div>

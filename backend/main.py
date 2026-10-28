@@ -306,11 +306,9 @@ def richiedi_recupero_password(req: PasswordResetRequest, db=Depends(get_db)):
         return risposta_generica
 
     now = datetime.now(timezone.utc)
-    scadenza_corrente = utente.password_reset_expires_at
-    if scadenza_corrente and scadenza_corrente.tzinfo is None:
-        scadenza_corrente = scadenza_corrente.replace(tzinfo=timezone.utc)
-    if utente.password_reset_token_hash and scadenza_corrente and scadenza_corrente > now:
-        return risposta_generica
+    # Una nuova richiesta sostituisce il token precedente e invia un nuovo link.
+    # Conserviamo solo l'hash, quindi il token attivo non può essere riutilizzato
+    # per ricostruire il link della richiesta precedente.
 
     token = secrets_lib.token_urlsafe(32)
     token_hash = hashlib.sha256(token.encode("utf-8")).hexdigest()

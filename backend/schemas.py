@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 class UserCreate(BaseModel):
     username: str
@@ -13,6 +13,13 @@ class AggiungiEmailRequest(BaseModel):
 class UserLogin(BaseModel):
     username: str
     password: str
+
+class PasswordResetRequest(BaseModel):
+    email: EmailStr
+
+class PasswordResetConfirm(BaseModel):
+    token: str = Field(min_length=20, max_length=256)
+    password: str = Field(min_length=4, max_length=30)
 
 class Token(BaseModel):
     access_token: str

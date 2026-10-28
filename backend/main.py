@@ -1,4 +1,6 @@
 import json
+import hashlib
+import html
 import math
 import secrets
 import unicodedata
@@ -12,7 +14,7 @@ from models import (Base, User, Athlete, Squadra, Impostazioni, Gara, PuntiEvent
                     Messaggio, squadra_atleti, EventoCatalogo, CompetizioneLega,
                     EventoLega, RosaCompetizione, PuntiCompetizione, RisultatoPartecipante,
                     ClassificaCompetizione, CorrezioneRisultato, TransazioneMercato)
-from schemas import (UserCreate, UserLogin, Token, AggiornaPrezzoRequest, AggiungiEmailRequest,
+from schemas import (UserCreate, UserLogin, PasswordResetRequest, PasswordResetConfirm, Token, AggiornaPrezzoRequest, AggiungiEmailRequest,
                      LeagueCreate, AggiungiAtletaManualeRequest, EventoCatalogoCreate,
                      SelezionaEventoRequest, AssociaEventoLegheRequest,
                      CorrezioneRisultatoRequest)
@@ -24,7 +26,7 @@ import requests as http_requests
 import secrets as secrets_lib
 import os
 import uuid
-from urllib.parse import urlparse
+from urllib.parse import quote, urlparse
 
 def nuova_chiave_operazione(value):
     return value.strip() if isinstance(value, str) and value.strip() else str(uuid.uuid4())
@@ -46,6 +48,33 @@ def invia_email_verifica(destinatario: str, username: str, token: str):
         print(f"Resend status: {risposta.status_code} - risposta: {risposta.text}")
     except Exception as e:
         print(f"Errore invio email: {e}")
+
+def invia_email_recupero_password(destinatario: str, username: str, token: str):
+    if os.environ.get("FANTAROLLER_LOCAL_TEST") == "1":
+        return False
+    frontend_url = os.environ.get("FRONTEND_URL", "https://www.fantaroller.it").rstrip("/")
+    link_recupero = f"{frontend_url}/?reset_password={quote(token, safe='')}"
+    try:
+        risposta = http_requests.post(
+            "https://api.resend.com/emails",
+            headers={"Authorization": f"Bearer {os.environ.get('RESEND_API_KEY')}"},
+            json={
+                "from": "FantaRoller <noreply@mail.fantaroller.it>",
+                "to": [destinatario],
+                "subject": "Recupera la password di FantaRoller",
+                "html": (
+                    f"<p>Ciao {html.escape(username)}!</p>"
+                    f"<p>Hai richiesto di reimpostare la password di FantaRoller.</p>"
+                    f"<p><a href=\"{html.escape(link_recupero, quote=True)}\">Scegli una nuova password</a></p>"
+                    "<p>Il link scade tra un'ora. Se non hai richiesto tu il recupero, ignora questa email.</p>"
+                ),
+            },
+            timeout=10,
+        )
+        return risposta.ok
+    except Exception as e:
+        print(f"Errore invio email di recupero: {e}")
+        return False
 
 app = FastAPI()
 
@@ -74,6 +103,23 @@ def ensure_athlete_listone_columns():
         # Serialize both check-first table creation and additive column/index changes.
         Base.metadata.create_all(bind=connection)
 
+        user_columns = {
+            column["name"]
+            for column in sqlalchemy_inspect(connection).get_columns("users")
+        }
+        new_user_columns = {
+            "password_reset_token_hash": "VARCHAR",
+            "password_reset_expires_at": "TIMESTAMP WITH TIME ZONE" if is_postgresql else "DATETIME",
+            "password_version": "INTEGER NOT NULL DEFAULT 0",
+        }
+        for name, sql_type in new_user_columns.items():
+            if name not in user_columns:
+                if is_postgresql:
+                    connection.execute(text(
+                        f"ALTER TABLE users ADD COLUMN IF NOT EXISTS {name} {sql_type}"
+                    ))
+                else:
+                    connection.execute(text(f"ALTER TABLE users ADD COLUMN {name} {sql_type}"))
         columns = {
             column["name"]
             for column in sqlalchemy_inspect(connection).get_columns("athletes")
@@ -176,6 +222,8 @@ def get_utente_corrente(token: str = Depends(oauth2_scheme), db=Depends(get_db))
     utente = db.query(User).filter(User.username == username).first()
     if utente is None:
         raise HTTPException(status_code=401, detail="Utente non trovato")
+    if utente.password_version and payload.get("password_version") != utente.password_version:
+        raise HTTPException(status_code=401, detail="Password modificata; accedi di nuovo")
     return utente
 
 @app.get("/")
@@ -245,8 +293,56 @@ def login(user: UserLogin, db=Depends(get_db)):
         raise HTTPException(status_code=403, detail="email_mancante")
     if not utente.email_verificata:
         raise HTTPException(status_code=403, detail="email_non_verificata")
-    token = crea_token({"sub": utente.username})
+    token = crea_token({"sub": utente.username, "password_version": utente.password_version or 0})
     return {"access_token": token, "token_type": "bearer"}
+
+@app.post("/password-reset/request")
+def richiedi_recupero_password(req: PasswordResetRequest, db=Depends(get_db)):
+    risposta_generica = {
+        "message": "Se l'indirizzo è associato a un account verificato, riceverai un link per reimpostare la password."
+    }
+    utente = db.query(User).filter(User.email.ilike(str(req.email))).with_for_update().first()
+    if not utente or not utente.email_verificata:
+        return risposta_generica
+
+    now = datetime.now(timezone.utc)
+    scadenza_corrente = utente.password_reset_expires_at
+    if scadenza_corrente and scadenza_corrente.tzinfo is None:
+        scadenza_corrente = scadenza_corrente.replace(tzinfo=timezone.utc)
+    if utente.password_reset_token_hash and scadenza_corrente and scadenza_corrente > now:
+        return risposta_generica
+
+    token = secrets_lib.token_urlsafe(32)
+    token_hash = hashlib.sha256(token.encode("utf-8")).hexdigest()
+    utente.password_reset_token_hash = token_hash
+    utente.password_reset_expires_at = now + timedelta(hours=1)
+    db.commit()
+
+    if not invia_email_recupero_password(utente.email, utente.username, token):
+        utente.password_reset_token_hash = None
+        utente.password_reset_expires_at = None
+        db.commit()
+    return risposta_generica
+
+@app.post("/password-reset/confirm")
+def conferma_recupero_password(req: PasswordResetConfirm, db=Depends(get_db)):
+    token_hash = hashlib.sha256(req.token.encode("utf-8")).hexdigest()
+    utente = db.query(User).filter(
+        User.password_reset_token_hash == token_hash
+    ).with_for_update().first()
+    now = datetime.now(timezone.utc)
+    scadenza = utente.password_reset_expires_at if utente else None
+    if scadenza and scadenza.tzinfo is None:
+        scadenza = scadenza.replace(tzinfo=timezone.utc)
+    if not utente or not scadenza or scadenza <= now:
+        raise HTTPException(status_code=400, detail="Il link non è valido o è scaduto. Richiedi un nuovo link.")
+
+    utente.password = pwd_context.hash(req.password)
+    utente.password_version = (utente.password_version or 0) + 1
+    utente.password_reset_token_hash = None
+    utente.password_reset_expires_at = None
+    db.commit()
+    return {"message": "Password aggiornata. Ora puoi accedere con la nuova password."}
 
 @app.get("/me/")
 def chi_sono(utente=Depends(get_utente_corrente)):

@@ -534,7 +534,10 @@ const styles = `
 `;
 
 function App() {
-  const [token, setToken] = useState(() => localStorage.getItem("token") || null);
+  const resetRequested = new URLSearchParams(window.location.search).has("reset_password");
+  const [token, setToken] = useState(() => {
+    return resetRequested ? null : localStorage.getItem("token") || null;
+  });
   const [pagina, setPagina] = useState("dashboard");
   const [isAdmin, setIsAdmin] = useState(false);
   const [username, setUsername] = useState("");
@@ -565,6 +568,7 @@ function App() {
   };
 
   useState(() => {
+    if (resetRequested) return;
     const t = localStorage.getItem("token");
     if (t) {
       fetch(`${API}/me/`, { headers: { Authorization: `Bearer ${t}` } })
@@ -780,6 +784,13 @@ function Login({ setToken }) {
   const [mostraOpzioniEmail, setMostraOpzioniEmail] = useState(false);
   const [nuovaEmail, setNuovaEmail] = useState("");
   const [messaggioEmail, setMessaggioEmail] = useState("");
+  const [modalitaRecuperoPassword, setModalitaRecuperoPassword] = useState(false);
+  const [emailRecuperoPassword, setEmailRecuperoPassword] = useState("");
+  const [tokenRecuperoPassword, setTokenRecuperoPassword] = useState(
+    () => new URLSearchParams(window.location.search).get("reset_password") || ""
+  );
+  const [nuovaPassword, setNuovaPassword] = useState("");
+  const [confermaNuovaPassword, setConfermaNuovaPassword] = useState("");
 
   const emailValida = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 
@@ -813,6 +824,65 @@ function Login({ setToken }) {
     } catch {
       setMessaggioEmail("Errore di connessione");
     }
+  };
+
+  const richiediRecuperoPassword = async () => {
+    if (!emailValida(emailRecuperoPassword)) {
+      setErrore("Inserisci un indirizzo email valido");
+      return;
+    }
+    setLoading(true);
+    setErrore("");
+    setSuccesso("");
+    try {
+      const res = await fetch(`${API}/password-reset/request`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: emailRecuperoPassword }),
+      });
+      if (res.ok) {
+        setSuccesso("Se l'indirizzo è associato a un account verificato, riceverai un link per reimpostare la password.");
+      } else {
+        setErrore("Non riesco a inviare la richiesta. Riprova tra poco.");
+      }
+    } catch {
+      setErrore("Errore di connessione");
+    }
+    setLoading(false);
+  };
+
+  const confermaRecuperoPassword = async () => {
+    if (nuovaPassword.length < 4 || nuovaPassword.length > 30) {
+      setErrore("La password deve contenere da 4 a 30 caratteri");
+      return;
+    }
+    if (nuovaPassword !== confermaNuovaPassword) {
+      setErrore("Le password non coincidono");
+      return;
+    }
+    setLoading(true);
+    setErrore("");
+    try {
+      const res = await fetch(`${API}/password-reset/confirm`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: tokenRecuperoPassword, password: nuovaPassword }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setSuccesso("Password aggiornata. Ora puoi accedere con la nuova password.");
+        localStorage.removeItem("token");
+        setTokenRecuperoPassword("");
+        setNuovaPassword("");
+        setConfermaNuovaPassword("");
+        window.history.replaceState({}, document.title, window.location.pathname);
+      } else {
+        setErrore(data.detail || "Il link non è valido o è scaduto. Richiedi un nuovo link.");
+      }
+    } catch {
+      setErrore("Errore di connessione");
+    }
+    setLoading(false);
   };
 
   const handleSubmit = async () => {
@@ -891,6 +961,29 @@ function Login({ setToken }) {
           <div className="login-logo"><Icon name="bolt" className="inline-icon" /> Fanta<span style={{ color: theme.accent }}>Roller</span></div>
           <div className="login-sub">Fantasy Pattinaggio Corsa</div>
 
+          {tokenRecuperoPassword ? (
+            <>
+              <div style={{ color: theme.textSub, fontSize: 13, marginBottom: 14, textAlign: "center" }}>Scegli una nuova password per il tuo account.</div>
+              {errore && <div role="alert" style={{ background: "#ef444415", border: "1px solid #ef444430", borderRadius: 8, padding: "10px 14px", color: theme.red, fontSize: 13, marginBottom: 12 }}>{errore}</div>}
+              {successo && <div className="success-box" role="status">{successo}</div>}
+              {!successo && <>
+                <input className="input" placeholder="Nuova password" type="password" autoComplete="new-password" value={nuovaPassword} onChange={e => setNuovaPassword(e.target.value)} />
+                <input className="input" placeholder="Conferma nuova password" type="password" autoComplete="new-password" value={confermaNuovaPassword} onChange={e => setConfermaNuovaPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && confermaRecuperoPassword()} />
+                <button className="btn btn-primary" style={{ width: "100%", padding: "12px", fontSize: 15 }} onClick={confermaRecuperoPassword} disabled={loading}>{loading ? "Aggiornamento..." : "Salva nuova password"}</button>
+              </>}
+              <div className="login-toggle" onClick={() => { setTokenRecuperoPassword(""); setErrore(""); setSuccesso(""); window.history.replaceState({}, document.title, window.location.pathname); }}>Torna al login</div>
+            </>
+          ) : modalitaRecuperoPassword ? (
+            <>
+              <div style={{ color: theme.textSub, fontSize: 13, marginBottom: 14, textAlign: "center" }}>Inserisci l'email associata al tuo account. Se è verificata, riceverai un link per scegliere una nuova password.</div>
+              {successo && <div className="success-box" role="status">{successo}</div>}
+              {errore && <div role="alert" style={{ background: "#ef444415", border: "1px solid #ef444430", borderRadius: 8, padding: "10px 14px", color: theme.red, fontSize: 13, marginBottom: 12 }}>{errore}</div>}
+              <input className="input" placeholder="Email" type="email" autoComplete="email" value={emailRecuperoPassword} onChange={e => setEmailRecuperoPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && richiediRecuperoPassword()} />
+              <button className="btn btn-primary" style={{ width: "100%", padding: "12px", fontSize: 15 }} onClick={richiediRecuperoPassword} disabled={loading}>{loading ? "Invio..." : "Invia link di recupero"}</button>
+              <div className="login-toggle" onClick={() => { setModalitaRecuperoPassword(false); setErrore(""); setSuccesso(""); }}>Torna al login</div>
+            </>
+          ) : <>
+
           {modalitaCompletaProfilo ? (
             <div style={{ background: "#eab30815", border: "1px solid #eab30830", borderRadius: 8, padding: "10px 14px", color: theme.yellow, fontSize: 13, marginBottom: 16, textAlign: "center" }}>
               <Icon name="mail" className="inline-icon" /> Il tuo account non ha ancora un'email associata. Inseriscila per continuare.
@@ -916,6 +1009,8 @@ function Login({ setToken }) {
             {modalitaCompletaProfilo ? "Invia email di conferma" : registrati ? "Registrati" : "Entra"}
           </button>
 
+          {!registrati && !modalitaCompletaProfilo && <div className="login-toggle" onClick={() => { setModalitaRecuperoPassword(true); setErrore(""); setSuccesso(""); }}>Password dimenticata?</div>}
+
           {modalitaCompletaProfilo ? (
             <div className="login-toggle" onClick={() => { setModalitaCompletaProfilo(false); setErrore(""); setSuccesso(""); }}><Icon name="arrowLeft" className="inline-icon" /> Torna al login</div>
           ) : (
@@ -932,6 +1027,7 @@ function Login({ setToken }) {
               <button className="btn btn-primary" style={{ width: "100%" }} onClick={cambiaEmail}><Icon name="edit" className="inline-icon" /> Cambia email e reinvia</button>
             </div>
           )}
+          </>}
         </div>
       </div>
     </>

@@ -848,9 +848,21 @@ def apri_mercato_lega(league_id: int, utente=Depends(get_utente_corrente), db=De
         raise HTTPException(status_code=403, detail="Solo l'admin della lega può farlo")
     comp = competizione_corrente(db, lega.id)
     if comp:
-        if comp.fase != "configurata":
-            raise HTTPException(status_code=409, detail="Il mercato può aprirsi solo per una competizione appena configurata")
-        comp.fase = "mercato_aperto"
+        if comp.fase == "configurata":
+            comp.fase = "mercato_aperto"
+        elif comp.fase == "mercato_chiuso":
+            risultati_presenti = any((
+                db.query(PuntiCompetizione.id).filter_by(competizione_id=comp.id).first(),
+                db.query(RisultatoPartecipante.id).filter_by(competizione_id=comp.id).first(),
+                db.query(ClassificaCompetizione.id).filter_by(competizione_id=comp.id).first(),
+            ))
+            if risultati_presenti:
+                raise HTTPException(status_code=409, detail="Non è possibile riaprire il mercato dopo l'inizio dei risultati")
+            # La rosa congelata si può ricostruire alla prossima chiusura del mercato.
+            db.query(RosaCompetizione).filter_by(competizione_id=comp.id).delete(synchronize_session=False)
+            comp.fase = "mercato_aperto"
+        else:
+            raise HTTPException(status_code=409, detail="Il mercato può aprirsi solo prima dell'avvio della competizione")
     lega.mercato_aperto = 1
     db.commit()
     return {"message": "Mercato aperto!"}

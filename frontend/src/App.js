@@ -2421,6 +2421,7 @@ function AdminLega({ token, lega }) {
   };
 
   const apriMercato = async () => {
+    if (competizione?.fase === "mercato_chiuso" && !window.confirm("Riaprire il mercato? La rosa congelata dell'evento verrà ricreata quando lo chiuderai di nuovo.")) return;
     const res = await fetch(`${API}/league/apri-mercato?league_id=${lega.id}`, { method: "POST", headers: { Authorization: `Bearer ${token}` } });
     const data = await res.json();
     setMessaggio(data.message || data.detail);
@@ -2482,7 +2483,7 @@ function AdminLega({ token, lega }) {
       <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
         <span style={{ fontSize: 13, color: theme.textSub }}>Mercato:</span>
         <span className={`badge ${dettagli.mercato_aperto ? "badge-green" : "badge-red"}`}><span style={{ display: "inline-block", width: 8, height: 8, marginRight: 5, borderRadius: "50%", background: dettagli.mercato_aperto ? theme.green : theme.red }} />{dettagli.mercato_aperto ? "Aperto" : "Chiuso"}</span>
-        {dettagli.gestore && <button className="btn btn-success" onClick={apriMercato} disabled={!!competizione && competizione.fase !== "configurata"}>Apri Mercato</button>}
+        {dettagli.gestore && <button className="btn btn-success" onClick={apriMercato} disabled={!!competizione && !["configurata", "mercato_chiuso"].includes(competizione.fase)}>{competizione?.fase === "mercato_chiuso" ? "Riapri Mercato" : "Apri Mercato"}</button>}
         {dettagli.gestore && <button className="btn btn-danger" onClick={chiudiMercato} disabled={!!competizione && competizione.fase !== "mercato_aperto"}>Chiudi Mercato</button>}
       </div>
       {dettagli.codice && (

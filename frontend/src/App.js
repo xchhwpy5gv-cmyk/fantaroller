@@ -3,7 +3,9 @@ import React, { useCallback, useEffect, useState } from "react";
 const API = "https://fantaroller-production.up.railway.app";
 const eventDateTimeLabel = value => {
   const match = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
-  return match ? `${match[3]}/${match[2]}/${match[1]} · ${match[4]}:${match[5]}` : value || "Data e ora non impostate";
+  if (match) return `${match[3]}/${match[2]}/${match[1]} · ${match[4]}:${match[5]}`;
+  const dateOnly = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return dateOnly ? `${dateOnly[3]}/${dateOnly[2]}/${dateOnly[1]}` : value || "Data e ora non impostate";
 };
 const eventDateTimeInput = value => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(String(value || "")) ? value.slice(0, 16) : "";
 const chiaveOperazione = () => window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -2542,6 +2544,7 @@ function Admin({ token }) {
   const [urlCatalogo, setUrlCatalogo] = useState("");
   const [eventiCatalogo, setEventiCatalogo] = useState([]);
   const [eventoEditId, setEventoEditId] = useState(null);
+  const [eventoEditSoloNome, setEventoEditSoloNome] = useState(false);
   const [anteprimeCompetizioni, setAnteprimeCompetizioni] = useState({});
 
   const categorie = ["Ragazzi Maschi", "Ragazze Femminile", "Allievi Maschi", "Allieve Femminile", "Junior Maschi", "Junior Femminile", "Senior Maschi", "Senior Femminile"];
@@ -2570,7 +2573,8 @@ function Admin({ token }) {
   const caricaEventiCatalogo = useCallback(async () => {
     const headers = { Authorization: `Bearer ${token}` };
     const eventsResponse = await fetch(`${API}/admin/eventi`, { headers });
-    if (eventsResponse.ok) setEventiCatalogo(await eventsResponse.json());
+    if (!eventsResponse.ok) throw new Error("Non riesco ad aggiornare l'elenco degli eventi.");
+    setEventiCatalogo(await eventsResponse.json());
   }, [token]);
   useEffect(() => { caricaEventiCatalogo(); }, [caricaEventiCatalogo]);
 
@@ -2596,9 +2600,13 @@ function Admin({ token }) {
         : azione === "avvia-globale"
           ? `Evento avviato per ${data.leghe_avviate} leghe.`
           : "Evento rimosso dalla gestione corrente.");
-      await caricaEventiCatalogo();
+      try {
+        await caricaEventiCatalogo();
+      } catch {
+        setMessaggio("Operazione completata, ma non riesco ad aggiornare l'elenco. Ricarica la pagina.");
+      }
     } catch {
-      setMessaggio("Non riesco a raggiungere il backend. L'evento non è stato modificato; controlla la connessione e riprova.");
+      setMessaggio("La richiesta non è arrivata al backend. Riprova tra poco o controlla la connessione.");
     }
   };
 
@@ -2661,18 +2669,29 @@ function Admin({ token }) {
   useState(() => { caricaGare(); }, []);
 
   const creaEventoCatalogo = async () => {
-    const res = await fetch(eventoEditId ? `${API}/admin/eventi/${eventoEditId}` : `${API}/admin/eventi`, {
-      method: eventoEditId ? "PUT" : "POST",
-      ...(eventoEditId ? { headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, body: JSON.stringify({ nome: nomeCatalogo, descrizione: descrizioneCatalogo || null, data_evento: dataCatalogo || null, url_risultati: urlCatalogo || null }) } : {}),
-      ...(eventoEditId ? {} : {
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ nome: nomeCatalogo, descrizione: descrizioneCatalogo || null,
-        data_evento: dataCatalogo || null, url_risultati: urlCatalogo || null }),
-      }),
-    });
-    const data = await res.json();
-    setMessaggio(res.ok ? (eventoEditId ? "Evento aggiornato." : `Evento "${data.nome}" creato nel catalogo.`) : data.detail || "Errore salvataggio evento");
-    if (res.ok) { setNomeCatalogo(""); setDescrizioneCatalogo(""); setDataCatalogo(""); setUrlCatalogo(""); setEventoEditId(null); caricaEventiCatalogo(); }
+    try {
+      const res = await fetch(eventoEditId ? `${API}/admin/eventi/${eventoEditId}` : `${API}/admin/eventi`, {
+        method: eventoEditId ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ nome: nomeCatalogo, descrizione: descrizioneCatalogo || null,
+          data_evento: dataCatalogo || null, url_risultati: urlCatalogo || null }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setMessaggio(data.detail || `Il server ha rifiutato la richiesta (errore ${res.status}).`);
+        return;
+      }
+      const messaggioSuccesso = eventoEditId ? (eventoEditSoloNome ? "Nome dell'evento aggiornato." : "Evento aggiornato.") : `Evento "${data.nome}" creato nel catalogo.`;
+      setMessaggio(messaggioSuccesso);
+      setNomeCatalogo(""); setDescrizioneCatalogo(""); setDataCatalogo(""); setUrlCatalogo(""); setEventoEditId(null); setEventoEditSoloNome(false);
+      try {
+        await caricaEventiCatalogo();
+      } catch {
+        setMessaggio(`${messaggioSuccesso} Ricarica la pagina per aggiornare l'elenco.`);
+      }
+    } catch {
+      setMessaggio("Non riesco a raggiungere il backend. Il nome dell'evento non è stato modificato; controlla la connessione e riprova.");
+    }
   };
 
   const archiviaEventoCatalogo = async (id) => {
@@ -2775,22 +2794,23 @@ function Admin({ token }) {
       </div>
 
       <div className="card">
-        <div className="card-title"><Icon name="calendar" className="inline-icon" /> {eventoEditId ? "Modifica evento globale" : "Catalogo eventi globali"}</div>
+        <div className="card-title"><Icon name="calendar" className="inline-icon" /> {eventoEditId ? (eventoEditSoloNome ? "Rinomina evento" : "Modifica evento globale") : "Catalogo eventi globali"}</div>
         <p style={{ color: theme.textSub, fontSize: 13 }}>Rendi corrente un evento per tutte le leghe con un solo comando. La preparazione non cambia rose, budget, punti o partecipanti.</p>
         <input className="input" placeholder="Nome manifestazione" value={nomeCatalogo} onChange={e => setNomeCatalogo(e.target.value)} />
-        <input className="input" placeholder="Descrizione (facoltativa)" value={descrizioneCatalogo} onChange={e => setDescrizioneCatalogo(e.target.value)} />
-        <label style={{ display: "block", color: theme.textSub, fontSize: 12, marginBottom: 6 }} htmlFor="catalogo-data-evento">Data e ora di inizio (ora italiana)</label>
-        <input id="catalogo-data-evento" className="input" type="datetime-local" aria-label="Data e ora di inizio evento" value={dataCatalogo} onChange={e => setDataCatalogo(e.target.value)} />
-        <p style={{ color: theme.textMuted, fontSize: 11, margin: "-6px 0 12px" }}>L’orario è necessario per inviare i promemoria. Gli eventi già salvati con la sola data non ricevono avvisi finché non vengono aggiornati.</p>
-        <input className="input" placeholder="Link ai risultati (facoltativo)" value={urlCatalogo} onChange={e => setUrlCatalogo(e.target.value)} />
-        <button className="btn btn-primary" disabled={!nomeCatalogo.trim()} onClick={creaEventoCatalogo}>{eventoEditId ? "Salva modifiche" : "Aggiungi al catalogo"}</button>
-        {eventoEditId && <button className="btn btn-danger" style={{ marginLeft: 8 }} onClick={() => { setEventoEditId(null); setNomeCatalogo(""); setDescrizioneCatalogo(""); setDataCatalogo(""); setUrlCatalogo(""); }}>Annulla</button>}
+        {eventoEditSoloNome && <p style={{ color: theme.textMuted, fontSize: 12 }}>Puoi aggiornare solo nome e data. Rose, budget, competizioni e valori dei punteggi restano invariati.</p>}
+        <input className="input" placeholder="Descrizione (facoltativa)" value={descrizioneCatalogo} onChange={e => setDescrizioneCatalogo(e.target.value)} disabled={eventoEditSoloNome} />
+        <label style={{ display: "block", color: theme.textSub, fontSize: 12, marginBottom: 6 }} htmlFor="catalogo-data-evento">{eventoEditSoloNome ? "Data dell'evento" : "Data e ora di inizio (ora italiana)"}</label>
+        <input id="catalogo-data-evento" className="input" type={eventoEditSoloNome ? "date" : "datetime-local"} aria-label="Data dell'evento" value={dataCatalogo} onChange={e => setDataCatalogo(e.target.value)} />
+        {!eventoEditSoloNome && <p style={{ color: theme.textMuted, fontSize: 11, margin: "-6px 0 12px" }}>L’orario è necessario per inviare i promemoria. Gli eventi già salvati con la sola data non ricevono avvisi finché non vengono aggiornati.</p>}
+        <input className="input" placeholder="Link ai risultati (facoltativo)" value={urlCatalogo} onChange={e => setUrlCatalogo(e.target.value)} disabled={eventoEditSoloNome} />
+        <button className="btn btn-primary" disabled={!nomeCatalogo.trim()} onClick={creaEventoCatalogo}>{eventoEditId ? (eventoEditSoloNome ? "Salva nome" : "Salva modifiche") : "Aggiungi al catalogo"}</button>
+        {eventoEditId && <button className="btn btn-danger" style={{ marginLeft: 8 }} onClick={() => { setEventoEditId(null); setEventoEditSoloNome(false); setNomeCatalogo(""); setDescrizioneCatalogo(""); setDataCatalogo(""); setUrlCatalogo(""); }}>Annulla</button>}
         {eventiCatalogo.map(evento => (
           <div key={evento.id} style={{ padding: "12px 0", borderBottom: `1px solid ${theme.border}` }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
               <div><strong>{evento.nome}</strong><span style={{ color: theme.textMuted, fontSize: 12, marginLeft: 8 }}>{eventDateTimeLabel(evento.data_evento)} · {evento.stato}</span></div>
               <div style={{ display: "flex", gap: 6 }}>
-                {evento.modificabile && <button className="btn btn-blue" onClick={() => { setEventoEditId(evento.id); setNomeCatalogo(evento.nome); setDescrizioneCatalogo(evento.descrizione || ""); setDataCatalogo(eventDateTimeInput(evento.data_evento)); setUrlCatalogo(evento.url_risultati || ""); }}>Modifica</button>}
+                {evento.modificabile && <button className="btn btn-blue" onClick={() => { setEventoEditId(evento.id); setEventoEditSoloNome(!!evento.utilizzato); setNomeCatalogo(evento.nome); setDescrizioneCatalogo(evento.descrizione || ""); setDataCatalogo(evento.utilizzato ? String(evento.data_evento || "").slice(0, 10) : eventDateTimeInput(evento.data_evento)); setUrlCatalogo(evento.url_risultati || ""); }}>{evento.utilizzato ? "Modifica nome e data" : "Modifica"}</button>}
                 {evento.stato === "disponibile" && <button className="btn btn-primary" onClick={() => gestisciEventoGlobale(evento.id, "attiva-globale")}>Rendi corrente per tutte le leghe</button>}
                 {evento.stato === "attivo" && <button className="btn btn-success" disabled={!evento.avviabile_globalmente} onClick={() => gestisciEventoGlobale(evento.id, "avvia-globale")}>Avvia evento per tutte le leghe</button>}
                 {evento.stato === "attivo" && <button className="btn btn-danger" disabled={evento.archiviabile === false} onClick={() => gestisciEventoGlobale(evento.id, "rimuovi-globale")}>Rimuovi evento corrente</button>}

@@ -1269,7 +1269,7 @@ def lista_eventi_catalogo_admin(utente=Depends(get_utente_corrente), db=Depends(
                        "stato": event.stato, "leghe_associate": leagues,
                        "avviabile_globalmente": bool(leagues) and all(item["fase"] == "mercato_chiuso" for item in leagues),
                        "utilizzato": competitions_exist,
-                       "modificabile": event.stato == "attivo" or (event.stato == "disponibile" and not competitions_exist),
+                       "modificabile": event.stato != "archiviato",
                        "archiviabile": not db.query(CompetizioneLega.id).filter(
                            CompetizioneLega.evento_id == event.id,
                            CompetizioneLega.fase != "finalizzato",
@@ -1408,9 +1408,8 @@ def modifica_evento_catalogo(evento_id: int, req: EventoCatalogoCreate, utente=D
     evento = db.query(EventoCatalogo).filter(EventoCatalogo.id == evento_id).first()
     if not evento:
         raise HTTPException(status_code=404, detail="Evento non trovato")
-    competizioni_esistenti = db.query(CompetizioneLega.id).filter_by(evento_id=evento_id).first()
-    if evento.stato == "archiviato" or (competizioni_esistenti and evento.stato != "attivo"):
-        raise HTTPException(status_code=409, detail="Puoi modificare un evento usato soltanto mentre è quello corrente")
+    if evento.stato == "archiviato":
+        raise HTTPException(status_code=409, detail="Un evento archiviato non può essere rinominato")
     nome = req.nome.strip()
     if not nome:
         raise HTTPException(status_code=400, detail="Il nome dell'evento è obbligatorio")
@@ -1418,10 +1417,8 @@ def modifica_evento_catalogo(evento_id: int, req: EventoCatalogoCreate, utente=D
     if duplicato:
         raise HTTPException(status_code=409, detail="Esiste già un evento con questo nome")
     nome_precedente = evento.nome
+    utilizzato = db.query(CompetizioneLega.id).filter_by(evento_id=evento_id).first()
     evento.nome = nome
-    evento.descrizione = req.descrizione
-    evento.data_evento = req.data_evento
-    evento.url_risultati = verifica_url_risultati(req.url_risultati)
     if nome != nome_precedente:
         db.query(PuntiEvento).filter(PuntiEvento.evento == nome_precedente).update(
             {PuntiEvento.evento: nome}, synchronize_session=False
@@ -1429,6 +1426,12 @@ def modifica_evento_catalogo(evento_id: int, req: EventoCatalogoCreate, utente=D
         db.query(Gara).filter(Gara.evento == nome_precedente).update(
             {Gara.evento: nome}, synchronize_session=False
         )
+    if utilizzato:
+        evento.data_evento = req.data_evento
+    else:
+        evento.descrizione = req.descrizione
+        evento.data_evento = req.data_evento
+        evento.url_risultati = verifica_url_risultati(req.url_risultati)
     db.commit()
     return {"message": "Evento aggiornato", "id": evento.id, "nome": evento.nome}
 

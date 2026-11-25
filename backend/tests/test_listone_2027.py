@@ -43,6 +43,7 @@ from main import (
     apri_mercato_lega,
     avanza_competizione_lega,
     associa_evento_leghe,
+    attiva_evento_globale,
     autorizza_transizione_competizione,
     atleti_squadra,
     engine,
@@ -635,6 +636,24 @@ class Listone2027Tests(unittest.TestCase):
         second = seleziona_evento_lega(SelezionaEventoRequest(league_id=lega_due.id, evento_id=event["id"]), utente=user, db=self.db)
         self.assertNotEqual(first["competizione_id"], second["competizione_id"])
         self.assertEqual(self.db.query(CompetizioneLega).filter_by(evento_id=event["id"]).count(), 2)
+
+    def test_reactivating_current_global_event_reuses_existing_league_association(self):
+        user, league, _, _ = self.make_team()
+        event = EventoCatalogo(nome="Evento già corrente", stato="disponibile")
+        self.db.add(event)
+        self.db.commit()
+
+        first = attiva_evento_globale(event.id, utente=user, db=self.db)
+        self.assertEqual(first["leghe_preparate"], 1)
+        repeated = attiva_evento_globale(event.id, utente=user, db=self.db)
+
+        self.assertEqual(repeated["leghe_preparate"], 1)
+        self.assertEqual(
+            self.db.query(EventoLega).filter_by(evento_id=event.id, league_id=league.id).count(), 1
+        )
+        self.assertEqual(
+            self.db.query(CompetizioneLega).filter_by(evento_id=event.id, league_id=league.id).count(), 1
+        )
 
     def test_continuity_mode_preserves_roster_and_remaining_budget(self):
         user, league, squad, athletes = self.make_team([LISTONE[0]])

@@ -1376,7 +1376,10 @@ def attiva_evento_globale(evento_id: int, utente=Depends(get_utente_corrente), d
             if precedente and precedente.evento_id == evento.id:
                 if precedente.fase == "finalizzato":
                     raise HTTPException(status_code=409, detail=f"La lega '{lega.nome}' ha già concluso questo evento")
-                preparazione.append((lega, precedente, None, False))
+                association = db.query(EventoLega).filter_by(
+                    evento_id=evento.id, league_id=lega.id
+                ).with_for_update().first()
+                preparazione.append((lega, precedente, association, False))
                 continue
             if precedente and precedente.fase != "finalizzato":
                 raise HTTPException(status_code=409, detail=f"La lega '{lega.nome}' deve concludere '{precedente.evento.nome}' prima di cambiare evento")

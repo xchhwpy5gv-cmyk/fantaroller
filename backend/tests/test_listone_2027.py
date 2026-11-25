@@ -45,6 +45,7 @@ from main import (
     atleti_squadra,
     engine,
     ensure_athlete_listone_columns,
+    gestisci_mercati_globali,
     import_athletes,
     calcola_punti_competizione,
     finalizza_competizione,
@@ -102,12 +103,13 @@ class Listone2027Tests(unittest.TestCase):
     def tearDown(self):
         self.db.close()
 
-    def make_team(self, records=(), limit=2, mode="listone", category_override=None):
-        user = User(username="admin-test", password="test", is_admin=1)
+    def make_team(self, records=(), limit=2, mode="listone", category_override=None,
+                  username="admin-test", league_name="Lega test"):
+        user = User(username=username, password="test", is_admin=1)
         self.db.add(user)
         self.db.flush()
         league = League(
-            nome="Lega test",
+            nome=league_name,
             owner_id=user.id,
             modalita=mode,
             atleti_per_categoria=limit,
@@ -332,6 +334,42 @@ class Listone2027Tests(unittest.TestCase):
         )
         self.assertEqual(scored_team[0]["categoria"], market_category(record))
         self.assertEqual(scored_team[0]["punti"], 15)
+
+    def test_global_market_controls_preserve_rosters_for_listone_and_auction(self):
+        admin, league, squad, athletes = self.make_team([LISTONE[0]])
+        _, auction, _, _ = self.make_team(
+            mode="asta", username="auction-test", league_name="Lega asta test",
+        )
+        event = EventoCatalogo(nome="Evento mercati globali", stato="attivo")
+        self.db.add(event)
+        self.db.flush()
+        listone_comp = CompetizioneLega(league_id=league.id, evento_id=event.id, numero=1, fase="configurata")
+        auction_comp = CompetizioneLega(league_id=auction.id, evento_id=event.id, numero=1, fase="configurata")
+        self.db.add_all([listone_comp, auction_comp])
+        league.mercato_aperto = 0
+        auction.mercato_aperto = 0
+        self.db.commit()
+        self.assertEqual(gestisci_mercati_globali("apri", utente=admin, db=self.db)["aggiornate"], 2)
+        closed = gestisci_mercati_globali("chiudi", utente=admin, db=self.db)
+        self.assertEqual(closed["aggiornate"], 2)
+        self.db.refresh(league)
+        self.db.refresh(auction)
+        self.db.refresh(squad)
+        self.assertEqual(listone_comp.fase, "mercato_chiuso")
+        self.assertEqual(auction_comp.fase, "mercato_chiuso")
+        self.assertEqual(self.db.query(RosaCompetizione).filter_by(competizione_id=listone_comp.id).count(), 1)
+        self.assertEqual(self.db.query(RosaCompetizione).filter_by(competizione_id=auction_comp.id).count(), 0)
+        self.assertEqual(league.mercato_aperto, 0)
+        self.assertEqual(auction.mercato_aperto, 0)
+        self.assertEqual(squad.atleti[0].id, athletes[0].id)
+        self.assertEqual(squad.budget, 123)
+
+        reopened = gestisci_mercati_globali("apri", utente=admin, db=self.db)
+        self.assertEqual(reopened["aggiornate"], 2)
+        self.assertEqual(self.db.query(RosaCompetizione).filter_by(competizione_id=listone_comp.id).count(), 0)
+        self.db.refresh(squad)
+        self.assertEqual(squad.atleti[0].id, athletes[0].id)
+        self.assertEqual(squad.budget, 123)
 
     def test_unmatched_roster_member_blocks_import_without_changes(self):
         user, _, squad, _ = self.make_team()

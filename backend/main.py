@@ -899,6 +899,73 @@ def chiudi_mercato_lega(league_id: int, utente=Depends(get_utente_corrente), db=
     return {"message": "Mercato chiuso!"}
 
 
+@app.post("/admin/mercati-globali/{azione}")
+def gestisci_mercati_globali(azione: str, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.is_admin:
+        raise HTTPException(status_code=403, detail="Non sei admin")
+    if azione not in {"apri", "chiudi"}:
+        raise HTTPException(status_code=404, detail="Azione non valida")
+
+    leghe = db.query(League).order_by(League.id).with_for_update().all()
+    aggiornate = 0
+    ignorate = []
+    try:
+        for lega in leghe:
+            comp = competizione_corrente(db, lega.id)
+            if azione == "apri":
+                if comp and comp.fase == "mercato_chiuso":
+                    risultati_presenti = any((
+                        db.query(PuntiCompetizione.id).filter_by(competizione_id=comp.id).first(),
+                        db.query(RisultatoPartecipante.id).filter_by(competizione_id=comp.id).first(),
+                        db.query(ClassificaCompetizione.id).filter_by(competizione_id=comp.id).first(),
+                    ))
+                    if risultati_presenti:
+                        ignorate.append({"lega": lega.nome, "motivo": "risultati già presenti"})
+                        continue
+                    db.query(RosaCompetizione).filter_by(competizione_id=comp.id).delete(synchronize_session=False)
+                    comp.fase = "mercato_aperto"
+                elif comp and comp.fase == "configurata":
+                    comp.fase = "mercato_aperto"
+                elif comp and comp.fase != "mercato_aperto":
+                    ignorate.append({"lega": lega.nome, "motivo": f"competizione in fase {comp.fase}"})
+                    continue
+                if lega.mercato_aperto != 1:
+                    lega.mercato_aperto = 1
+                    aggiornate += 1
+                elif not comp or comp.fase == "mercato_aperto":
+                    aggiornate += 1
+            else:
+                if comp and comp.fase != "mercato_aperto":
+                    ignorate.append({"lega": lega.nome, "motivo": f"competizione in fase {comp.fase}"})
+                    continue
+                if comp and db.query(RosaCompetizione.id).filter_by(competizione_id=comp.id).first():
+                    ignorate.append({"lega": lega.nome, "motivo": "fotografia della rosa già presente"})
+                    continue
+                if comp:
+                    squadre = db.query(Squadra).filter_by(league_id=lega.id).all()
+                    for squadra in squadre:
+                        prezzi = db.execute(text(
+                            "SELECT atleta_id, COALESCE(prezzo_pagato, 0) FROM squadra_atleti WHERE squadra_id = :sid"
+                        ), {"sid": squadra.id}).all()
+                        for atleta_id, prezzo_pagato in prezzi:
+                            atleta = db.query(Athlete).filter(Athlete.id == atleta_id).first()
+                            if atleta:
+                                db.add(RosaCompetizione(competizione_id=comp.id, squadra_id=squadra.id,
+                                                        squadra_nome=squadra.nome, atleta_id=atleta_id,
+                                                        atleta_nome=atleta.name, categoria=atleta.categoria,
+                                                        prezzo_pagato=prezzo_pagato))
+                    comp.fase = "mercato_chiuso"
+                lega.mercato_aperto = 0
+                aggiornate += 1
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+    verbo = "aperti" if azione == "apri" else "chiusi"
+    return {"message": f"Mercati {verbo} per {aggiornate} leghe.",
+            "aggiornate": aggiornate, "ignorate": ignorate}
+
+
 @app.post("/admin/set-admin/{username}")
 def set_admin(username: str, utente=Depends(get_utente_corrente), db=Depends(get_db)):
     if not utente.is_admin:

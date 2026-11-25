@@ -2611,6 +2611,21 @@ function Admin({ token }) {
     }
   };
 
+  const gestisciMercatiGlobali = async (azione) => {
+    const descrizione = azione === "apri"
+      ? "Aprire il mercato per tutte le leghe?"
+      : "Chiudere il mercato per tutte le leghe? Per ogni competizione attiva verrà salvata la fotografia delle rose per l'evento. Le rose attuali non verranno cambiate.";
+    if (!window.confirm(descrizione)) return;
+    const res = await fetch(`${API}/admin/mercati-globali/${azione}`, {
+      method: "POST", headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    const ignorate = data.ignorate?.length
+      ? ` Leghe non modificate: ${data.ignorate.map(item => `${item.lega} (${item.motivo})`).join(", ")}.`
+      : "";
+    setMessaggio(res.ok ? `${data.message}${ignorate}` : data.detail || "Errore durante l'aggiornamento dei mercati.");
+  };
+
   const aggiornaFaseAdmin = async (url, confermaFinalizzazione = false) => {
     if (confermaFinalizzazione && !window.confirm("Confermi di avere verificato l'anteprima e di voler rendere ufficiali questi risultati?")) return;
     const res = await fetch(`${API}${url}`, {
@@ -2741,6 +2756,15 @@ function Admin({ token }) {
         <div className="card-title"><Icon name="tool" className="inline-icon" /> Pannello Admin Globale</div>
         {messaggio && <div className="msg-box">{messaggio}</div>}
         <p style={{ color: theme.textSub, fontSize: 13 }}>L'evento è unico per tutte le leghe e viene gestito da qui. Gli admin di lega possono soltanto aprire e chiudere il mercato.</p>
+      </div>
+
+      <div className="card">
+        <div className="card-title"><Icon name="tool" className="inline-icon" /> Mercati di tutte le leghe</div>
+        <p style={{ color: theme.textSub, fontSize: 13, marginTop: 0 }}>Apri o chiudi in un'unica operazione il mercato di tutte le leghe. La chiusura salva la fotografia delle rose per ogni competizione attiva; le rose attuali non cambiano.</p>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+          <button className="btn btn-success" onClick={() => gestisciMercatiGlobali("apri")}>Apri tutti i mercati</button>
+          <button className="btn btn-danger" onClick={() => gestisciMercatiGlobali("chiudi")}>Chiudi tutti i mercati</button>
+        </div>
       </div>
 
       <div className="card" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>

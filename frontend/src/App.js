@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 const API = "https://fantaroller-production.up.railway.app";
 const eventDateTimeLabel = value => {
@@ -2545,6 +2545,7 @@ function Admin({ token }) {
   const [eventiCatalogo, setEventiCatalogo] = useState([]);
   const [eventoEditId, setEventoEditId] = useState(null);
   const [eventoEditSoloNome, setEventoEditSoloNome] = useState(false);
+  const dataEventoInputRef = useRef(null);
   const [anteprimeCompetizioni, setAnteprimeCompetizioni] = useState({});
 
   const categorie = ["Ragazzi Maschi", "Ragazze Femminile", "Allievi Maschi", "Allieve Femminile", "Junior Maschi", "Junior Femminile", "Senior Maschi", "Senior Femminile"];
@@ -2670,11 +2671,12 @@ function Admin({ token }) {
 
   const creaEventoCatalogo = async () => {
     try {
+      const dataEventoDaSalvare = dataEventoInputRef.current ? dataEventoInputRef.current.value : dataCatalogo;
       const res = await fetch(eventoEditId ? `${API}/admin/eventi/${eventoEditId}` : `${API}/admin/eventi`, {
         method: eventoEditId ? "PUT" : "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ nome: nomeCatalogo, descrizione: descrizioneCatalogo || null,
-          data_evento: dataCatalogo || null, url_risultati: urlCatalogo || null }),
+          data_evento: dataEventoDaSalvare || null, url_risultati: urlCatalogo || null }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -2800,7 +2802,7 @@ function Admin({ token }) {
         {eventoEditSoloNome && <p style={{ color: theme.textMuted, fontSize: 12 }}>Puoi aggiornare solo nome e data. Rose, budget, competizioni e valori dei punteggi restano invariati.</p>}
         <input className="input" placeholder="Descrizione (facoltativa)" value={descrizioneCatalogo} onChange={e => setDescrizioneCatalogo(e.target.value)} disabled={eventoEditSoloNome} />
         <label style={{ display: "block", color: theme.textSub, fontSize: 12, marginBottom: 6 }} htmlFor="catalogo-data-evento">{eventoEditSoloNome ? "Data dell'evento" : "Data e ora di inizio (ora italiana)"}</label>
-        <input id="catalogo-data-evento" className="input" type={eventoEditSoloNome ? "date" : "datetime-local"} aria-label="Data dell'evento" value={dataCatalogo} onChange={e => setDataCatalogo(e.target.value)} />
+        <input ref={dataEventoInputRef} id="catalogo-data-evento" className="input" type={eventoEditSoloNome ? "date" : "datetime-local"} aria-label="Data dell'evento" value={dataCatalogo} onChange={e => setDataCatalogo(e.target.value)} />
         {!eventoEditSoloNome && <p style={{ color: theme.textMuted, fontSize: 11, margin: "-6px 0 12px" }}>L’orario è necessario per inviare i promemoria. Gli eventi già salvati con la sola data non ricevono avvisi finché non vengono aggiornati.</p>}
         <input className="input" placeholder="Link ai risultati (facoltativo)" value={urlCatalogo} onChange={e => setUrlCatalogo(e.target.value)} disabled={eventoEditSoloNome} />
         <button className="btn btn-primary" disabled={!nomeCatalogo.trim()} onClick={creaEventoCatalogo}>{eventoEditId ? (eventoEditSoloNome ? "Salva nome" : "Salva modifiche") : "Aggiungi al catalogo"}</button>

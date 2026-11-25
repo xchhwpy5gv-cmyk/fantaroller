@@ -847,6 +847,8 @@ def apri_mercato_lega(league_id: int, utente=Depends(get_utente_corrente), db=De
     if utente.id != lega.owner_id and not utente.is_admin:
         raise HTTPException(status_code=403, detail="Solo l'admin della lega può farlo")
     comp = competizione_corrente(db, lega.id)
+    if not comp:
+        raise HTTPException(status_code=409, detail="L'admin globale deve impostare prima l'evento corrente")
     if comp:
         if comp.fase == "configurata":
             comp.fase = "mercato_aperto"
@@ -1199,9 +1201,13 @@ def create_league(req: LeagueCreate, db=Depends(get_db), utente=Depends(get_uten
     db.add(lega)
     db.commit()
     db.refresh(lega)
+    evento_attivo = db.query(EventoCatalogo).filter_by(stato="attivo").with_for_update().first()
+    if evento_attivo:
+        db.add(EventoLega(evento_id=evento_attivo.id, league_id=lega.id, stato="selezionata"))
+        db.add(CompetizioneLega(league_id=lega.id, evento_id=evento_attivo.id, numero=1, fase="configurata"))
     utente.leghe.append(lega)
     db.commit()
-    return {"message": f"Lega '{req.nome}' creata! Scegli un evento per avviare il mercato.", "league_id": lega.id}
+    return {"message": f"Lega '{req.nome}' creata! L'evento corrente è gestito dall'admin.", "league_id": lega.id}
 
 
 def competizione_corrente(db, league_id):
@@ -1226,22 +1232,13 @@ def verifica_url_risultati(url):
 
 @app.get("/eventi/catalogo")
 def eventi_catalogo(utente=Depends(get_utente_corrente), db=Depends(get_db)):
-    league_ids = [league.id for league in utente.leghe]
-    if not league_ids:
+    evento = db.query(EventoCatalogo).filter_by(stato="attivo").first()
+    if not evento:
         return []
-    associazioni = db.query(EventoLega).join(
-        EventoCatalogo, EventoCatalogo.id == EventoLega.evento_id
-    ).filter(
-        EventoLega.league_id.in_(league_ids),
-        EventoLega.stato == "in_attesa",
-        EventoCatalogo.stato == "disponibile",
-    ).order_by(EventoCatalogo.data_evento, EventoCatalogo.nome).all()
-    return [{"id": association.evento.id, "nome": association.evento.nome,
-             "descrizione": association.evento.descrizione,
-             "data_evento": association.evento.data_evento,
-             "url_risultati": association.evento.url_risultati,
-             "league_id": association.league_id}
-            for association in associazioni]
+    return [{"id": evento.id, "nome": evento.nome,
+             "descrizione": evento.descrizione,
+             "data_evento": evento.data_evento,
+             "url_risultati": evento.url_risultati}]
 
 
 @app.get("/admin/eventi")
@@ -1261,22 +1258,114 @@ def lista_eventi_catalogo_admin(utente=Depends(get_utente_corrente), db=Depends(
             leagues.append({
                 "league_id": association.league_id,
                 "lega": association.lega.nome,
+                "modalita_economica": association.lega.modalita_economica,
                 "stato": association.stato,
                 "competizione_id": competition.id if competition else None,
                 "fase": competition.fase if competition else None,
             })
         competitions_exist = bool(db.query(CompetizioneLega.id).filter_by(evento_id=event.id).first())
-        has_started_association = any(association.stato != "in_attesa" for association in associations)
         result.append({"id": event.id, "nome": event.nome, "descrizione": event.descrizione,
                        "data_evento": event.data_evento, "url_risultati": event.url_risultati,
                        "stato": event.stato, "leghe_associate": leagues,
+                       "avviabile_globalmente": bool(leagues) and all(item["fase"] == "mercato_chiuso" for item in leagues),
                        "utilizzato": competitions_exist,
-                       "modificabile": not competitions_exist and not has_started_association,
+                       "modificabile": event.stato == "attivo" or (event.stato == "disponibile" and not competitions_exist),
                        "archiviabile": not db.query(CompetizioneLega.id).filter(
                            CompetizioneLega.evento_id == event.id,
                            CompetizioneLega.fase != "finalizzato",
                        ).first()})
     return result
+
+
+@app.post("/admin/eventi/{evento_id}/attiva-globale")
+def attiva_evento_globale(evento_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.is_admin:
+        raise HTTPException(status_code=403, detail="Non sei admin")
+    try:
+        eventi = db.query(EventoCatalogo).order_by(EventoCatalogo.id).with_for_update().all()
+        evento = next((item for item in eventi if item.id == evento_id), None)
+        if not evento or evento.stato == "archiviato":
+            raise HTTPException(status_code=404, detail="Evento disponibile non trovato")
+        evento_corrente = next((item for item in eventi if item.stato == "attivo"), None)
+        if evento_corrente and evento_corrente.id != evento.id:
+            raise HTTPException(status_code=409, detail=f"Concludi o rimuovi prima l'evento corrente '{evento_corrente.nome}'")
+        leghe = db.query(League).order_by(League.id).with_for_update().all()
+        preparazione = []
+        for lega in leghe:
+            precedente = competizione_corrente(db, lega.id)
+            if precedente and precedente.evento_id == evento.id:
+                if precedente.fase == "finalizzato":
+                    raise HTTPException(status_code=409, detail=f"La lega '{lega.nome}' ha già concluso questo evento")
+                preparazione.append((lega, precedente, None, False))
+                continue
+            if precedente and precedente.fase != "finalizzato":
+                raise HTTPException(status_code=409, detail=f"La lega '{lega.nome}' deve concludere '{precedente.evento.nome}' prima di cambiare evento")
+            if precedente and lega.mercato_aperto:
+                raise HTTPException(status_code=409, detail=f"Chiudi il mercato della lega '{lega.nome}' prima di cambiare evento")
+            association = db.query(EventoLega).filter_by(evento_id=evento.id, league_id=lega.id).with_for_update().first()
+            if association and association.stato == "completato":
+                raise HTTPException(status_code=409, detail=f"La lega '{lega.nome}' ha già partecipato a questo evento")
+            numero = precedente.numero + 1 if precedente else 1
+            fase = "transizione_in_attesa" if precedente else ("mercato_aperto" if lega.mercato_aperto else "configurata")
+            nuova = CompetizioneLega(league_id=lega.id, evento_id=evento.id, numero=numero, fase=fase)
+            preparazione.append((lega, nuova, association, True))
+        for lega, competizione, association, nuova_competizione in preparazione:
+            if association is None:
+                association = EventoLega(evento_id=evento.id, league_id=lega.id, stato="selezionata")
+                db.add(association)
+            else:
+                association.stato = "selezionata"
+            if nuova_competizione:
+                db.add(competizione)
+        evento.stato = "attivo"
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+    return {"evento_id": evento.id, "nome": evento.nome, "leghe_preparate": len(preparazione),
+            "transizioni_da_autorizzare": sum(1 for _, comp, _, _ in preparazione if comp.fase == "transizione_in_attesa")}
+
+
+@app.post("/admin/eventi/{evento_id}/avvia-globale")
+def avvia_evento_globale(evento_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.is_admin:
+        raise HTTPException(status_code=403, detail="Non sei admin")
+    evento = db.query(EventoCatalogo).filter_by(id=evento_id, stato="attivo").with_for_update().first()
+    if not evento:
+        raise HTTPException(status_code=404, detail="Evento globale non attivo")
+    leghe = db.query(League).order_by(League.id).with_for_update().all()
+    competizioni = [competizione_corrente(db, lega.id) for lega in leghe]
+    non_pronte = [(lega.nome, comp.fase if comp else "senza competizione")
+                  for lega, comp in zip(leghe, competizioni)
+                  if not comp or comp.evento_id != evento.id or comp.fase != "mercato_chiuso"]
+    if non_pronte:
+        dettaglio = "; ".join(f"{nome}: {fase.replace('_', ' ')}" for nome, fase in non_pronte[:8])
+        raise HTTPException(status_code=409, detail=f"Tutti i mercati devono essere chiusi per avviare l'evento. {dettaglio}")
+    try:
+        for lega, comp in zip(leghe, competizioni):
+            comp.fase = "in_corso"
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+    return {"evento_id": evento.id, "fase": "in_corso", "leghe_avviate": len(leghe)}
+
+
+@app.post("/admin/eventi/{evento_id}/rimuovi-globale")
+def rimuovi_evento_globale(evento_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.is_admin:
+        raise HTTPException(status_code=403, detail="Non sei admin")
+    evento = db.query(EventoCatalogo).filter_by(id=evento_id, stato="attivo").with_for_update().first()
+    if not evento:
+        raise HTTPException(status_code=404, detail="Evento globale non attivo")
+    incompleti = db.query(CompetizioneLega).filter(
+        CompetizioneLega.evento_id == evento.id, CompetizioneLega.fase != "finalizzato"
+    ).first()
+    if incompleti:
+        raise HTTPException(status_code=409, detail="Concludi tutte le competizioni prima di rimuovere l'evento corrente")
+    evento.stato = "disponibile"
+    db.commit()
+    return {"evento_id": evento.id, "stato": evento.stato}
 
 
 @app.get("/admin/leghe")
@@ -1292,30 +1381,7 @@ def lista_leghe_admin(utente=Depends(get_utente_corrente), db=Depends(get_db)):
 @app.post("/admin/eventi/{evento_id}/associa-leghe")
 def associa_evento_leghe(evento_id: int, req: AssociaEventoLegheRequest,
                          utente=Depends(get_utente_corrente), db=Depends(get_db)):
-    if not utente.is_admin:
-        raise HTTPException(status_code=403, detail="Non sei admin")
-    evento = db.query(EventoCatalogo).filter_by(id=evento_id, stato="disponibile").with_for_update().first()
-    if not evento:
-        raise HTTPException(status_code=404, detail="Evento disponibile non trovato")
-    league_ids = sorted(set(req.league_ids))
-    leghe = db.query(League).filter(League.id.in_(league_ids)).all() if league_ids else []
-    if len(leghe) != len(league_ids):
-        raise HTTPException(status_code=400, detail="Una o più leghe selezionate non esistono")
-    aggiunte = 0
-    try:
-        for league in leghe:
-            association = db.query(EventoLega).filter_by(
-                evento_id=evento.id, league_id=league.id
-            ).with_for_update().first()
-            if association:
-                continue
-            db.add(EventoLega(evento_id=evento.id, league_id=league.id, stato="in_attesa"))
-            aggiunte += 1
-        db.commit()
-    except Exception:
-        db.rollback()
-        raise
-    return {"evento_id": evento.id, "leghe_aggiunte": aggiunte, "leghe_gia_associate": len(league_ids) - aggiunte}
+    raise HTTPException(status_code=410, detail="Gli eventi si attivano globalmente per tutte le leghe")
 
 
 @app.post("/admin/eventi")
@@ -1342,24 +1408,27 @@ def modifica_evento_catalogo(evento_id: int, req: EventoCatalogoCreate, utente=D
     evento = db.query(EventoCatalogo).filter(EventoCatalogo.id == evento_id).first()
     if not evento:
         raise HTTPException(status_code=404, detail="Evento non trovato")
-    if db.query(CompetizioneLega.id).filter(
-        CompetizioneLega.evento_id == evento_id,
-        CompetizioneLega.fase != "finalizzato",
-    ).first() or db.query(EventoLega.id).filter(
-        EventoLega.evento_id == evento_id,
-        EventoLega.stato != "in_attesa",
-    ).first():
-        raise HTTPException(status_code=409, detail="L'evento è già associato a una competizione e non può essere modificato")
+    competizioni_esistenti = db.query(CompetizioneLega.id).filter_by(evento_id=evento_id).first()
+    if evento.stato == "archiviato" or (competizioni_esistenti and evento.stato != "attivo"):
+        raise HTTPException(status_code=409, detail="Puoi modificare un evento usato soltanto mentre è quello corrente")
     nome = req.nome.strip()
     if not nome:
         raise HTTPException(status_code=400, detail="Il nome dell'evento è obbligatorio")
     duplicato = db.query(EventoCatalogo).filter(EventoCatalogo.nome == nome, EventoCatalogo.id != evento_id).first()
     if duplicato:
         raise HTTPException(status_code=409, detail="Esiste già un evento con questo nome")
+    nome_precedente = evento.nome
     evento.nome = nome
     evento.descrizione = req.descrizione
     evento.data_evento = req.data_evento
     evento.url_risultati = verifica_url_risultati(req.url_risultati)
+    if nome != nome_precedente:
+        db.query(PuntiEvento).filter(PuntiEvento.evento == nome_precedente).update(
+            {PuntiEvento.evento: nome}, synchronize_session=False
+        )
+        db.query(Gara).filter(Gara.evento == nome_precedente).update(
+            {Gara.evento: nome}, synchronize_session=False
+        )
     db.commit()
     return {"message": "Evento aggiornato", "id": evento.id, "nome": evento.nome}
 
@@ -1371,6 +1440,8 @@ def archivia_evento_catalogo(evento_id: int, utente=Depends(get_utente_corrente)
     evento = db.query(EventoCatalogo).filter(EventoCatalogo.id == evento_id).first()
     if not evento:
         raise HTTPException(status_code=404, detail="Evento non trovato")
+    if evento.stato == "attivo":
+        raise HTTPException(status_code=409, detail="Rimuovi prima l'evento corrente")
     if db.query(CompetizioneLega.id).filter(
         CompetizioneLega.evento_id == evento_id,
         CompetizioneLega.fase != "finalizzato",
@@ -1383,36 +1454,7 @@ def archivia_evento_catalogo(evento_id: int, utente=Depends(get_utente_corrente)
 
 @app.post("/league/competizione/seleziona")
 def seleziona_evento_lega(req: SelezionaEventoRequest, utente=Depends(get_utente_corrente), db=Depends(get_db)):
-    lega = db.query(League).filter(League.id == req.league_id).with_for_update().first()
-    if not lega or lega not in utente.leghe:
-        raise HTTPException(status_code=404, detail="Non sei in questa lega")
-    verifica_gestore_lega(lega, utente)
-    evento = db.query(EventoCatalogo).filter(
-        EventoCatalogo.id == req.evento_id,
-        EventoCatalogo.stato == "disponibile",
-    ).first()
-    if not evento:
-        raise HTTPException(status_code=404, detail="Evento non disponibile")
-    association = db.query(EventoLega).filter_by(
-        evento_id=evento.id, league_id=lega.id, stato="in_attesa"
-    ).with_for_update().first()
-    if not association:
-        raise HTTPException(status_code=403, detail="L'evento non è stato associato a questa lega dall'admin")
-    if db.query(CompetizioneLega.id).filter_by(league_id=lega.id, evento_id=evento.id).first():
-        raise HTTPException(status_code=409, detail="Questa lega ha già partecipato all'evento selezionato")
-    precedente = competizione_corrente(db, lega.id)
-    if precedente and precedente.fase != "finalizzato":
-        raise HTTPException(status_code=409, detail="Concludi la competizione corrente prima di sceglierne un'altra")
-    numero = precedente.numero + 1 if precedente else 1
-    competizione = CompetizioneLega(league_id=lega.id, evento_id=evento.id,
-                                    numero=numero,
-                                    fase="transizione_in_attesa" if precedente else "configurata")
-    association.stato = "selezionata"
-    lega.mercato_aperto = 0
-    db.add(competizione)
-    db.commit()
-    return {"competizione_id": competizione.id, "evento": evento.nome,
-            "fase": competizione.fase, "modalita_economica": lega.modalita_economica}
+    raise HTTPException(status_code=410, detail="L'evento è gestito globalmente dall'admin")
 
 
 @app.post("/admin/competizioni/{competizione_id}/autorizza-transizione")
@@ -1464,17 +1506,19 @@ def stato_competizione_lega(league_id: int, utente=Depends(get_utente_corrente),
 
 @app.post("/league/competizione/avanza")
 def avanza_competizione_lega(league_id: int, utente=Depends(get_utente_corrente), db=Depends(get_db)):
+    if not utente.is_admin:
+        raise HTTPException(status_code=403, detail="Solo l'admin globale può avviare l'evento o segnare i risultati")
     lega = db.query(League).filter(League.id == league_id).with_for_update().first()
-    if not lega or lega not in utente.leghe:
-        raise HTTPException(status_code=404, detail="Non sei in questa lega")
-    verifica_gestore_lega(lega, utente)
+    if not lega:
+        raise HTTPException(status_code=404, detail="Lega non trovata")
     comp = competizione_corrente(db, lega.id)
     if not comp:
         raise HTTPException(status_code=409, detail="Scegli prima un evento")
     next_stage = {
-        "mercato_chiuso": "in_corso",
         "in_corso": "risultati_inseriti",
     }
+    if comp.fase == "mercato_chiuso":
+        raise HTTPException(status_code=409, detail="L'avvio dell'evento è gestito globalmente dall'admin")
     destination = next_stage.get(comp.fase)
     if not destination:
         raise HTTPException(status_code=409, detail="La competizione non è pronta per la transizione successiva")

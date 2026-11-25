@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 
 const API = "https://fantaroller-production.up.railway.app";
+const eventDateTimeLabel = value => {
+  const match = String(value || "").match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
+  return match ? `${match[3]}/${match[2]}/${match[1]} · ${match[4]}:${match[5]}` : value || "Data e ora non impostate";
+};
+const eventDateTimeInput = value => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(String(value || "")) ? value.slice(0, 16) : "";
 const chiaveOperazione = () => window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 const storicoAtletiCache = new Map();
 
@@ -2382,43 +2387,17 @@ function AdminLega({ token, lega }) {
   const [dettagli, setDettagli] = useState(null);
   const [messaggio, setMessaggio] = useState("");
   const [codiceCopiato, setCodiceCopiato] = useState(false);
-  const [catalogo, setCatalogo] = useState([]);
-  const [eventoScelto, setEventoScelto] = useState("");
   const [competizione, setCompetizione] = useState(null);
 
   const carica = useCallback(async () => {
     if (!lega) return;
     const res = await fetch(`${API}/league/dettagli?league_id=${lega.id}`, { headers: { Authorization: `Bearer ${token}` } });
     if (res.ok) setDettagli(await res.json());
-    const [eventiRes, compRes] = await Promise.all([
-      fetch(`${API}/eventi/catalogo`, { headers: { Authorization: `Bearer ${token}` } }),
-      fetch(`${API}/league/competizione?league_id=${lega.id}`, { headers: { Authorization: `Bearer ${token}` } }),
-    ]);
-    if (eventiRes.ok) setCatalogo(await eventiRes.json());
+    const compRes = await fetch(`${API}/league/competizione?league_id=${lega.id}`, { headers: { Authorization: `Bearer ${token}` } });
     if (compRes.ok) setCompetizione(await compRes.json());
   }, [lega, token]);
 
   useEffect(() => { carica(); }, [carica]);
-
-  const selezionaEvento = async () => {
-    if (!eventoScelto) return;
-    const res = await fetch(`${API}/league/competizione/seleziona`, {
-      method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ league_id: lega.id, evento_id: Number(eventoScelto) }),
-    });
-    const data = await res.json();
-    setMessaggio(data.message || data.detail || "Evento selezionato");
-    if (res.ok) { setEventoScelto(""); carica(); }
-  };
-
-  const avanzaFase = async () => {
-    const res = await fetch(`${API}/league/competizione/avanza?league_id=${lega.id}`, {
-      method: "POST", headers: { Authorization: `Bearer ${token}` },
-    });
-    const data = await res.json();
-    setMessaggio(data.message || data.detail || `Fase aggiornata: ${data.fase}`);
-    if (res.ok) carica();
-  };
 
   const apriMercato = async () => {
     if (competizione?.fase === "mercato_chiuso" && !window.confirm("Riaprire il mercato? La rosa congelata dell'evento verrà ricreata quando lo chiuderai di nuovo.")) return;
@@ -2462,28 +2441,16 @@ function AdminLega({ token, lega }) {
             <span>{competizione.evento}</span><span className="badge badge-blue">{competizione.fase.replaceAll("_", " ")}</span>
             {competizione.data_evento && <span style={{ color: theme.textMuted, fontSize: 12 }}>{competizione.data_evento}</span>}
             {competizione.url_risultati && <a href={competizione.url_risultati} target="_blank" rel="noreferrer" style={{ color: theme.blue, fontSize: 12 }}>Pagina risultati</a>}
-            {dettagli.gestore && ["mercato_chiuso", "in_corso"].includes(competizione.fase) && (
-              <button className="btn btn-blue" onClick={avanzaFase}>
-                {({ mercato_chiuso: "Avvia evento", in_corso: "Segna risultati inseriti" })[competizione.fase]}
-              </button>
-            )}
             {competizione.fase === "transizione_in_attesa" && <span style={{ color: theme.yellow, fontSize: 12 }}>In attesa dell'autorizzazione dell'admin generale. Rosa e budget non sono stati modificati.</span>}
           </div>
         ) : (
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            <select className="select" value={eventoScelto} onChange={e => setEventoScelto(e.target.value)} disabled={!dettagli.gestore}>
-              <option value="">Scegli un evento</option>
-              {catalogo.map(evento => <option key={evento.id} value={evento.id}>{evento.nome}{evento.data_evento ? ` · ${evento.data_evento}` : ""}</option>)}
-            </select>
-            {dettagli.gestore && <button className="btn btn-primary" disabled={!eventoScelto} onClick={selezionaEvento}>Seleziona evento</button>}
-            {catalogo.length === 0 && <span style={{ color: theme.textMuted, fontSize: 12 }}>Nessun evento disponibile nel catalogo.</span>}
-          </div>
+          <span style={{ color: theme.textMuted, fontSize: 12 }}>L'evento corrente viene impostato dall'admin globale.</span>
         )}
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
         <span style={{ fontSize: 13, color: theme.textSub }}>Mercato:</span>
         <span className={`badge ${dettagli.mercato_aperto ? "badge-green" : "badge-red"}`}><span style={{ display: "inline-block", width: 8, height: 8, marginRight: 5, borderRadius: "50%", background: dettagli.mercato_aperto ? theme.green : theme.red }} />{dettagli.mercato_aperto ? "Aperto" : "Chiuso"}</span>
-        {dettagli.gestore && <button className="btn btn-success" onClick={apriMercato} disabled={!!competizione && !["configurata", "mercato_chiuso"].includes(competizione.fase)}>{competizione?.fase === "mercato_chiuso" ? "Riapri Mercato" : "Apri Mercato"}</button>}
+        {dettagli.gestore && <button className="btn btn-success" onClick={apriMercato} disabled={!competizione || !["configurata", "mercato_chiuso"].includes(competizione.fase)}>{competizione?.fase === "mercato_chiuso" ? "Riapri Mercato" : "Apri Mercato"}</button>}
         {dettagli.gestore && <button className="btn btn-danger" onClick={chiudiMercato} disabled={!!competizione && competizione.fase !== "mercato_aperto"}>Chiudi Mercato</button>}
       </div>
       {dettagli.codice && (
@@ -2575,8 +2542,6 @@ function Admin({ token }) {
   const [urlCatalogo, setUrlCatalogo] = useState("");
   const [eventiCatalogo, setEventiCatalogo] = useState([]);
   const [eventoEditId, setEventoEditId] = useState(null);
-  const [legheAdmin, setLegheAdmin] = useState([]);
-  const [legheSelezionateEvento, setLegheSelezionateEvento] = useState({});
   const [anteprimeCompetizioni, setAnteprimeCompetizioni] = useState({});
 
   const categorie = ["Ragazzi Maschi", "Ragazze Femminile", "Allievi Maschi", "Allieve Femminile", "Junior Maschi", "Junior Femminile", "Senior Maschi", "Senior Femminile"];
@@ -2604,24 +2569,29 @@ function Admin({ token }) {
 
   const caricaEventiCatalogo = useCallback(async () => {
     const headers = { Authorization: `Bearer ${token}` };
-    const [eventsResponse, leaguesResponse] = await Promise.all([
-      fetch(`${API}/admin/eventi`, { headers }),
-      fetch(`${API}/admin/leghe`, { headers }),
-    ]);
+    const eventsResponse = await fetch(`${API}/admin/eventi`, { headers });
     if (eventsResponse.ok) setEventiCatalogo(await eventsResponse.json());
-    if (leaguesResponse.ok) setLegheAdmin(await leaguesResponse.json());
   }, [token]);
   useEffect(() => { caricaEventiCatalogo(); }, [caricaEventiCatalogo]);
 
-  const associaEventoAlleLeghe = async (eventoId, ids) => {
-    const res = await fetch(`${API}/admin/eventi/${eventoId}/associa-leghe`, {
-      method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ league_ids: ids }),
+  const gestisciEventoGlobale = async (eventoId, azione) => {
+    const conferme = {
+      "attiva-globale": "Impostare questo evento come corrente per tutte le leghe? Account, rose, budget, punti e partecipanti non verranno modificati. Le leghe che hanno una competizione non conclusa impediranno l'operazione.",
+      "avvia-globale": "Avviare l'evento in tutte le leghe? È necessario che ogni lega abbia chiuso il mercato.",
+      "rimuovi-globale": "Rimuovere l'evento corrente? L'operazione è consentita solo quando tutte le competizioni sono concluse.",
+    };
+    if (!window.confirm(conferme[azione])) return;
+    const res = await fetch(`${API}/admin/eventi/${eventoId}/${azione}`, {
+      method: "POST", headers: { Authorization: `Bearer ${token}` },
     });
     const data = await res.json();
     setMessaggio(res.ok
-      ? `Evento associato a ${data.leghe_aggiunte} leghe; ${data.leghe_gia_associate} erano già associate.`
-      : data.detail || "Errore durante l'associazione dell'evento");
+      ? (azione === "attiva-globale"
+        ? `Evento corrente impostato per ${data.leghe_preparate} leghe.${data.transizioni_da_autorizzare ? ` Transizioni da autorizzare: ${data.transizioni_da_autorizzare}.` : ""}`
+        : azione === "avvia-globale"
+          ? `Evento avviato per ${data.leghe_avviate} leghe.`
+          : "Evento rimosso dalla gestione corrente.")
+      : data.detail || "Operazione non riuscita");
     if (res.ok) caricaEventiCatalogo();
   };
 
@@ -2742,7 +2712,7 @@ function Admin({ token }) {
       <div className="card">
         <div className="card-title"><Icon name="tool" className="inline-icon" /> Pannello Admin Globale</div>
         {messaggio && <div className="msg-box">{messaggio}</div>}
-        <p style={{ color: theme.textSub, fontSize: 13 }}>Il mercato ora si gestisce per singola lega, dalla sezione "Gestisci Lega" quando hai una lega attiva di cui sei owner.</p>
+        <p style={{ color: theme.textSub, fontSize: 13 }}>L'evento è unico per tutte le leghe e viene gestito da qui. Gli admin di lega possono soltanto aprire e chiudere il mercato.</p>
       </div>
 
       <div className="card" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
@@ -2799,48 +2769,28 @@ function Admin({ token }) {
 
       <div className="card">
         <div className="card-title"><Icon name="calendar" className="inline-icon" /> {eventoEditId ? "Modifica evento globale" : "Catalogo eventi globali"}</div>
-        <p style={{ color: theme.textSub, fontSize: 13 }}>Gli eventi aggiunti qui diventano selezionabili nelle singole leghe. La creazione non calcola né assegna punteggi.</p>
+        <p style={{ color: theme.textSub, fontSize: 13 }}>Rendi corrente un evento per tutte le leghe con un solo comando. La preparazione non cambia rose, budget, punti o partecipanti.</p>
         <input className="input" placeholder="Nome manifestazione" value={nomeCatalogo} onChange={e => setNomeCatalogo(e.target.value)} />
         <input className="input" placeholder="Descrizione (facoltativa)" value={descrizioneCatalogo} onChange={e => setDescrizioneCatalogo(e.target.value)} />
-        <input className="input" type="date" aria-label="Data evento" value={dataCatalogo} onChange={e => setDataCatalogo(e.target.value)} />
+        <label style={{ display: "block", color: theme.textSub, fontSize: 12, marginBottom: 6 }} htmlFor="catalogo-data-evento">Data e ora di inizio (ora italiana)</label>
+        <input id="catalogo-data-evento" className="input" type="datetime-local" aria-label="Data e ora di inizio evento" value={dataCatalogo} onChange={e => setDataCatalogo(e.target.value)} />
+        <p style={{ color: theme.textMuted, fontSize: 11, margin: "-6px 0 12px" }}>L’orario è necessario per inviare i promemoria. Gli eventi già salvati con la sola data non ricevono avvisi finché non vengono aggiornati.</p>
         <input className="input" placeholder="Link ai risultati (facoltativo)" value={urlCatalogo} onChange={e => setUrlCatalogo(e.target.value)} />
         <button className="btn btn-primary" disabled={!nomeCatalogo.trim()} onClick={creaEventoCatalogo}>{eventoEditId ? "Salva modifiche" : "Aggiungi al catalogo"}</button>
         {eventoEditId && <button className="btn btn-danger" style={{ marginLeft: 8 }} onClick={() => { setEventoEditId(null); setNomeCatalogo(""); setDescrizioneCatalogo(""); setDataCatalogo(""); setUrlCatalogo(""); }}>Annulla</button>}
         {eventiCatalogo.map(evento => (
           <div key={evento.id} style={{ padding: "12px 0", borderBottom: `1px solid ${theme.border}` }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-              <div><strong>{evento.nome}</strong><span style={{ color: theme.textMuted, fontSize: 12, marginLeft: 8 }}>{evento.data_evento || "Data non impostata"} · {evento.stato}</span></div>
+              <div><strong>{evento.nome}</strong><span style={{ color: theme.textMuted, fontSize: 12, marginLeft: 8 }}>{eventDateTimeLabel(evento.data_evento)} · {evento.stato}</span></div>
               <div style={{ display: "flex", gap: 6 }}>
-                {evento.modificabile && evento.stato === "disponibile" && <button className="btn btn-blue" onClick={() => { setEventoEditId(evento.id); setNomeCatalogo(evento.nome); setDescrizioneCatalogo(evento.descrizione || ""); setDataCatalogo(evento.data_evento || ""); setUrlCatalogo(evento.url_risultati || ""); }}>Modifica</button>}
+                {evento.modificabile && <button className="btn btn-blue" onClick={() => { setEventoEditId(evento.id); setNomeCatalogo(evento.nome); setDescrizioneCatalogo(evento.descrizione || ""); setDataCatalogo(eventDateTimeInput(evento.data_evento)); setUrlCatalogo(evento.url_risultati || ""); }}>Modifica</button>}
+                {evento.stato === "disponibile" && <button className="btn btn-primary" onClick={() => gestisciEventoGlobale(evento.id, "attiva-globale")}>Rendi corrente per tutte le leghe</button>}
+                {evento.stato === "attivo" && <button className="btn btn-success" disabled={!evento.avviabile_globalmente} onClick={() => gestisciEventoGlobale(evento.id, "avvia-globale")}>Avvia evento per tutte le leghe</button>}
+                {evento.stato === "attivo" && <button className="btn btn-danger" disabled={evento.archiviabile === false} onClick={() => gestisciEventoGlobale(evento.id, "rimuovi-globale")}>Rimuovi evento corrente</button>}
                 {evento.archiviabile && evento.stato === "disponibile" && <button className="btn btn-danger" onClick={() => archiviaEventoCatalogo(evento.id)}>Archivia</button>}
               </div>
             </div>
-            {evento.stato === "disponibile" && (
-              <div style={{ marginTop: 12, padding: 12, background: "#0d1526", borderRadius: 9 }}>
-                <div style={{ fontWeight: 600, fontSize: 12, marginBottom: 8 }}>Rendi l'evento disponibile alle leghe</div>
-                {legheAdmin.length === 0 ? <div style={{ color: theme.textMuted, fontSize: 12 }}>Non ci sono leghe.</div> : (
-                  <>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "7px 14px", marginBottom: 10 }}>
-                      {legheAdmin.map(league => {
-                        const linked = evento.leghe_associate?.some(item => item.league_id === league.id);
-                        const selected = (legheSelezionateEvento[evento.id] || []).includes(league.id);
-                        return <label key={league.id} style={{ display: "inline-flex", alignItems: "center", gap: 5, color: linked ? theme.textMuted : theme.textSub, fontSize: 12 }}>
-                          <input type="checkbox" checked={linked || selected} disabled={linked} onChange={event => setLegheSelezionateEvento(previous => {
-                            const ids = new Set(previous[evento.id] || []);
-                            if (event.target.checked) ids.add(league.id); else ids.delete(league.id);
-                            return { ...previous, [evento.id]: [...ids] };
-                          })} /> {league.nome}{linked ? " · associata" : ""}
-                        </label>;
-                      })}
-                    </div>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                      <button className="btn btn-blue" onClick={() => associaEventoAlleLeghe(evento.id, legheAdmin.map(league => league.id))}>Aggiungi a tutte le leghe</button>
-                      <button className="btn btn-primary" disabled={!(legheSelezionateEvento[evento.id] || []).length} onClick={() => associaEventoAlleLeghe(evento.id, legheSelezionateEvento[evento.id] || [])}>Aggiungi alle selezionate</button>
-                    </div>
-                  </>
-                )}
-              </div>
-            )}
+            {evento.stato === "attivo" && !evento.avviabile_globalmente && <p style={{ color: theme.textMuted, fontSize: 12, margin: "8px 0" }}>Per avviare l'evento in tutte le leghe, ogni mercato deve essere chiuso e le eventuali transizioni devono essere autorizzate.</p>}
             {!!evento.leghe_associate?.length && (
               <div style={{ marginTop: 10 }}>
                 <div style={{ fontWeight: 600, fontSize: 12, marginBottom: 6 }}>Leghe e stato</div>
@@ -2848,7 +2798,14 @@ function Admin({ token }) {
                   <div key={association.league_id} style={{ padding: "9px 0", borderTop: `1px solid ${theme.border}33` }}>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
                       <span style={{ fontSize: 12 }}>{association.lega} · {association.fase ? association.fase.replaceAll("_", " ") : association.stato.replaceAll("_", " ")}</span>
-                      {association.competizione_id && association.fase === "transizione_in_attesa" && <button className="btn btn-primary" onClick={() => aggiornaFaseAdmin(`/admin/competizioni/${association.competizione_id}/autorizza-transizione`)}>Autorizza nuova competizione</button>}
+                      {association.competizione_id && association.fase === "transizione_in_attesa" && <button className="btn btn-primary" onClick={() => {
+                        const reset = association.modalita_economica === "reset";
+                        if (!window.confirm(reset
+                          ? `La lega ${association.lega} usa la modalità Reset: autorizzando la transizione verranno svuotate le rose e ripristinati i budget iniziali. Procedere?`
+                          : `Autorizzare la nuova competizione per ${association.lega}? Le rose e i budget saranno mantenuti.`)) return;
+                        aggiornaFaseAdmin(`/admin/competizioni/${association.competizione_id}/autorizza-transizione`);
+                      }}>{association.modalita_economica === "reset" ? "Autorizza (reset rosa e budget)" : "Autorizza nuova competizione"}</button>}
+                      {association.competizione_id && association.fase === "in_corso" && <button className="btn btn-blue" onClick={() => aggiornaFaseAdmin(`/league/competizione/avanza?league_id=${association.league_id}`)}>Segna risultati inseriti</button>}
                       {association.competizione_id && association.fase === "risultati_inseriti" && <button className="btn btn-blue" onClick={() => aggiornaFaseAdmin(`/admin/competizioni/${association.competizione_id}/calcola-punti`)}>Registra punti calcolati</button>}
                       {association.competizione_id && ["punteggi_calcolati", "finalizzato"].includes(association.fase) && <button className="btn btn-blue" onClick={() => caricaAnteprimaCompetizione(association.competizione_id)}>Anteprima risultati</button>}
                       {association.competizione_id && association.fase === "punteggi_calcolati" && <button className="btn btn-success" onClick={() => aggiornaFaseAdmin(`/admin/competizioni/${association.competizione_id}/finalizza?conferma=true`, true)}>Finalizza risultati</button>}

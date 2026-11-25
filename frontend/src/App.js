@@ -2581,18 +2581,25 @@ function Admin({ token }) {
       "rimuovi-globale": "Rimuovere l'evento corrente? L'operazione è consentita solo quando tutte le competizioni sono concluse.",
     };
     if (!window.confirm(conferme[azione])) return;
-    const res = await fetch(`${API}/admin/eventi/${eventoId}/${azione}`, {
-      method: "POST", headers: { Authorization: `Bearer ${token}` },
-    });
-    const data = await res.json();
-    setMessaggio(res.ok
-      ? (azione === "attiva-globale"
+    setMessaggio("Invio della richiesta…");
+    try {
+      const res = await fetch(`${API}/admin/eventi/${eventoId}/${azione}`, {
+        method: "POST", headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setMessaggio(data.detail || `Il server ha rifiutato la richiesta (errore ${res.status}).`);
+        return;
+      }
+      setMessaggio(azione === "attiva-globale"
         ? `Evento corrente impostato per ${data.leghe_preparate} leghe.${data.transizioni_da_autorizzare ? ` Transizioni da autorizzare: ${data.transizioni_da_autorizzare}.` : ""}`
         : azione === "avvia-globale"
           ? `Evento avviato per ${data.leghe_avviate} leghe.`
-          : "Evento rimosso dalla gestione corrente.")
-      : data.detail || "Operazione non riuscita");
-    if (res.ok) caricaEventiCatalogo();
+          : "Evento rimosso dalla gestione corrente.");
+      await caricaEventiCatalogo();
+    } catch {
+      setMessaggio("Non riesco a raggiungere il backend. L'evento non è stato modificato; controlla la connessione e riprova.");
+    }
   };
 
   const aggiornaFaseAdmin = async (url, confermaFinalizzazione = false) => {

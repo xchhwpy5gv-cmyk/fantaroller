@@ -5,6 +5,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 from pathlib import Path
 
@@ -28,6 +29,7 @@ from main import (
     CorrezioneRisultato,
     EventoCatalogo,
     EventoLega,
+    Gara,
     League,
     PuntiEvento,
     PuntiCompetizione,
@@ -52,6 +54,7 @@ from main import (
     correggi_risultati_finalizzati,
     classifica_lega,
     chiudi_mercato_lega,
+    calcola_punti,
     crea_evento_catalogo,
     lista_atleti,
     squadra_atleti,
@@ -334,6 +337,122 @@ class Listone2027Tests(unittest.TestCase):
         )
         self.assertEqual(scored_team[0]["categoria"], market_category(record))
         self.assertEqual(scored_team[0]["punti"], 15)
+
+    def test_scraped_sanctions_are_saved_in_event_points_and_recalculation_is_repeatable(self):
+        user, league, squad, _ = self.make_team()
+        positions = [1, 2, 3, 4, 5, 6, 10, 11, 20, 21]
+        names = ["LUCA ALFA", "LUCA BETA", "LUCA GAMMA", "LUCA DELTA", "LUCA EPSILON",
+                 "LUCA ZETA", "LUCA ETA", "LUCA THETA", "LUCA IOTA", "LUCA KAPPA"]
+        sanctions = {1: "Ammonizione", 2: "Diffida", 3: "Espulsione", 4: "Squalifica"}
+        rows = []
+        notes = []
+        athletes = []
+        for position, name in zip(positions, names):
+            bib = str(100 + position)
+            athlete = Athlete(name=name, categoria="Senior Maschi", punti=0, prezzo=10,
+                              prezzo_precedente=10, gare=0, malus=0, visibile=1)
+            self.db.add(athlete)
+            athletes.append(athlete)
+            rows.append(f"<tr><td>{position}</td><td>{bib}</td><td>{name}</td><td>CLUB</td></tr>")
+            if position in sanctions:
+                notes.append(f"<p>{sanctions[position]} al n. {bib} {name}</p>")
+        disqualified = Athlete(name="PIERACCINI MARCO", categoria="Senior Maschi", punti=0, prezzo=10,
+                               prezzo_precedente=10, gare=0, malus=0, visibile=1)
+        self.db.add(disqualified)
+        athletes.append(disqualified)
+        rows.append("<tr><td></td><td>551</td><td>PIERACCINI MARCO</td><td>302</td>"
+                    "<td>ASD</td><td></td><td>Squalif</td><td></td></tr>")
+        notes.append("<p>Squalifica al n. 551 PIERACCINI MARCO</p>")
+        self.db.add(Gara(url="https://fixture.invalid/sanzioni", categoria="Senior Maschi",
+                         moltiplicatore="1.2", evento="Sanzioni test"))
+        self.db.add(Gara(url="https://fixture.invalid/seconda-gara", categoria="Senior Maschi",
+                         moltiplicatore="1", evento="Sanzioni test"))
+        squad.atleti.append(athletes[0])
+        event = EventoCatalogo(nome="Sanzioni test", stato="attivo")
+        self.db.add(event)
+        self.db.flush()
+        comp = CompetizioneLega(league_id=league.id, evento_id=event.id, numero=1,
+                                fase="risultati_inseriti")
+        self.db.add(comp)
+        self.db.flush()
+        self.db.add(RosaCompetizione(
+            competizione_id=comp.id, squadra_id=squad.id, squadra_nome=squad.nome,
+            atleta_id=athletes[0].id, atleta_nome=athletes[0].name,
+            categoria=athletes[0].categoria, prezzo_pagato=10,
+        ))
+        self.db.commit()
+        html = "<table>" + "".join(rows) + "</table>" + "".join(notes)
+        response_sanzioni = SimpleNamespace(text=html, raise_for_status=lambda: None)
+        response_seconda_gara = SimpleNamespace(
+            text="<table>" + "".join(rows) + "</table>", raise_for_status=lambda: None,
+        )
+
+        with patch("requests.get", side_effect=[response_sanzioni, response_seconda_gara,
+                                                response_sanzioni, response_seconda_gara]):
+            calcola_punti(evento="Sanzioni test", utente=user, db=self.db)
+            calcola_punti(evento="Sanzioni test", utente=user, db=self.db)
+
+        expected = [210, 167, 115, 93, 121, 110, 66, 44, 44, 11, -50]
+        expected_gare = [2] * 10 + [0]
+        for athlete, points, races in zip(athletes, expected, expected_gare):
+            self.db.refresh(athlete)
+            event_points = self.db.query(PuntiEvento).filter_by(
+                atleta_id=athlete.id, evento="Sanzioni test",
+            ).one()
+            self.assertEqual(athlete.punti, points)
+            self.assertEqual(event_points.punti, points)
+            self.assertEqual(athlete.gare, races)
+        self.assertEqual(self.db.query(PuntiEvento).filter_by(evento="Sanzioni test").count(), len(athletes))
+        calculated = calcola_punti_competizione(comp.id, utente=user, db=self.db)
+        self.assertEqual(calculated["atleti_con_punti"], len(athletes))
+        official_points = self.db.query(PuntiCompetizione).filter_by(
+            competizione_id=comp.id, atleta_id=athletes[0].id,
+        ).one()
+        self.assertEqual(official_points.punti, expected[0])
+        finalizza_competizione(comp.id, conferma=True, utente=user, db=self.db)
+        standing = self.db.query(ClassificaCompetizione).filter_by(
+            competizione_id=comp.id, squadra_id=squad.id,
+        ).one()
+        self.assertEqual(standing.punti_totali, expected[0] + (squad.punti_bonus or 0))
+
+    def test_scrape_failure_or_empty_page_keeps_saved_points_unchanged(self):
+        user, _, _, athletes = self.make_team([LISTONE[0]])
+        athlete = athletes[0]
+        athlete.punti = 40
+        athlete.gare = 2
+        self.db.add_all([
+            PuntiEvento(atleta_id=athlete.id, evento="Evento da proteggere", categoria=athlete.categoria, punti=31),
+            PuntiEvento(atleta_id=athlete.id, evento="Altro evento", categoria=athlete.categoria, punti=9),
+            Gara(url="https://fixture.invalid/errore", categoria=athlete.categoria,
+                 moltiplicatore="1", evento="Evento da proteggere"),
+            Gara(url="https://fixture.invalid/errore-seconda-gara", categoria=athlete.categoria,
+                 moltiplicatore="1", evento="Evento da proteggere"),
+        ])
+        self.db.commit()
+
+        successful_page = SimpleNamespace(
+            text=f"<table><tr><td>1</td><td>123</td><td>{athlete.name}</td><td>CLUB</td></tr></table>",
+            raise_for_status=lambda: None,
+        )
+        scenarios = [
+            (patch("requests.get", side_effect=[successful_page, TimeoutError("simulated timeout")]),
+             "Evento da proteggere"),
+            (patch("requests.get", side_effect=[successful_page, SimpleNamespace(
+                text="<html>nessun risultato</html>", raise_for_status=lambda: None,
+            )]), None),
+        ]
+        for requests_mock, selected_event in scenarios:
+            with requests_mock, self.assertRaises(HTTPException) as failure:
+                calcola_punti(evento=selected_event, utente=user, db=self.db)
+            self.assertEqual(failure.exception.status_code, 502)
+            self.db.refresh(athlete)
+            self.assertEqual((athlete.punti, athlete.gare), (40, 2))
+            self.assertEqual(self.db.query(PuntiEvento).filter_by(
+                atleta_id=athlete.id, evento="Evento da proteggere",
+            ).one().punti, 31)
+            self.assertEqual(self.db.query(PuntiEvento).filter_by(
+                atleta_id=athlete.id, evento="Altro evento",
+            ).one().punti, 9)
 
     def test_global_market_controls_preserve_rosters_for_listone_and_auction(self):
         admin, league, squad, athletes = self.make_team([LISTONE[0]])

@@ -1046,6 +1046,8 @@ def calcola_punti(evento: str = None, utente=Depends(get_utente_corrente), db=De
         raise HTTPException(status_code=409, detail="I risultati di una competizione finalizzata sono immutabili; usa la procedura di correzione admin")
     import requests
     from bs4 import BeautifulSoup
+    import re
+    from collections import defaultdict
 
     def punti_base(pos):
         pos = int(pos)
@@ -1061,100 +1063,111 @@ def calcola_punti(evento: str = None, utente=Depends(get_utente_corrente), db=De
     def normalizza_nome(nome):
         return nome.lower().replace("ò", "o").replace("ó", "o").replace("'", "").replace("?", "").replace("frige", "frigo").strip()
 
-    if evento:
-        gare = db.query(Gara).filter(Gara.evento == evento).all()
-        db.query(PuntiEvento).filter(PuntiEvento.evento == evento).delete()
-        # Ricalcola punti totali sottraendo i punti dell'evento
-        atleti_da_aggiornare = db.query(Athlete).all()
-        for atleta in atleti_da_aggiornare:
-            punti_altri_eventi = db.query(PuntiEvento).filter(PuntiEvento.atleta_id == atleta.id).all()
-            atleta.punti = sum(p.punti for p in punti_altri_eventi)
-            atleta.gare = len(punti_altri_eventi)
-        db.commit()
-    else:
-        gare = db.query(Gara).all()
-        db.query(Athlete).update({"punti": 0, "gare": 0})
-        db.query(PuntiEvento).delete()
-        db.commit()
+    gare = db.query(Gara).filter(Gara.evento == evento).all() if evento else db.query(Gara).all()
+    if not gare:
+        raise HTTPException(status_code=409, detail="Non ci sono gare configurate da ricalcolare; i punti sono rimasti invariati")
 
+    # Scarica e valida tutte le pagine prima di modificare i punti salvati.
+    gare_lette = []
     for gara in gare:
         try:
-            response = requests.get(gara.url)
+            response = requests.get(gara.url, timeout=20)
+            response.raise_for_status()
             soup = BeautifulSoup(response.text, "html.parser")
-            rows = soup.find_all("tr")
-
-            # Mappa pettorale -> nome dalla classifica
-            pettorale_nome = {}
-            for row in rows:
-                cols = row.find_all("td")
-                if len(cols) > 3:
-                    pettorale = cols[1].text.strip()
-                    nome = cols[2].text.strip()
-                    if pettorale and pettorale.isdigit():
-                        pettorale_nome[pettorale] = nome
-
-            for row in rows:
+            risultati = []
+            pettorali_nomi = {}
+            for row in soup.find_all("tr"):
                 cols = row.find_all("td")
                 if len(cols) > 3:
                     posizione = cols[0].text.strip()
+                    pettorale = cols[1].text.strip()
                     nome = cols[2].text.strip()
-                    if posizione and posizione.isdigit():
-                        punti = round(punti_base(posizione) * float(gara.moltiplicatore))
-                        nome_norm = normalizza_nome(nome)
-                        athletes = db.query(Athlete).filter(
-                            Athlete.categoria == gara.categoria
-                        ).all()
-                        atleta = next(
-                            (a for a in athletes if normalizza_nome(a.name) == nome_norm),
-                            None
-                        )
-                        if atleta:
-                            atleta.punti += punti
-                            atleta.gare += 1
-                            evento_esistente = db.query(PuntiEvento).filter(
-                                PuntiEvento.atleta_id == atleta.id,
-                                PuntiEvento.evento == gara.evento
-                            ).first()
-                            if evento_esistente:
-                                evento_esistente.punti += punti
-                            else:
-                                db.add(PuntiEvento(
-                                    atleta_id=atleta.id,
-                                    evento=gara.evento,
-                                    categoria=gara.categoria,
-                                    punti=punti
-                                ))
+                    if pettorale.isdigit() and nome:
+                        pettorali_nomi[pettorale] = nome
+                        if posizione.isdigit() and int(posizione) > 0:
+                            risultati.append((int(posizione), pettorale, nome))
+            if not risultati:
+                raise ValueError("la pagina non contiene righe classifica valide")
 
-            # Leggi note per malus
-            testo_pagina = soup.get_text()
-            import re
-            diffide = re.findall(r'Diffida al n\.\s*(\d+)\s+([A-Z\s\']+?)(?=Diffida|Ammonizione|Espulsione|Squalifica|$)', testo_pagina)
-            ammonizioni = re.findall(r'Ammonizione al n\.\s*(\d+)\s+([A-Z\s\']+?)(?=Diffida|Ammonizione|Espulsione|Squalifica|$)', testo_pagina)
-            espulsioni = re.findall(r'(?:Espulsione|Squalifica) al n\.\s*(\d+)\s+([A-Z\s\']+?)(?=Diffida|Ammonizione|Espulsione|Squalifica|$)', testo_pagina)
+            testo_pagina = soup.get_text(" ", strip=True)
+            sanzioni = []
+            sanzioni.extend((pettorale, 20) for pettorale in re.findall(r"Diffida al n\.\s*(\d+)", testo_pagina))
+            sanzioni.extend((pettorale, 10) for pettorale in re.findall(r"Ammonizione al n\.\s*(\d+)", testo_pagina))
+            sanzioni.extend((pettorale, 50) for pettorale in re.findall(r"(?:Espulsione|Squalifica) al n\.\s*(\d+)", testo_pagina))
+            gare_lette.append((gara, risultati, pettorali_nomi, sanzioni, float(gara.moltiplicatore)))
+        except Exception as exc:
+            raise HTTPException(
+                status_code=502,
+                detail=f"Risultati non leggibili per la gara {gara.id}; i punti precedenti sono rimasti invariati",
+            ) from exc
 
-            def applica_malus(sanzioni, malus_punti):
-                for pettorale, _ in sanzioni:
-                    pettorale = pettorale.strip()
-                    nome = pettorale_nome.get(pettorale)
-                    if nome:
-                        nome_norm = normalizza_nome(nome)
-                        athletes = db.query(Athlete).filter(Athlete.categoria == gara.categoria).all()
-                        atleta = next((a for a in athletes if normalizza_nome(a.name) == nome_norm), None)
-                        if atleta:
-                            atleta.punti -= malus_punti
-                            evento_esistente = db.query(PuntiEvento).filter(
-                                PuntiEvento.atleta_id == atleta.id,
-                                PuntiEvento.evento == gara.evento
-                            ).first()
-                            if evento_esistente:
-                                evento_esistente.punti -= malus_punti
+    atleti = db.query(Athlete).all()
+    atleti_per_nome = {}
+    atleti_per_id = {athlete.id: athlete for athlete in atleti}
+    for athlete in atleti:
+        atleti_per_nome.setdefault((athlete.categoria, normalizza_nome(athlete.name)), athlete)
 
-            applica_malus(diffide, 20)
-            applica_malus(ammonizioni, 10)
-            applica_malus(espulsioni, 50)
-            db.commit()
-        except Exception as e:
-            print(f"Errore gara {gara.url}: {e}")
+    punti_calcolati = defaultdict(int)
+    categorie_calcolate = {}
+    presenze_calcolate = defaultdict(int)
+    for gara, risultati, pettorali_nomi, sanzioni, moltiplicatore in gare_lette:
+        atleti_per_pettorale = {}
+        atleti_trovati = 0
+        for pettorale, nome in pettorali_nomi.items():
+            athlete = atleti_per_nome.get((gara.categoria, normalizza_nome(nome)))
+            if athlete:
+                atleti_per_pettorale[pettorale] = athlete
+                atleti_trovati += 1
+        for posizione, pettorale, nome in risultati:
+            athlete = atleti_per_nome.get((gara.categoria, normalizza_nome(nome)))
+            if not athlete:
+                continue
+            key = (athlete.id, gara.evento)
+            punti_calcolati[key] += round(punti_base(posizione) * moltiplicatore)
+            categorie_calcolate.setdefault(key, gara.categoria)
+            presenze_calcolate[athlete.id] += 1
+            atleti_per_pettorale[pettorale] = athlete
+        for pettorale, malus_punti in sanzioni:
+            athlete = atleti_per_pettorale.get(pettorale)
+            if athlete:
+                key = (athlete.id, gara.evento)
+                punti_calcolati[key] -= malus_punti
+                categorie_calcolate.setdefault(key, gara.categoria)
+        if not atleti_trovati:
+            raise HTTPException(
+                status_code=502,
+                detail=f"Nessun atleta della gara {gara.id} corrisponde al listone; i punti precedenti sono rimasti invariati",
+            )
+
+    if not punti_calcolati:
+        raise HTTPException(status_code=502, detail="Non ci sono punti o sanzioni abbinabili agli atleti; i punti precedenti sono rimasti invariati")
+
+    # Solo dopo aver letto tutte le gare sostituisce i punti, in un'unica transazione.
+    try:
+        if evento:
+            db.query(PuntiEvento).filter(PuntiEvento.evento == evento).delete(synchronize_session=False)
+        else:
+            db.query(PuntiEvento).delete(synchronize_session=False)
+
+        punti_totali = defaultdict(int)
+        gare_totali = defaultdict(int)
+        if evento:
+            for row in db.query(PuntiEvento).all():
+                punti_totali[row.atleta_id] += row.punti
+                gare_totali[row.atleta_id] += 1
+
+        for (athlete_id, nome_evento), punti in punti_calcolati.items():
+            athlete = atleti_per_id[athlete_id]
+            db.add(PuntiEvento(atleta_id=athlete_id, evento=nome_evento,
+                               categoria=categorie_calcolate[(athlete_id, nome_evento)], punti=punti))
+            punti_totali[athlete_id] += punti
+        for athlete in atleti:
+            athlete.punti = punti_totali[athlete.id]
+            athlete.gare = gare_totali[athlete.id] + presenze_calcolate[athlete.id]
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
 
     return {"message": "Punti aggiornati!"}
 

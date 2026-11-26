@@ -1276,7 +1276,7 @@ def create_league(req: LeagueCreate, db=Depends(get_db), utente=Depends(get_uten
         modalita_economica=req.modalita_economica,
         crediti_iniziali=req.crediti_iniziali,
         atleti_per_categoria=req.atleti_per_categoria,
-        mercato_aperto=0,
+        mercato_aperto=1,
     )
     db.add(lega)
     db.commit()
@@ -1284,10 +1284,10 @@ def create_league(req: LeagueCreate, db=Depends(get_db), utente=Depends(get_uten
     evento_attivo = db.query(EventoCatalogo).filter_by(stato="attivo").with_for_update().first()
     if evento_attivo:
         db.add(EventoLega(evento_id=evento_attivo.id, league_id=lega.id, stato="selezionata"))
-        db.add(CompetizioneLega(league_id=lega.id, evento_id=evento_attivo.id, numero=1, fase="configurata"))
+        db.add(CompetizioneLega(league_id=lega.id, evento_id=evento_attivo.id, numero=1, fase="mercato_aperto"))
     utente.leghe.append(lega)
     db.commit()
-    return {"message": f"Lega '{req.nome}' creata! L'evento corrente è gestito dall'admin.", "league_id": lega.id}
+    return {"message": f"Lega '{req.nome}' creata! Il mercato è aperto automaticamente. L'evento corrente è gestito dall'admin.", "league_id": lega.id}
 
 
 def competizione_corrente(db, league_id):

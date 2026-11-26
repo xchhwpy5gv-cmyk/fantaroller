@@ -57,6 +57,7 @@ from main import (
     chiudi_mercato_lega,
     calcola_punti,
     crea_evento_catalogo,
+    create_league,
     lista_atleti,
     squadra_atleti,
     seleziona_evento_lega,
@@ -66,7 +67,7 @@ from main import (
 )
 from schemas import (AssociaEventoLegheRequest, CorrezionePunteggioAtleta,
                      CorrezioneRisultatoRequest, EventoCatalogoCreate,
-                     SelezionaEventoRequest)
+                     LeagueCreate, SelezionaEventoRequest)
 
 
 LISTONE = json.loads((SCRAPER / "listone.json").read_text(encoding="utf-8"))
@@ -156,6 +157,35 @@ class Listone2027Tests(unittest.TestCase):
 
         self.db.commit()
         return user, league, squad, athletes
+
+    def test_new_league_starts_with_market_open_with_or_without_current_event(self):
+        user = User(username="creator-test", password="test", is_admin=1, email_verificata=1)
+        self.db.add(user)
+        self.db.commit()
+
+        listone_response = create_league(
+            LeagueCreate(nome="Nuova listone", tipo="aperta", modalita="listone"),
+            db=self.db,
+            utente=user,
+        )
+        listone = self.db.query(League).filter_by(id=listone_response["league_id"]).one()
+        self.assertEqual(listone.mercato_aperto, 1)
+        self.assertIn("mercato è aperto automaticamente", listone_response["message"])
+        self.assertEqual(self.db.query(CompetizioneLega).filter_by(league_id=listone.id).count(), 0)
+
+        event = EventoCatalogo(nome="Evento già attivo", stato="attivo")
+        self.db.add(event)
+        self.db.commit()
+        auction_response = create_league(
+            LeagueCreate(nome="Nuova asta", tipo="aperta", modalita="asta"),
+            db=self.db,
+            utente=user,
+        )
+        auction = self.db.query(League).filter_by(id=auction_response["league_id"]).one()
+        competition = self.db.query(CompetizioneLega).filter_by(league_id=auction.id).one()
+        self.assertEqual(auction.mercato_aperto, 1)
+        self.assertEqual(competition.evento_id, event.id)
+        self.assertEqual(competition.fase, "mercato_aperto")
 
     def assign_event(self, event, user, league_ids):
         return associa_evento_leghe(
